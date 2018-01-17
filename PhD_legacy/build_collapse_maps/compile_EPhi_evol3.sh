@@ -1,0 +1,2 @@
+mcc -m ./calculate_Efield_Phi_complete_phi_evol3.m ./initialize_folder_names.m ./initialize_XZ_maps_dimensions.m ./rescaling_to_XZsmall_maps.m ./calculate_Efield_frame_rank.m ./rotate_map_phi.m ./calculate_Efield_phi_rank.m ./calculate_ExB_drift_speeds_phi_rank.m ./calculate_grad_psi_phi_rank.m ./calculate_Efield_XZ.m  ./dtinterp.m  ./gridfit.m
+rm run_calculate_Efield_Phi_complete_phi_evol3.sh

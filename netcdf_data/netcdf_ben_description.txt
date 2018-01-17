@@ -1,0 +1,372 @@
+Dear Fabien,
+attached you can find the TRANSP -netcdf file for discharge #30382. In this file, you should find e.g. the kinetic profiles...
+The data is also in /u/bgeiger/tr_client/AUGD/30382/A07/
+Cheers,
+Benedikt
+
+The following profile quantities are contained in the cdf-file:
+note that X is rho-toroidal!
+
+
+ABBREV.    FULL LABEL                       UNITS            (X)
+----------------------------------------------------------------------------
+AMOI       Total Therm Ang Inertia Dens     NtMS2/CM3        X
+BBETA      BEAM BETA POLOIDAL                                X
+BBNT2_DD   DD BEAM-BEAM NEUTRONS            N/CM3/SEC        MCINDX
+BBNTX      BEAM-BEAM NEUTRONS               N/CM3/SEC        X
+BDENS      BEAM ION DENSITY                 N/CM**3          X
+BDENS2_D   D Beam ion density               N/CM**3          MCINDX
+BDEPE_D1   FULL E D BEAM DEP (TOTAL)        N/CM3/SEC        X
+BDEPE_D2   HALF E D BEAM DEP (TOTAL)        N/CM3/SEC        X
+BDEPE_D3   1/3 E D BEAM DEP (TOTAL)         N/CM3/SEC        X
+BDEP_D     D BEAM DEPOSITION (TOTAL)        N/CM3/SEC        X
+BEPERP2_D  D Beam ion <Eperp>               eV               MCINDX
+BEPLL2_D   D Beam ion <Epll>                eV               MCINDX
+BMVOL      2d MC grid zone volumes          CM**3            MCINDX
+BN0T1      NEUTRALS:1.GEN 1/1*EB            N/CM**3          X
+BN0T2      NEUTRALS:1.GEN 1/2*EB            N/CM**3          X
+BN0T3      NEUTRALS:1.GEN 1/3*EB            N/CM**3          X
+BPHI_MSE   B_phi at (R,Z) of detector       TESLA            INDEX_MSE
+BPOL       POLOIDAL FIELD                   TESLA            XB
+BR_MSE     B_R at (R,Z) of detector         TESLA            INDEX_MSE
+BTBE       BEAM BETA TOROIDAL                                X
+BTE        ELECTRON BETA TOROIDAL                            X
+BTI        ION BETA TOROIDAL                                 X
+BTNT2_DD   DD BEAM-TARGET NEUTRONS          N/CM3/SEC        MCINDX
+BTNTX      BEAM-TARGET NEUTRONS             N/CM3/SEC        X
+BTPL       PLASMA BETA TOROIDAL                              X
+BTRAP0_D   D beam full E dep banana frac.                    X
+BTRAP_D    D beam ions banana fraction                       X
+BTROT      ROTATION BETA TOROIDAL                            X
+BTTOT      TOTAL BETA TOROIDAL                               X
+BVTOR2_D   D Beam ion <Vtor>                cm/sec           MCINDX
+BZ_MSE     B_Z at (R,Z) of detector         TESLA            INDEX_MSE
+CHPHI      MOMENTUM DIFFUSIVITY             CM**2/SEC        XB
+CICHD_ALL  ICH DIRECT CUR DRIVE             AMPS/CM2         X
+CICHM_ALL  ICH MINORITY CUR DRIVE           AMPS/CM2         X
+CLOGE      ELECTRON COULOMB LOG                              X
+CLOGI      ION COULOMB LOG                                   X
+CONDE      ELECTRON HEAT DIFFUSIVITY        CM**2/SEC        XB
+CONDEF     1 FLUID "EFFECTIVE" CHI          CM**2/SEC        XB
+CONDI      ION HEAT DIFFUSIVITY             CM**2/SEC        XB
+CONDICWNC  NCLASS ion class heat conduct    CM**2/SEC        XB
+CONDIWNC   NCLASS ion heat conductivity     CM**2/SEC        XB
+CUR        TOTAL PLASMA CURRENT             AMPS/CM2         X
+CURB       BEAM DRIVEN CURRENT              AMPS/CM2         X
+CURBRABD   FAST ION RAD.CUR (ANOM DIFFUS)   AMPS             XB
+CURBRFSH   FAST ION RAD.CUR (FISHBONES)     AMPS             XB
+CURBRORB   FAST ION RADIAL CURRENT (ORBIT)  AMPS             XB
+CURBRRIP   FAST ION RAD.CUR (RIPPLE LOSS)   AMPS             XB
+CURBS      BOOTSTRAP CURRENT                AMPS/CM2         X
+CURBSEPS   Aspect Ratio Bootstrap Current   AMPS/CM2         X
+CURBSSAU   Sauter Bootstrap Current         AMPS/CM2         X
+CURBSWNC   NCLASS Bootstrap Current         AMPS/CM2         X
+CURGP      GRAD(P) TOROIDAL CUR             AMPS/CM2         X
+CUROH      OHMIC PLASMA CURRENT             AMPS/CM2         X
+DAREA      ZONE CROSS SECTIONAL AREA        CM**2            X
+DIFB       ANOMOLOUS FAST ION DIFFUSIVITY   CM**2/SEC        XB
+DIFFD      EFF. D+ ION DIFFUSIVITY          CM**2/SEC        XB
+DIFFE      ELEC PTCL DIFFUSIVITY            CM**2/SEC        XB
+DIFFH      EFF. H+ ION DIFFUSIVITY          CM**2/SEC        XB
+DIFFI      ION DIFFUSIVITY FROM TOTAL FLUX  CM**2/SEC        XB
+DIFFIGLF   GLF23 ION DIFFUSIVITY            CM**2/SEC        XB
+DIFFX      EFF. IMP ION DIFFUSIVITY         CM**2/SEC        XB
+DIFWE      ELEC PTCL DIFFUSIVITY (WARE)     CM**2/SEC        XB
+DIVFD      DIV(ION FLUX D+)                 N/CM3/SEC        X
+DIVFE      DIV(ELECTRON FLUX)               N/CM3/SEC        X
+DIVFI      DIV(TOTAL ION FLUX)              N/CM3/SEC        X
+DN0VD      VOL NEUTRAL DENSITY G=D          N/CM**3          X
+DN0VH      VOL NEUTRAL DENSITY G=H          N/CM**3          X
+DN0WD      WALL NEUTRAL DENS G=D            N/CM**3          X
+DN0WH      WALL NEUTRAL DENS G=H            N/CM**3          X
+DVOL       ZONE VOLUME                      CM**3            X
+EBEAM_D    AVG D BEAM ION ENERGY            EV               X
+ECCUR      ECRH CURRENT                     A/CM2            X
+ECCUR1     ECRH CURRENT (GYRO 1)            A/CM2            X
+ECCUR2     ECRH CURRENT (GYRO 2)            A/CM2            X
+ECCUR3     ECRH CURRENT (GYRO 3)            A/CM2            X
+ECCUR4     ECRH CURRENT (GYRO 4)            A/CM2            X
+ECCUR5     ECRH CURRENT (GYRO 5)            A/CM2            X
+ECCUR6     ECRH CURRENT (GYRO 6)            A/CM2            X
+ECCUR7     ECRH CURRENT (GYRO 7)            A/CM2            X
+ECCUR8     ECRH CURRENT (GYRO 8)            A/CM2            X
+EHEAT      TOTAL ELECTRON HEATING           WATTS/CM3        X
+ELONG      Flux surface elongation                           XB
+ER_MSE     E_R at (R,Z) of detector         V/M              INDEX_MSE
+ETAE       D(LN(TE))/D(LN(NE))                               XB
+ETAI       D(LN(TI))/D(LN("NI"))                             XB
+ETAIE      D(LN(TI))/D(LN(NE))                               XB
+ETA_NC     NC RESISTIVITY (old fit)         OHM*CM           X
+ETA_SNC    Sauter Neoclassical Resistivity  OHM*CM           X
+ETA_SP     SPITZER RESISTIVITY              OHM*CM           X
+ETA_SPS    SPITZER RESISTIVITY (Sauter)     OHM*CM           X
+ETA_TSC    TSC Neoclassical Resistivity     OHM*CM           X
+ETA_USE    RESISTIVITY USED OR INFERRED     OHM*CM           X
+ETA_WNC    NCLASS Resistivity               OHM*CM           X
+ETPARGLF   GLF23 MOM (PAR) DIFFUSIVITY      CM**2/SEC        XB
+ETPERGLF   GLF23 MOM (PERP) DIFFUSIVITY     CM**2/SEC        XB
+ETPHIGLF   GLF23 MOM (TOR) DIFFUSIVITY      CM**2/SEC        XB
+EXBGLF     GLF23 EXB SHEAR RATE             /SEC             XB
+EZ_MSE     E_Z at (R,Z) of detector         V/M              INDEX_MSE
+FKBOL      CHI(I) NC BOLTON                 CM**2/SEC        XB
+FKCH2      CHI(I) NC CHANG-HINTON VSN 2     CM**2/SEC        XB
+FKCHH      CHI(I) NC CHANG-HINTON ORIGINAL  CM**2/SEC        XB
+FKCHZ      CHI(I) NC CHANG-HINTON Z-CORR    CM**2/SEC        XB
+FKHZH      CHI(I) NC HAZELTINE-HINTON       CM**2/SEC        XB
+FKJUL      CHI(I) NC RUTHERFORD-JULICH      CM**2/SEC        XB
+FMCK_WNC   NCLASS Fm convergence check                       X
+FPAX_D     D BEAM SCATTERING >IMPURITIES                     X
+FPBX_D     D BEAM DRAG >IMPURITIES                           X
+FRAT1GLF   GLF23 LEADING MODE FREQUENCY     /SEC             XB
+FRAT2GLF   GLF23 SCND LEADING MODE FREQ     /SEC             XB
+FTOTDDN    TOTAL D(D,N)HE3 FUSION           N/CM3/SEC        X
+FTOTDDP    TOTAL D(D,P)T FUSION             N/CM3/SEC        X
+GAM1_MSE   MSE Signal (due to B only)                        INDEX_MSE
+GAM2_MSE   MSE Signal (due to B and E)                       INDEX_MSE
+GAMMMM1    MMM95 GRTH RATE MODE=1           1/SEC            XB
+GAMMMM2    MMM95 GRTH RATE MODE=2           1/SEC            XB
+GFUN       G: PARA/DIAMAGNETISM                              XB
+GFUNC      G: GRAD-SHAF EQUILIBRIUM CHECK                    XB
+GMAG       GMAG (RT) PRESSURE PROFILE       JLES/CM3         X
+GRAT1GLF   GLF23 GROWTH RT OF LEADING MODE  /SEC             XB
+GRAT2GLF   GLF23 GRTH RT SCND LEADING MODE  /SEC             XB
+IHEAT      TOTAL ION HEATING                WATTS/CM3        X
+JBFAC      Species avg Jb shielding                          X
+JBFACZ1    Z=1 Jb shielding                                  X
+M0NET      NET CX MOMENTUM LOSS             Nt-M/CM3         X
+MCONV      CONVECTIVE TRANSPORT             Nt-M/CM3         X
+MODOT      MOMENTUM GAIN                    Nt-M/CM3         X
+MVISC      VISCOUS TRANSPORT                Nt-M/CM3         X
+N0BCXD0    CX FAST NEUTRAL DENSITY (D0)     N/CM**3          X
+N0BD0      1.GEN FAST NEUTRAL DENSITY (D0)  N/CM**3          X
+NB_F1_D    density: full energy D beam      N/CM**3          X
+NB_F2_D    density: half energy D beam      N/CM**3          X
+NB_F3_D    density: 1/3 energy D beam       N/CM**3          X
+NCFT       NC trapping fraction (net)                        X
+NCFTMINUS  NC trapping fraction lower limit                  X
+NCFTPLUS   NC trapping fraction upper limit                  X
+ND         DEUTERIUM ION DENSITY            N/CM**3          X
+NE         ELECTRON DENSITY                 N/CM**3          X
+NH         HYDROGEN ION DENSITY             N/CM**3          X
+NHE4       HELIUM-4 ION DENSITY             N/CM**3          X
+NI         TOTAL ION DENSITY                N/CM**3          X
+NIMP       TOTAL IMPURITY DENSITY           N/CM**3          X
+NMC_D      Beam D No. of MC Ions            N                X
+NUSTE      ELECTRON COLLISIONALITY                           X
+NUSTI      ION COLLISIONALITY                                X
+OMEGA      TOROIDAL ANGULAR VELOCITY        RAD/SEC          X
+OMEGA_NC   N.C. TOROIDAL ANGULAR VELOCITY   RAD/SEC          X
+OMEGB      BEAM ION AVG ANG.VELOCITY        RAD/SEC          X
+OMEGB_D    D BEAM ION AVG ANG.VELOCITY      RAD/SEC          X
+OMEGDATA   Toroidal Ang.Velocity Data       RAD/SEC          X
+OMEMMM1    MMM95 FREQUENCY MODE=1           RAD/SEC          XB
+OMEMMM2    MMM95 FREQUENCY MODE=2           RAD/SEC          XB
+P0NET      NET CHARGE EXCHANGE LOSS         WATTS/CM3        X
+PBCX       THERMAL ION LOSS, FAST ION CX    WATTS/CM3        X
+PBE        BEAM HEATING OF ELECTRONS        WATTS/CM3        X
+PBEPHI     Electrostatic field -> fast ions WATTS/CM3        X
+PBE_F1_D   Pbe: full energy D beam          WATTS/CM3        X
+PBE_F2_D   Pbe: half energy D beam          WATTS/CM3        X
+PBE_F3_D   Pbe: 1/3 energy D beam           WATTS/CM3        X
+PBI        BEAM HEATING OF IONS             WATTS/CM3        X
+PBI_F1_D   Pbi: full energy D beam          WATTS/CM3        X
+PBI_F2_D   Pbi: half energy D beam          WATTS/CM3        X
+PBI_F3_D   Pbi: 1/3 energy D beam           WATTS/CM3        X
+PBTH       FAST ION THERMALIZATION POWER    WATTS/CM3        X
+PCMPE      ELECTRON COMPRESSION             WATTS/CM3        X
+PCMPI      ION COMPRESSION                  WATTS/CM3        X
+PCNDE      ELECTRON CONDUCTION LOSS         WATTS/CM3        X
+PCNVE      ELECTRON CONVECTION LOSS         WATTS/CM3        X
+PCOND      ION CONDUCTION LOSS              WATTS/CM3        X
+PCONV      ION CONVECTION LOSS              WATTS/CM3        X
+PCPRB      POWER: COMPRESSION OF FAST IONS  WATTS/CM3        X
+PCX        CHARGE EXCHANGE LOSS             WATTS/CM3        X
+PEECH      ECRH ELECTRON HEATING            WATTS/CM3        X
+PEECH1     ECRH ELECTRON HEATING (GYRO 1)   WATTS/CM3        X
+PEECH2     ECRH ELECTRON HEATING (GYRO 2)   WATTS/CM3        X
+PEECH3     ECRH ELECTRON HEATING (GYRO 3)   WATTS/CM3        X
+PEECH4     ECRH ELECTRON HEATING (GYRO 4)   WATTS/CM3        X
+PEECH5     ECRH ELECTRON HEATING (GYRO 5)   WATTS/CM3        X
+PEECH6     ECRH ELECTRON HEATING (GYRO 6)   WATTS/CM3        X
+PEECH7     ECRH ELECTRON HEATING (GYRO 7)   WATTS/CM3        X
+PEECH8     ECRH ELECTRON HEATING (GYRO 8)   WATTS/CM3        X
+PEICH      ICRF ELECTRON HEATING            WATTS/CM3        X
+PHBAL      ANGULAR MOMENTUM BALANCE         Nt-M/CM3         X
+PICF01N01  ICRF PWR, Nphi=  12, FREQ#1      WATTS/CM3        X
+PICF02N01  ICRF PWR, Nphi=  12, FREQ#2      WATTS/CM3        X
+PICF03N01  ICRF PWR, Nphi=  12, FREQ#3      WATTS/CM3        X
+PICF04N01  ICRF PWR, Nphi=  12, FREQ#4      WATTS/CM3        X
+PIC_F1     RF PWR Absorbed, Freq.1          WATTS/CM3        X
+PIC_F2     RF PWR Absorbed, Freq.2          WATTS/CM3        X
+PIC_F3     RF PWR Absorbed, Freq.3          WATTS/CM3        X
+PIC_F4     RF PWR Absorbed, Freq.4          WATTS/CM3        X
+PIICH      ICRF ION HEATING                 WATTS/CM3        X
+PION       NEUTRAL IONIZATION WORK          WATTS/CM3        X
+PLCURPLL   POLOIDAL CUR (J PLL)             AMPS             XB
+PLCURPRP   POLOIDAL CUR (J PERP)            AMPS             XB
+PLCURTOT   TOTAL POLOIDAL CUR TO WALL       AMPS             XB
+PLFLX      POLOIDAL FLUX                    Wb/rad           XB
+PMHD_IN    PRESSURE INPUT to MHD SOLVER     PASCALS          X
+PNI        NEUTRAL IONIZATION SOURCE        WATTS/CM3        X
+POH        OHMIC HEATING POWER              WATTS/CM3        X
+POHB       POWER: OH CIRCUIT TO FAST IONS   WATTS/CM3        X
+PPLAS      PLASMA PRESSURE                  PASCALS          X
+PRAD       NET RADIATED POWER               WATTS/CM3        X
+PRADC      NET RADIATED POWER CALCULATED    WATTS/CM3        X
+PRADS_TOK  TOK Impurity Radiation           WATTS/CM3        X
+PRAD_BR    BREMSSTRAHLUNG RADIATION         WATTS/CM3        X
+PRAD_CY    CYCLOTRON RADIATION              WATTS/CM3        X
+PRAD_LI    LINE RADIATION                   WATTS/CM3        X
+PTOWB      KINETIC MHD PRESSURE W/FAST IONS PASCALS          X
+Q          Q PROFILE                                         XB
+QICHA      TOTAL ICH HEATING                WATTS/CM3        X
+QICHE      ICH DIRECT ELECTRON HEATING      WATTS/CM3        X
+QICHFAST   ICH Heating of Beam & Fusn Ions  WATTS/CM3        X
+QICHI      ICH DIRECT TH.ION HEATING        WATTS/CM3        X
+QICHMC     ICH HEATING BY MODE CONVERSION   WATTS/CM3        X
+QICHMIN    ICH PWR TO MINORITY (wave code)  WATTS/CM3        X
+QMINICH    ICRH Power (renormalized QL0)    WATTS/CM3        X
+QIE        ION-ELECTRON COUPLING            WATTS/CM3        X
+RLTCRGKF   R/LTi: critical ITG main br.                      XB
+RLTCRGKZ   R/LTi: critical ITG Carbon br.                    XB
+RLTI       R/LTi: actual ITG:R*Grad(Ti)/Ti                   XB
+RMJMP      FLUX SURFACE CTRS                CM               XB
+RMNMP      MIDPLANE RADII                   CM               XB
+S0RCD      RECOMB NEUTRAL SCE G=D           N/CM3/SEC        X
+S0RCH      RECOMB NEUTRAL SCE G=H           N/CM3/SEC        X
+S0VLE      TOTAL NEUTRAL VOL SCE            WATTS/CM3        X
+S0VOL      TOTAL NEUTRAL VOL E-SCE          N/CM3/SEC        X
+SB0ID      D0 NEUTRAL SINK BEAM II          N/CM3/SEC        X
+SB0IH      H0 NEUTRAL SINK BEAM II          N/CM3/SEC        X
+SB0XD      D0 NEUTRAL SINK BEAM CX          N/CM3/SEC        X
+SB0XH      H0 NEUTRAL SINK BEAM CX          N/CM3/SEC        X
+SBCX0      FAST ION CX: NEUTRALS BORN       N/CM3/SEC        X
+SBCXD      D0 NEUTRAL SOURCE BEAM CX        N/CM3/SEC        X
+SBCXH      H0 NEUTRAL SOURCE BEAM CX        N/CM3/SEC        X
+SBE        ELECTRON SCE FAST ION DEPOSITION N/CM3/SEC        X
+SBHD       D+ ION SCE DUE TO BEAM           N/CM3/SEC        X
+SBHH       H+ ION SCE DUE TO BEAM           N/CM3/SEC        X
+SBTH       FAST ION THERMALIZATION SOURCE   N/CM3/SEC        X
+SBTOT      TOTAL ION SCE(VOL. NEUTRALS)     N/CM3/SEC        X
+SBXRB      FAST ION CX: BEAM-BEAM RECAPTURE N/CM3/SEC        X
+SBXRD      BEAM CX: RECAPTURE BY CX W/D+    N/CM3/SEC        X
+SBXRH      BEAM CX: RECAPTURE BY CX W/H+    N/CM3/SEC        X
+SBXR_IE    FAST ION RECAPTURE on electrons  N/CM3/SEC        X
+SBXR_II    FAST ION RECAPTURE on th.ions    N/CM3/SEC        X
+SBXR_IZ    FAST ION RECAPTURE on impurities N/CM3/SEC        X
+SCEE       ELECTRON SOURCE (TH.NEUTRALS)    N/CM3/SEC        X
+SCEV       ELECTRON SCE (VOL. NEUTRALS)     N/CM3/SEC        X
+SCEW       ELECTRON SCE (WALL NEUTRALS)     N/CM3/SEC        X
+SCIMP      IMPURITY SOURCE                  N/CM3/SEC        X
+SDBBI      BEAM DEPOSITION: BEAM-BEAM II    N/CM3/SEC        X
+SDBBX      BEAM DEPOSITION: BEAM-BEAM CX    N/CM3/SEC        X
+SDB_IE     BEAM DEP: ioniz. on electrons    N/CM3/SEC        X
+SDB_II     BEAM DEP: ioniz. on therm. ions  N/CM3/SEC        X
+SDB_IZ     BEAM DEP: ioniz. on impurities   N/CM3/SEC        X
+SDCXD      BEAM DEPOSITION: CX W/D+ IONS    N/CM3/SEC        X
+SDCXH      BEAM DEPOSITION: CX W/H+ IONS    N/CM3/SEC        X
+SERUN      RUNAWAY ELEC SOURCE RATE         N/CM3/SEC        X
+SFETO      ELECTRONS -> FAST NEUTRALS       N/CM3/SEC        X
+SREXBMMM   ExB Shear Rate (MMM95)           SEC**-1          XB
+SSHAF      SHAFRANOV SHIFT                  CM               XB
+SURF       FLUX SURFACE AREA                CM**2            XB
+SVD        TOT ION SCE VOL. D+              N/CM3/SEC        X
+SVH        TOT ION SCE VOL. H+              N/CM3/SEC        X
+SWD        TOT ION SCE WALL D+              N/CM3/SEC        X
+SWH        TOT ION SCE WALL H+              N/CM3/SEC        X
+SWTOT      TOTAL ION SCE(WALL NEUTRALS)     N/CM3/SEC        X
+T0VD       VOL NEUTRAL TEMP G=D             EV               X
+T0VH       VOL NEUTRAL TEMP G=H             EV               X
+T0WD       WALL NEUTRAL TEMP G=D            EV               X
+T0WH       WALL NEUTRAL TEMP G=H            EV               X
+TAPWE      ELECTRON TAU(P) WARE CORRECTION  SECONDS          XB
+TAUE       PLASMA ENERGY CONFINEMENT        SECONDS          XB
+TAUPE      ELECTRON PTCL CONFINEMNT         SECONDS          XB
+TAUPI      ION PTCL CONFINEMENT             SECONDS          XB
+TE         ELECTRON TEMPERATURE             EV               X
+TEE        ELECTRON ENERGY CONFINEMENT      SECONDS          XB
+TEI        ION ENERGY CONFINEMENT           SECONDS          XB
+THDIG      MMM95 ION DIFF (WEILAND)         CM**2/SEC        XB
+THDKB      MMM95 ION DIFF (KB)              CM**2/SEC        XB
+THDRB      MMM95 ION DIFF (RB)              CM**2/SEC        XB
+THEIG      MMM95 ELEC THER DIFF (WEILAND)   CM**2/SEC        XB
+THEKB      MMM95 ELEC THER DIFF (KB)        CM**2/SEC        XB
+THERB      MMM95 ELEC THER DIFF (RB)        CM**2/SEC        XB
+THIIG      MMM95 ION THER DIFF (WEILAND)    CM**2/SEC        XB
+THIKB      MMM95 ION THER DIFF (KB)         CM**2/SEC        XB
+THIRB      MMM95 ION THER DIFF (RB)         CM**2/SEC        XB
+THNTX      THERMONUCLEAR NEUTRONS           N/CM3/SEC        X
+THZIG      MMM95 IMP DIFF (WEILAND)         CM**2/SEC        XB
+THZKB      MMM95 IMP DIFF (KB)              CM**2/SEC        XB
+THZRB      MMM95 IMP DIFF (RB)              CM**2/SEC        XB
+TI         ION TEMPERATURE                  EV               X
+TPA1A_D    D FULL E TAU(SCATTERING,CO)      SECONDS          X
+TPA2A_D    D HALF E TAU(SCATTERING,CO)      SECONDS          X
+TPA3A_D    D 1/3 E TAU(SCATTERING,CO)       SECONDS          X
+TQBCO      BEAM COLLISIONAL TORQUE          Nt-M/CM3         X
+TQBTH      BEAM THERMALIZATION TORQUE       Nt-M/CM3         X
+TQICHMIN   ICH Torque TO MINORITY IONS      Nt-M/CM3         X
+TQIN       TOTAL INPUT TORQUE               Nt-M/CM3         X
+TQJXB      BEAM JXB TORQUE                  Nt-M/CM3         X
+TQRPL      BEAM RPL JXB TORQUE              Nt-M/CM3         X
+TRFMP      TOROIDAL FLUX                    WEBERS           RMAJM
+TRIANG     Flux surface triangularity                        XB
+TRIANGL    Flux surf. lower triangularity                    XB
+TRIANGU    Flux surf. upper triangularity                    XB
+TSL1A_D    D FULL E TAU(SLOWING DOWN,CO)    SECONDS          X
+TSL2A_D    D HALF E TAU(SLOWING DOWN,CO)    SECONDS          X
+TSL3A_D    D 1/3 E TAU(SLOWING DOWN,CO)     SECONDS          X
+TTNTX      TOTAL NEUTRONS                   N/CM3/SEC        X
+TX         IMPURITY TEMPERATURE             EV               X
+UBPAR      BEAM PLL ENERGY DENSITY          JLES/CM3         X
+UBPOL      POLOIDAL FIELD ENERGY            JLES/CM3         X
+UBPRP      BEAM PERP ENERGY DENSITY         JLES/CM3         X
+UBTOR      TOROIDAL FIELD ENERGY            JLES/CM3         X
+UCURB      UNSHIELDED BEAM CURRENT          AMPS/CM2         X
+UDEXB      E CROSS B POWER                  WATTS/CM3        X
+UE         ELECTRON ENERGY DENSITY          JLES/CM3         X
+UFASTPA    FAST ION PLL ENERGY DENSITY      JLES/CM3         X
+UFASTPP    FAST ION PERP ENERGY DENSITY     JLES/CM3         X
+UI         ION ENERGY DENSITY               JLES/CM3         X
+UJBCO      UNSHIELDED BEAM CUR (CO BEAMS)   AMPS/CM2         X
+UPHI       THERMAL PLASMA ROTATIONAL ENERGY JLES/CM3         X
+UPHIN      TOTAL ROTATIONAL ENERGY INPUT    WATTS/CM3        X
+UTHRM      THERMAL ENERGY DENSITY           JLES/CM3         X
+UTOTL      TOTAL ENERGY DENSITY             JLES/CM3         X
+V          VOLTAGE                          VOLTS            X
+VBA_MSE    beam energy/nucleon              eV/AMU           INDEX_MSE
+VCONEMMM   MMM95 MODEL ELEC. CONV. VEL.     CM/SEC           XB
+VCONIMMM   MMM95 MODEL ION CONV. VEL.       CM/SEC           XB
+VCONZMMM   MMM95 MODEL IMP. CONV. VEL.      CM/SEC           XB
+VELD       ION VELOCITY (NET) D+            CM/SEC           XB
+VELE       ELECTRON RADIAL VELOCITY         CM/SEC           XB
+VELH       ION VELOCITY (NET) H+            CM/SEC           XB
+VELIM      IMPURITY RADIAL VELOCITY         CM/SEC           XB
+VELWE      ELECTRON WARE VELOCITY           CM/SEC           XB
+VP2_USE    VP2 data as used                 rad/sec          RMJSYM
+VPB_F1_D   Vpll.B: full energy D beam       T*(cm/sec)       X
+VPB_F2_D   Vpll.B: half energy D beam       T*(cm/sec)       X
+VPB_F3_D   Vpll.B: 1/3 energy D beam        T*(cm/sec)       X
+VPOH       VOLTAGE for POH calculation      VOLTS            X
+VPOLD_NC   NC D+ poloidal velocity          CM/SEC           RMAJM
+VPOLE_NC   NC electron poloidal velocity    CM/SEC           RMAJM
+VPOLH_NC   NC H+ poloidal velocity          CM/SEC           RMAJM
+VPOLX_NC   NC impurity poloidal velocity    CM/SEC           RMAJM
+VTORD_NC   NC D+ toroidal velocity          CM/SEC           RMAJM
+VTORE_NC   NC electron toroidal velocity    CM/SEC           RMAJM
+VTORH_NC   NC H+ toroidal velocity          CM/SEC           RMAJM
+VTORX_NC   NC impurity toroidal velocity    CM/SEC           RMAJM
+WNMC_D     Beam D No. of MC Ions            #ptcls           X
+XKAPEGKF   IFS-PPPL GYROFLUID MODEL CHI(E)  CM**2/SEC        XB
+XKAPIGKF   IFS-PPPL GYROFLUID MODEL CHI(I)  CM**2/SEC        XB
+XKEGLF23   GLF23 MODEL CHI(E)               CM**2/SEC        XB
+XKEMMM95   MMM95 MODEL CHI(E)               CM**2/SEC        XB
+XKIGLF23   GLF23 MODEL CHI(I)               CM**2/SEC        XB
+XKIMMM95   MMM95 MODEL CHI(I)               CM**2/SEC        XB
+XKINC      NEOCLASSICAL CHI(I)              CM**2/SEC        XB
+X_MSE      flux surface x=sqrt(phi/phlim)                    INDEX_MSE
+ZEFFI      INPUT ZEFF (UNCONSTRAINED)                        X
+ZEFMD      MAGDIF ZEFF PROFILE                               X
+
+
+

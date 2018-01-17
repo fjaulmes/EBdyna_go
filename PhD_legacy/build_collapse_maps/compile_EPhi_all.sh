@@ -1,0 +1,16 @@
+./compile_EPhi_evol1.sh &
+./compile_EPhi_evol2.sh &
+./compile_EPhi_evol3.sh &
+./compile_EPhi_evol4.sh &
+./compile_EPhi_evol5.sh &
+./compile_EPhi_evol6.sh &
+./compile_EPhi_evol7.sh &
+./compile_EPhi_evol8.sh &
+./compile_EPhi_evol9.sh &
+./compile_EPhi_evol10.sh &
+./compile_EPhi_evol11.sh &
+./compile_EPhi_evol12.sh &
+./compile_EPhi_evol13.sh &
+./compile_EPhi_evol14.sh &
+./compile_EPhi_evol15.sh &
+./compile_EPhi_evol16.sh &
