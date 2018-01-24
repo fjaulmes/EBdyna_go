@@ -1,18 +1,10 @@
 function [m,d] = initialize_maps(maker,load_worker)
-global const maps dim mach map_data par
+global const maps dim map_data par
 %initialize_sim_data Loads in data files for simulation
 %   Returns structs with constants, B-maps and dimension parameters
 if isempty(const)
     filename=[par.paths.DATA_FOLDER,'physics_constants.mat'];
     const=load(filename);
-end
-
-if isempty(mach)
-    if ~isempty(strfind(computer(),'WIN')) || ~isempty(strfind(computer(),'win'))
-        mach='WINDOWS';
-    else
-        mach='LINUX';
-    end
 end
 
 switch nargin
@@ -27,11 +19,10 @@ if load_worker
     save('busy.txt','busy','-ascii');
     
     % Define keys
-    switch mach % Unique strings
-        case 'WINDOWS'
-            map_data.keys.key_maps=[par.ID_NAME,'_key_maps'];
-        case 'LINUX' % Integer IDs
-            map_data.keys.key_maps=54321;
+    if ispc
+        map_data.keys.key_maps=[par.ID_NAME,'_key_maps'];
+    elseif isunix    
+        map_data.keys.key_maps=54321;
     end
     
     [m,d] = initialize_maps(true,false);  % Load maps and dimensions conventionally
@@ -50,11 +41,10 @@ if load_worker
     m(2).n_maps=2; m(1).n_maps=2;     % Put an extra (empty) array in the maps-struct, since sharedmatrix needs at least 2 elements;
 	m=remove_fields(m,{'n_maps'});
     
-    switch mach
-        case 'WINDOWS'
-            SharedMemory('clone',map_data.keys.key_maps  ,m);
-        case 'LINUX'
-            sharedmatrix('clone',map_data.keys.key_maps  ,m);
+    if ispc
+        SharedMemory('clone',map_data.keys.key_maps  ,m);
+    elseif isunix    
+        sharedmatrix('clone',map_data.keys.key_maps  ,m);
     end
     
     % Store keys in file
@@ -74,11 +64,10 @@ if ~maker
 	    disp('Loading from shared RAM...');
         map_data=load('shared_memory_keys.mat');
         % Attach shared RAM
-        switch mach
-            case 'WINDOWS'
-                maps  = SharedMemory('attach',map_data.keys.key_maps);
-            case 'LINUX'
-                maps  = sharedmatrix('attach',map_data.keys.key_maps);
+        if ispc
+            maps  = SharedMemory('attach',map_data.keys.key_maps);
+        elseif isunix    
+            maps  = sharedmatrix('attach',map_data.keys.key_maps);
         end
         dim=map_data.dim;
     else

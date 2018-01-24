@@ -233,14 +233,11 @@ end
 
 %% Function to detach the shared RAM
 function detach_shared_mem
-global mach map_data maps
-if ~isempty(maps)
-    switch mach
-        case 'WINDOWS'
-            SharedMemory('detach',map_data.keys.key_maps ,maps);
-        case 'LINUX'
-            sharedmatrix('detach',map_data.keys.key_maps ,maps);
-    end
+global map_data maps
+if ispc
+    SharedMemory('detach',map_data.keys.key_maps ,maps);
+elseif isunix
+    sharedmatrix('detach',map_data.keys.key_maps ,maps);
 end
 clearvars -global const maps dim
 end

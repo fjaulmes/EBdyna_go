@@ -4,17 +4,6 @@ function load_RAM(remove)
 % Multiple processes can use this. Make sure that each process detaches the
 % pointer.
 
-%% Machine identifier
-global mach
-if isempty(mach)
-	if 	~isempty(strfind(computer(),'WIN')) || ~isempty(strfind(computer(),'win'))
-		disp('Detected WINDOWS machine')
-		mach='WINDOWS';
-	else
-		disp('Detected LINUX machine')
-		mach='LINUX';
-	end
-end
 narginchk(0,1);
 
 %% Remove variable
@@ -41,7 +30,7 @@ end
 
 %% Make the maps
 if ~remove 
-	clearvars -global -except mach
+	clearvars -global
     if exist('shared_memory_keys.mat','file')
         delete('shared_memory_keys.mat')
     end
@@ -56,11 +45,10 @@ else
     delete('shared_memory_keys.mat')
     key_names=fieldnames(map_data.keys);
     for i=1:length(key_names)
-        switch mach
-            case 'WINDOWS'
-                SharedMemory('free',map_data.keys.(key_names{i}));        
-            case 'LINUX'
-                sharedmatrix('free',map_data.keys.(key_names{i}));
+        if ispc
+            SharedMemory('free',map_data.keys.(key_names{i}));        
+        elseif isunix    
+            sharedmatrix('free',map_data.keys.(key_names{i}));
         end
     end
     disp('Shared RAM freed')

@@ -3,16 +3,6 @@ function make_ba_interp3_function
 % Identify the windows or linux machines and use the install file 
 % accordingly. 
 
-global mach
-if isempty(mach)
-	if 	~isempty(strfind(computer(),'WIN')) || ~isempty(strfind(computer(),'win'))
-		disp('Detected WINDOWS machine')
-		mach='WINDOWS';
-	else
-		disp('Detected LINUX machine')
-		mach='LINUX';
-	end
-end
 %% Switch to compilation path
 compile_path=which('ba_interp3.cpp');
 old_wd=pwd;
@@ -35,14 +25,13 @@ try
 	ba_interp3(x,y,z,g,X,Y,Z,'cubic');
 catch
 	warning('(re)installing ba_interp3 function')
-    switch mach
-        case 'WINDOWS'
-            movefile('./ba_interp3.cpp','./ba_interp3_LINUX.cpp')
-            movefile('./ba_interp3_windows.cpp','./ba_interp3.cpp')
-            mex -O ba_interp3.cpp
-            movefile('./ba_interp3.cpp','./ba_interp3_windows.cpp')
-            movefile('./ba_interp3_LINUX.cpp','./ba_interp3.cpp')
-        case 'LINUX'
+    if ispc
+		movefile('./ba_interp3.cpp','./ba_interp3_LINUX.cpp')
+		movefile('./ba_interp3_windows.cpp','./ba_interp3.cpp')
+		mex -O ba_interp3.cpp
+		movefile('./ba_interp3.cpp','./ba_interp3_windows.cpp')
+		movefile('./ba_interp3_LINUX.cpp','./ba_interp3.cpp')
+	elseif isunix
             mex -O ba_interp3.cpp
     end
 end
