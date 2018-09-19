@@ -17,7 +17,7 @@ ZHe=40
 
 
 run('build_W_density_profile.m')
-filename=strcat(DATA_FOLDER,'W_profile.mat');
+filename=strcat(DATA_FOLDER,'C_profile.mat');
 if exist(filename)
     load(filename)
 else

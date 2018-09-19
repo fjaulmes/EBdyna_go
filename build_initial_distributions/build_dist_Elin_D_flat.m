@@ -38,9 +38,9 @@ psi_pos_sup=ceil(interp1(radial_bins,1:N_radial_bins,radial_bins(end)))
 
 Nalpha_binned=zeros(N_radial_bins,1);
 
-ENERGY_MIN=5.0 % minimum energy of 5 eV
+ENERGY_MIN=2.0 % minimum energy of 5 eV
 
-energy_bin_size=50; %eV
+energy_bin_size=60; %eV
 energy_max=TempD+ENERGY_MIN;          %eV
 energy_D(1)=0.5*energy_bin_size+ENERGY_MIN;
 N_energy_bins=round((energy_max-ENERGY_MIN)/energy_bin_size)

@@ -11,10 +11,10 @@ par.paths=initialize_folder_names_struct;   % Folder names
 [const,maps,dim]=load_distr_maps(par);
 
 %% Parameters to tweak distribution
-N_R     =2^10;    % Number of radial positions
+N_R     =2^12;    % Number of radial positions
 input.N_total=N_R;  % Total number of particles
 
-Ekin=0.08*ones(input.N_total,1);%+(rand(input.N_total,1)-0.5)*1e3;    % Total kinetic energy [eV]
+Ekin=0.22*ones(input.N_total,1);%+(rand(input.N_total,1)-0.5)*1e3;    % Total kinetic energy [eV]
 input.Z=1;                      % Mass number
 input.m=const.mD;               % Mass [kg]
 
@@ -25,7 +25,7 @@ input.m=const.mD;               % Mass [kg]
 % rho=linspace(0.7,1,N_R)';
 % psi_overline=rho.^2;
 SIGN_PSI_AXIS=sign(dim.psi_scale(1));
-psi_overline=linspace(0.5,1,N_R/2)';
+psi_overline=linspace(0.7,1,N_R/2)';
 psi=SIGN_PSI_AXIS*(1-psi_overline)*maps.psi_global;
 psi_norm=interp1(dim.psi_scale,1:dim.NB_PSI,psi);
 q=interp1(dim.psi_scale,dim.q_initial_profile,psi);
@@ -66,7 +66,7 @@ vpll = sign_vpll.*sqrt(2*Epll *(const.eV/input.m));
 %% save distribution file
 
 x=[R,Z,phi];    % Position matrix
-save('./poincare_distribution_0.08eV_rand_edge.mat','-v7.3','input','x','vpll');
+save('./poincare_distribution_0p22eV_rand_edge.mat','-v7.3','input','x','vpll');
 
 
 

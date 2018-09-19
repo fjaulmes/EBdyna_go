@@ -28,7 +28,7 @@ Z_PR_map(:,end+1)=Z_PR_map(:,end);
 % X_PR_map(:,end)=0.5*(X_PR_map(:,end)+X_PR_map(:,end-1));
 % Z_PR_map(:,end)=0.5*(Z_PR_map(:,end)+Z_PR_map(:,end-1));
 
-Npart_simulated=4.2e5;
+Npart_simulated=8.4e5;
 
 %pause
 close all
@@ -346,7 +346,7 @@ alphas_mm=(alphas_Ekin-0.5*(mHe*alphas_vpll.^2)/eV)./interp2(scale_X,scale_Z,Bto
 % figure(2);
 % plot(pos_alpha_x,pos_alpha_z,'.');
 
-FILENAME=strcat('initial_D_flat_distribution.mat')
+FILENAME=strcat('initial_D_flat_distribution_840k.mat')
 save (FILENAME,'mHe','ZHe','density_part_ratio','alphas_pos_x','alphas_pos_z','alphas_pos_phi','alphas_Ekin','alphas_mm','alphas_vpll','alphas_current','Nalphas_simulated');
 
 
