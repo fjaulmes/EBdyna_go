@@ -10,9 +10,9 @@ disp('Starting standard B-field calculation of each coil:')
 disp('************************************************')
 
 %% Correction for offset magnetic axis
-RMP_map.Z=RMP_map.Z+Z_correction;   % Reduce Z express the vertical distance from center of plasma again
+RMP_map.Z=RMP_map.Z+Z_correction;   % Position the vertical Z=0 position of FINESSE at Z=0 of lab.
 if par.determine_vector_potential
-    RMP_map.Z2=RMP_map.Z2+Z_correction;   % Up the evaluation points by 0.07 since plasme is centered higher.
+    RMP_map.Z2=RMP_map.Z2+Z_correction;   % Up the evaluation points
 end
 %% Loop over type of coils and nr. of coils
 for type=1:length(RMP_coils.coil_name)

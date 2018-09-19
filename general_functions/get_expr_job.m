@@ -20,11 +20,11 @@ REM=N_array-NB_PROCESS*PARTICLES_SPLIT;   % Remainder of particles
 
 % Take in extra particle if this number of particles are still left
 if PROCESS_NUMBER-1<REM
-    N_start=(PROCESS_NUMBER-1)*(PARTICLES_SPLIT+1)+1; % First particle
-    N_end=(PROCESS_NUMBER)*(PARTICLES_SPLIT+1); % Last particle
+    N_start=(PROCESS_NUMBER-1)*(PARTICLES_SPLIT+1)+1 % First particle
+    N_end=(PROCESS_NUMBER)*(PARTICLES_SPLIT+1) % Last particle
 else
-    N_start=(PROCESS_NUMBER-1)*(PARTICLES_SPLIT)+REM+1; % First particle
-    N_end=(PROCESS_NUMBER)*(PARTICLES_SPLIT)+REM; % Last particle
+    N_start=(PROCESS_NUMBER-1)*(PARTICLES_SPLIT)+REM+1 % First particle
+    N_end=(PROCESS_NUMBER)*(PARTICLES_SPLIT)+REM % Last particle
 end
 
 %% Set indexes to calculate to true

@@ -5,6 +5,11 @@ cp ./ba_interp3/*.mexa64 ./
 cp ./sharedmatrix/*.mexa64 ./
 ls *.mexa64
 
+echo "*********** cleaning old log files *********"
+rm ~/java.log.*
+rm ./$1*.o*
+rm ./$1*.e*
+
 echo "********************************************"
 echo "Specified simulation ID: $1"
 echo "Starting compilation of EBdyna_go (load_RAM and G_eq), please wait..."
@@ -20,6 +25,7 @@ echo "Starting compilation load_RAM, please wait..."
 cp -r ../01\ general_functions/* ./
 module load matlab/2016a
 # mcc -m load_RAM.m
+rm ./load_RAM
 file="./load_RAM"
 if [ -f "$file" ]
 then
@@ -51,3 +57,4 @@ echo "Resetting the pool for ID: $1"
 echo "EBdyna_go compiled succesfully!"
 echo "********************************************"
 
+# rm ~/java.log.*

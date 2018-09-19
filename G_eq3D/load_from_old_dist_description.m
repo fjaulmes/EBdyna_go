@@ -14,6 +14,9 @@
     x(:,1)=dim.R0+dist.alphas_pos_x(expr_job);
     x(:,2)=dist.alphas_pos_z(expr_job);
     x(:,3)=dist.alphas_pos_phi(expr_job);
+    input.x=x;
+%     input.x_gc=x;
+    
     
     %% 1.1.4. Velocity
     if isfield(dist,'v_X')
@@ -31,17 +34,21 @@
         [N,b]=make_normal_vector(input,x,input.N_job); % Vector of perpendicular velocity
         v=bsxfun(@times,vpll,b)+bsxfun(@times,vperp,N);
     else
-        error('Distribution file has inproper velocity data')
+        error('Distribution file has improper velocity data')
     end
+    input.v=v;
+
     % consider plasma rotation effects
+    par.APPLY_FC=0;
     if isfield(dist,'alphas_momentum')
         input.ang_rot=dist.alphas_momentum(expr_job);
 		input.Fc_field=input.ang_rot.^2/qom;
+        par.APPLY_FC=1;
 	else
 		input.Fc_field=x(:,1)*0;
     end
     if isfield(dist,'alphas_weight')
         input.weight=dist.alphas_weight(expr_job);
 	else
-		input.Fc_field=x(:,1)*0+1;
+		input.weight=x(:,1)*0+1;
     end

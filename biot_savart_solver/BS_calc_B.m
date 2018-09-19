@@ -247,12 +247,17 @@ for nF = 1:BS.Nfilament % Loop on each coil
             B2=zeros(numb_n,1,3);
             for m=1:numb_l
                 % Difference vector
-                r=bsxfun(@minus,s,l(:,m,:));
+                r=bsxfun(@minus,s,l(:,m,:));    % strange but works : substract coordinates of filament element #m to all grid points
+%                 r=s-repmat(l(:,m,:),[numb_n 1 1]);
                 r_norm=(sum(r.^2,3)).^(-0.5);       % Normalization: 1/|r|
                 r=bsxfun(@times,r_norm.^3,r);       % Normalize by |r|^3
                 
 				A2=A2+bsxfun(@times,r_norm,dl(:,m,:)); % Simple vector potential
                 B2=B2+fast_cross(dl(:,m,:),r,3);% Cross product
+                
+                if m==round(numb_l/2)
+                    disp('... half done...')
+                end
                 
                 % WAITBAR
                 if waitbar_on && mod(m,waitbar_update)==0

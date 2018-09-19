@@ -1,5 +1,5 @@
 mkdir -p ./output_RMP
-cp -r  ../01\ general_functions/*.m ./
+cp -r  ../general_functions/*.m ./
 module load matlab/2016a
 mcc -R -singleCompThread -m BS_COMPASS_RMP_main.m
 rm -f run_BS_COMPASS_RMP_main.sh

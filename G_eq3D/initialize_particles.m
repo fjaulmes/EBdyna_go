@@ -10,16 +10,16 @@ v_to_E=@(m,v) 0.5*(m/const.eV)*v.^2;
 if ~par.TEST_DIST
     dist=load(par.LOADNAME);
 end
-if isfield(dist,'input')
-    if ~isfield(dist.input,'x')
-        % put back particles at the right place
-        if (min(dist.x(:,1)-dim.R0)<min(dim.scale_X))
-            dist.x(:,1)=dist.x(:,1)+dim.R0;
-            disp('WARNING : Shifting initial data of -R0');
-        end
-        dist.input.x=dist.x;
-    end
-end
+%if isfield(dist,'input')
+%    if ~isfield(dist.input,'x')
+%        % put back particles at the right place
+%        if (min(dist.x(:,1)-dim.R0)<min(dim.scale_X))
+%            dist.x(:,1)=dist.x(:,1)+dim.R0;
+%            disp('WARNING : Shifting initial data of -R0');
+%        end
+%        dist.input.x=dist.x;
+%    end
+%end
 %% 1. Load the distribution (file) with all particles
 if par.TEST_DIST
     %% 1.0. TEST DISTRIBUTION
@@ -43,14 +43,24 @@ if par.TEST_DIST
     %% 1.1. Old distribution file
 elseif isfield(dist,'Nalphas_simulated')
     load_from_old_dist_description;
-    %% 1.2. New distribution file
+    %% 1.2. New distribution file (with input struct)
+	%% or   PRECESSION LOADED FILE
 elseif isfield(dist,'input')
     %% 1.2.1. Split for this job
     input=dist.input;
-	if isfield(input,'x')
+    input=dist.input;
+	if isfield(dist,'x')
+	   input.x=dist.x;
+    end
+    if isfield(input,'x')
 	   x=input.x;
 	end
-	if ~isfield(input,'N_total'); input.N_total=size(dist.x,1); end
+	if isfield(input,'v')
+	   v=input.v;
+    end
+    if isfield(dist,'vpll')
+	   input.vpll=dist.vpll;
+    end
     if isfield(dist,'rare')
         expr_job=false(input.N_total,1);
         expr_job(dist.rare)=true;
@@ -60,6 +70,26 @@ elseif isfield(dist,'input')
     end
     input.particle_nr=find(expr_job);
     input.N_job=sum(expr_job(:)); % Number of particles in simulation
+	
+	%	%% Velocity
+   if ~isfield(input,'v') && isfield(input,'vpll')
+        %Find perpendicular velocity
+        vpll=input.vpll(expr_job);
+        input.vpll_ini=vpll;
+        input=rmfield(input,'vpll');
+        vtot=E_to_v(input.m,input.Ekin);
+		vtot=vtot(expr_job);
+		x=x(expr_job,:);
+        vperp=sqrt(vtot.^2-vpll.^2);
+        % 1.2.4.2.2. Determine v by direction of b
+        [N,b]=make_normal_vector(input,x,input.N_job); % Vector of perpendicular velocity
+        v=bsxfun(@times,vpll,b)+bsxfun(@times,vperp,N);
+		input.v=v;
+    elseif ~isfield(input,'v')
+        error('Distribution file has improper velocity data')
+    end
+	if ~isfield(input,'N_total'); input.N_total=size(dist.x,1); end
+
     
     %% 1.2.2. Load general parameters
     input=reduce_struct(input,input.N_total,expr_job);
@@ -81,60 +111,68 @@ elseif isfield(dist,'input')
 	
     %% 1.2.3. Location
     if isfield(input,'x') && isfield(input,'v')
-        warning('Using position and velocity from distribution file')
+        warning('Using position and velocity from prec distribution file')
         [x,v,input,output,ejected]=make_start_arrays(input);
-        return
-    end
-    x=dist.x(expr_job,:);
-    
-    %% 1.2.4. Velocity
-    if ~isfield(dist,'v') && isfield(dist,'vpll')
-        %1.2.4.2.1 Find perpendicular velocity
-        vpll=dist.vpll(expr_job);
-        input.vpll_ini=vpll;
-        dist=rmfield(dist,'vpll');
-        vtot=E_to_v(input.m,input.Ekin);
-        vperp=sqrt(vtot.^2-vpll.^2);
-        % 1.2.4.2.2. Determine v by direction of b
-        [N,b]=make_normal_vector(input,x,input.N_job); % Vector of perpendicular velocity
-        v=bsxfun(@times,vpll,b)+bsxfun(@times,vperp,N);
-    else
-        error('Distribution file has inproper velocity data')
-    end
-    %% 1.3. PRECESSION LOADED FILE
-elseif  par.GET_PREC_INFO && isfield(dist,'prec') 
-    if isfield(dist,'input')
-		% Possible rare value added for specific study
-		% Save the rare value in the input struct and use only those
-		input=dist.input;
-		if isfield(dist,'rare')
-			input.rare=dist.rare;   % Save which particles are in this simulation by storing rare inside input
-			% Determine the number of particles in this simulation
-			expr_job=false(size(input.x,1),1);
-			expr_job(input.rare)=true;
-			if ~isfield(input,'particle_nr'); input.particle_nr=find(expr_job); end
-			input.N_job=sum(expr_job(:));
-			input=reduce_struct(input,input.N_total,expr_job);
-		else 
-			expr_job=true(size(input.x,1),1);
-			if input.N_job~=size(input.x,1); error('Size of N_job and x-array do not match'); end
-		end
-		qom=input.Z*const.eV/input.m;       %Kinectic constant
-		
-		% Load prec-data as an `input' variable.
-		input.prec=remove_fields(dist.prec,{'ind'}); % Remove ind, since information is already stored in pop (if combined). This to avoid confusing with particle_nrs and such
-		disp('PREC-data loaded from PREC-file')
-		
-		if isfield(dist,'par')
-			if dist.par.NB_PROCESS~=par.NB_PROCESS || dist.par.PROCESS_NUMBER ~= par.PROCESS_NUMBER
-				error('`Boxes'' not equally devided in PREC-file');
-			elseif dist.par.DISTNAME ~= par.DISTNAME
-				error('Distribution file not used consistently')
-			end
-		end
 	else
-		load_from_old_dist_description;
-	end
+		x=dist.x(expr_job,:);
+    end    
+
+	%% 1.3. New distribution file (without input struct)
+	% not implemented properly yet
+%elseif isfield(dist,'x') 
+%	x=dist.x;
+%	if isfield(dist,'v')
+%	   v=dist.v;
+%	end
+%	%% Velocity
+%   if ~isfield(dist,'v') && isfield(dist,'vpll')
+%        %1.2.4.2.1 Find perpendicular velocity
+%        vpll=dist.vpll(expr_job);
+%        input.vpll_ini=vpll;
+%        dist=rmfield(dist,'vpll');
+%        vtot=E_to_v(input.m,input.Ekin);
+%        vperp=sqrt(vtot.^2-vpll.^2);
+%        % 1.2.4.2.2. Determine v by direction of b
+%        [N,b]=make_normal_vector(input,x,input.N_job); % Vector of perpendicular velocity
+%        v=bsxfun(@times,vpll,b)+bsxfun(@times,vperp,N);
+%    else
+%        error('Distribution file has improper velocity data')
+%    end
+%    obsolete : %% 1.3. PRECESSION LOADED FILE
+%elseif  par.GET_PREC_INFO && isfield(dist,'prec') 
+%    if isfield(dist,'input')
+%		% Possible rare value added for specific study
+%		% Save the rare value in the input struct and use only those
+%		input=dist.input;
+%		if isfield(dist,'rare')
+%			input.rare=dist.rare;   % Save which particles are in this simulation by storing rare inside input
+%			% Determine the number of particles in this simulation
+%			expr_job=false(size(input.x,1),1);
+%			expr_job(input.rare)=true;
+%			if ~isfield(input,'particle_nr'); input.particle_nr=find(expr_job); end
+%			input.N_job=sum(expr_job(:));
+%			input=reduce_struct(input,input.N_total,expr_job);
+%		else 
+%			expr_job=true(size(input.x,1),1);
+%			if input.N_job~=size(input.x,1); error('Size of N_job and x-array do not match'); end
+%		end
+%		qom=input.Z*const.eV/input.m;       %Kinectic constant
+%		
+%		% Load prec-data as an `input' variable.
+%		input.prec=remove_fields(dist.prec,{'ind'}); % Remove ind, since information is already stored in pop (if combined). This to avoid confusing with particle_nrs and such
+%		disp('PREC-data loaded from PREC-file')
+%		
+%		if isfield(dist,'par')
+%			if dist.par.NB_PROCESS~=par.NB_PROCESS || dist.par.PROCESS_NUMBER ~= par.PROCESS_NUMBER
+%				error('`Boxes'' not equally devided in PREC-file');
+%			elseif dist.par.DISTNAME ~= par.DISTNAME
+%				error('Distribution file not used consistently')
+%			end
+%		end
+%	else
+%		load_from_old_dist_description;
+%	end
+
 else
     error('PREC/DISTRIBUTION file does not contain proper fields for identification')
 end
@@ -144,15 +182,14 @@ if isfield(dist,'x')
 end
 %% 2. Shift initial position so input x is in gyrocenter
 if ~isfield(input,'x_gc')
-    input.x_gc=x; % Store gc input
+    input.x_gc=input.x; % Store gc input
     [~,B]=B_interpolation(input.x_gc,'2D'); %equilibrium magnetic field
     Bfield=sqrt(dot(B,B,2));
     input.x=input.x_gc-bsxfun(@times,(1/qom)./Bfield,cross(v,b,2));
 end
+x_gc=input.x_gc;
+x=input.x;
 
-if ~isfield(input,'v')
-    input.v=v;
-end
 % Ejected particles
 if exist('dist','var') && isfield(dist,'ejected')
     ejected=dist.ejected(expr_job);
@@ -169,8 +206,19 @@ if isfield(input,'ang_rot')
     par.APPLY_FC=1;
     disp('Simulation including centrifugal effects') 
 end
-
-[x,v,input,output,ejected]=make_start_arrays(input,ejected,qom);
+if exist('output')~=1
+	[x,v,input,output,ejected]=make_start_arrays(input,ejected,qom);
+end
+% keeping track of the particles initial gc positions and velocities
+% (the input.x_gc and input.v are replace at the end of a simulation so you
+%  that can run several simulations consecutively)
+input.x_ini=input.x_gc;
+input.v_ini=input.v;
+[~,B]=B_interpolation(x);
+Bfield_sq=dot(B,B,2);
+Bfield=sqrt(Bfield_sq);
+vpll=dot(B,v,2)./Bfield;
+input.vpll_ini=vpll;
 return
 end
 
@@ -191,7 +239,8 @@ output.x=NaN([size(x),par.NB_TIME_STAMPS]);
 output.v=NaN([size(v),par.NB_TIME_STAMPS]);
 
 output.x_ej=NaN(size(x));
-output.v_ej=NaN(size(v));
+output.vpll_ej=NaN(input.N_job,1);
+output.mm_ej=NaN(input.N_job,1);
 
 psi=interp2(dim.scale_Z,dim.scale_X,maps(1).psi_XZ,x(:,2),x(:,1)-dim.R0,'*linear');% find psi-value
 
@@ -230,6 +279,8 @@ par.dt=0.5*dt;
 par.dt=dt;
 input.pphi_kin= get_pphi_kin(input,x,v_plus_1,psi)/(input.Z*maps(1).psi_global);
 
+% extra field to record distance covered by particles(mostly for Poincare plot)
+output.Delta_l=zeros(input.N_job,1);
 
 end
 

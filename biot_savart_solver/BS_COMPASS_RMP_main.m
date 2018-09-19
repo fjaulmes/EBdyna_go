@@ -10,8 +10,8 @@ global par
 %% PROCESS NUMBERS
 switch nargin
     case 0
-        par.PROCESS_NUMBER=300;
-        par.N_PROCESS=3000;
+        par.PROCESS_NUMBER=1;
+        par.N_PROCESS=1;
     case 1
         par.N_PROCESS=20;
         par.PROCESS_NUMBER=str2double(PROCESS_NUMBER);
@@ -22,9 +22,11 @@ end
 
 %% Parameters
 RMP_map.I=2.4e3;        par.I=RMP_map.I;        % Coil current [kAt] (default),
-par.determine_vector_potential=true;            % Determines derivatives in phi of vector potential. Needs auxillary points for nice finite difference calculation.
+par.determine_vector_potential=true;           % Determines derivatives in phi of vector potential. Needs auxillary points for nice finite difference calculation.
 par.example=0;                                  % No plotting / example
 par.coord_sys='flux';                           % Switch between coordinal systems (flux: theta,psi,phi OR toroidal: R,Z,phi)
+dim=load('../data_tokamak/B_fields.mat', 'Bphi0');
+par.sign_Btor=sign(dim.Bphi0);
 
 %% Load Coils
 [ RMP_coils] = BS_COMPASS_RMP_load_coils;

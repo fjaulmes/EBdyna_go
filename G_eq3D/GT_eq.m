@@ -1,5 +1,7 @@
 function [exitcode]=GT_eq(x,v,input,output,ejected)
-global maps dim par time qom
+global maps dim par time qom const
+v_to_E=@(m,v) 0.5*(m/const.eV)*v.^2;
+
 %GT_eq simulation code for integration of particle motion
 %   Processes particles according to parameters, maps, dim etc.
 %
@@ -98,6 +100,9 @@ disp('**************************************************************');
 %% SET START PARAMETERS (Temporarily stored parameters etc.)
 [~,B]=B_interpolation(x);
 Bfield_sq=dot(B,B,2);
+Bfield=sqrt(Bfield_sq);
+vpll_ej=dot(B,v,2)./Bfield;
+Eperp=0.5*(input.m/const.eV)*((dot(v,v,2))-vpll_ej.^2);
 x_gc=x+bsxfun(@times,1./(qom*Bfield_sq),cross(v,B,2));
 
 
@@ -135,13 +140,23 @@ end
         sign_Z_prev=sign_Z_nu;
         		
         %% Time step
+		% for covered distance calculation (Poincare plot)
+		elem_Delta_l=0*Bfield_sq;
         if ~par.CALCULATE_PPHI_3D
             for i=1:par.NR_FUND_IN_LOOP
+                x_prev=x;
                 [x(n_ejected,:),v(n_ejected,:)]=time_step_integration_GT_eq_struct(x(n_ejected,:),v(n_ejected,:),input.Fc_field(n_ejected,:));
                 time=time+par.dt;
+				if par.calculate_length_trajectory
+					Delta_l=sqrt((x(:,1).*cos(x(:,3))-x_prev(:,1).*cos(x_prev(:,3))).^2+...
+						 (x(:,1).*sin(x(:,3))-x_prev(:,1).*sin(x_prev(:,3))).^2+...
+						 ((x(:,2))-x_prev(:,2)).^2);
+					elem_Delta_l(n_ejected)=elem_Delta_l(n_ejected)+Delta_l(n_ejected);
+				end
             end
         else
             for i=1:par.NR_FUND_IN_LOOP
+			    x_prev=x;
                 v_temp_2=v;
                 field_3D=find_3D_Afield(x(n_ejected,:),{'dAphi_dphi','dAR_dphi','dAZ_dphi'});
                 
@@ -156,9 +171,21 @@ end
                     +v_n(:,1).*field_3D.dAR_dphi...
                     +v_n(:,2).*field_3D.dAZ_dphi...
                     +v_n(:,3).*field_3D.dAphi_dphi;
+					
+				if par.calculate_length_trajectory
+					Delta_l=sqrt((x(:,1).*cos(x(:,3))-x_prev(:,1).*cos(x_prev(:,3))).^2+...
+						 (x(:,1).*sin(x(:,3))-x_prev(:,1).*sin(x_prev(:,3))).^2+...
+						 ((x(:,2))-x_prev(:,2)).^2);
+					elem_Delta_l(n_ejected)=elem_Delta_l(n_ejected)+Delta_l(n_ejected);
+				end
+					
             end
         end
-        
+		% for cumulated covered distance calculation (Poincare plot)
+		if par.calculate_length_trajectory
+			output.Delta_l(n_ejected)=output.Delta_l(n_ejected)+elem_Delta_l(n_ejected);
+		end
+		
         %% Determine losses and additional output
         % in case of a Nan in coordinate, consider it ejected
 		% ejected=ejected | isnan(x(:,1,:)) ;
@@ -173,7 +200,7 @@ end
 			ejected=ejected | psi_value <= 0;
 		end
         
-        if all(ejected)
+        if (par.mode~=5) && all(ejected) 
             warning(['Every particle lost in process: ',num2str(par.PROCESS_NUMBER)])
             break
         end
@@ -185,7 +212,12 @@ end
 		end
         % Store particles that have now been ejected (but not previously) in output
         output.x_ej(ejected & n_ejected,:)=x_temp(ejected & n_ejected,:);
-        output.v_ej(ejected & n_ejected,:)=x_temp(ejected & n_ejected,:);
+		[~,B]=B_interpolation(x); %magnetic field in 3D field
+		Bfield=sqrt(dot(B,B,2));
+		vpll_ej=dot(B,v,2)./Bfield;
+		Eperp=0.5*(input.m/const.eV)*((dot(v,v,2))-vpll_ej.^2);
+		output.mm_ej(ejected & n_ejected)=Eperp(ejected & n_ejected)./Bfield(ejected & n_ejected);
+        output.vpll_ej(ejected & n_ejected)=vpll_ej(ejected & n_ejected);
         output.time_step_loss(ejected & n_ejected)=time_step;
         output.loss(time_step)=sum(ejected);
         
@@ -208,7 +240,10 @@ end
         
         %% Store position if POINCARE simulation
         if par.mode==5
-            % Criterium for dot: change in tor. angle more than pi/2 (on domain [0,2*pi])
+            %evaluate distance travelled along the field line
+
+			
+			% Criterium for dot: change in tor. angle more than pi/2 (on domain [0,2*pi])
             
             % SWITCH BETWEEN BOTH THESE LINES TO EITHER PLOT WHEN CROSSING
             % PHI=0 OR PLOT EVERY LOOP (OR DECOMMENT THE LOOP OBTAIN)
@@ -320,7 +355,7 @@ end
         end
         
         %% SAVE DATA FILE intermediately
-        if par.SAVE_DATA_FILE && mod(time_step,par.RECORD_PRECISION)==0
+        if par.SAVE_DATA_FILE && mod(time_step,par.RECORD_PRECISION)==0 && par.SAVE_RAW_FILE
             disp('------------------------------------------------')
             toc(subtime)
             if par.mode~=5
@@ -350,7 +385,7 @@ end
 %% EVALUATE / SAVE DATA
 switch par.mode
     case 1 %TEST
-        if par.SAVE_DATA_FILE
+        if par.SAVE_DATA_FILE && par.SAVE_RAW_FILE
             save(par.SAVENAME_RAW,'input','output','par','ejected','process_time','-v7.3') % Save in case evaluation fails
         end
             output=evaluate_output(input,output,ejected);
@@ -374,15 +409,19 @@ switch par.mode
             % the final gc position of a precession simulation is important
             % information and is kept as the new input position for the
             % next simulation
-            input.x_ini=x;
-            input.v_ini=v;
-            input.x=x_gc;   % squeeze(output.x_gc(:,:,end));
-            input.v=v;		%squeeze(output.v(:,:,end));
-            input.vpll=squeeze(output.vpll(:,end));
-                
+            input.x_gc=x_gc;
+            input.x=x;   % squeeze(output.x_gc(:,:,end));
+            input.v=v;		% squeeze(output.v(:,:,end));
+			[~,B]=B_interpolation(x);
+			Bfield_sq=dot(B,B,2);
+			Bfield=sqrt(Bfield_sq);
+			vpll=dot(B,v,2)./Bfield;
+            input.vpll=vpll;
+            input.Ekin=v_to_E(input.m,v);
+            
             % a large amount of data is there but we keep the bare minimum
 			% pphi_kin can be used to check time step precision
-            output=remove_fields(output,[],{'x_gc','pphi_kin','vpll','time_step_loss','x_ej','loss'});              % Remove any fields apart from...
+            output=remove_fields(output,[],{'x_gc','pphi_kin','v','time_step_loss','x_ej','loss'});              % Remove any fields apart from...
             
             % Store the data of precession simulation in prec
             prec.par=remove_fields(par,[],{'dt','NB_TIME_STAMPS'}); % Store NB_TIME_STAMPS and dt
@@ -403,7 +442,7 @@ switch par.mode
                 delete([par.SAVENAME_RAW,'prec'])
             end
 			% split prec files
-			if par.SAVE_DATA_FILE && par.NB_PROCESS>1
+			if par.SAVE_DATA_FILE && par.NB_PROCESS>1 && par.SAVE_RAW_FILE
 			    save(par.SAVENAME_RAW,'-v7.3','input','output','par','ejected','process_time','prec')
             end
 			
@@ -436,7 +475,7 @@ switch par.mode
         return
     case {3,6} %FULL (after/without precession)
         % Save a RAW file before evaluation
-        if par.SAVE_DATA_FILE
+        if par.SAVE_DATA_FILE && par.SAVE_RAW_FILE
             if exist('prec','var')
                 save(par.SAVENAME_RAW,'input','output','par','ejected','process_time','prec','-v7.3')
             else
@@ -448,7 +487,7 @@ switch par.mode
         output_raw=output;
         output=evaluate_output(input,output,ejected); 
 %         output=remove_fields(output,[],{'ST_interaction','nr_vpll_crossing','nr_midplane_crossing','time_step_loss','loss','x_ej','v_ej','pphi_kin','mm','Delta_pphi','pphi_an','dpphi_dt','dmm_dt','nr_profile','wb','wd'}); % Remove everything but these fields.
-        output=remove_fields(output,[],{'x','v','x_gc','ST_interaction','time_step_loss','loss','x_ej','v_ej','pphi_kin','mm','Delta_pphi','pphi_an','dpphi_dt','dmm_dt','nr_profile','wb','wd'}); % Remove everything but these fields.
+        output=remove_fields(output,[],{'x','v','x_gc','ST_interaction','time_step_loss','loss','x_ej','mm_ej','vpll_ej','pphi_kin','mm','Delta_pphi','pphi_an','dpphi_dt','dmm_dt','nr_profile','wb','wd'}); % Remove everything but these fields.
         
         % Reduce the number of time stamps
 		[~ 	,output_raw	]=reduce_time_stamps(par,output_raw);
@@ -464,7 +503,7 @@ switch par.mode
         end
         
         output=output_raw;
-        if par.SAVE_DATA_FILE
+        if par.SAVE_DATA_FILE && par.SAVE_RAW_FILE
             if exist('prec','var')
                 save(par.SAVENAME_RAW,'input','output','par','ejected','process_time','prec','-v7.3')
             else
@@ -486,7 +525,6 @@ switch par.mode
         X_ind=squeeze((output.x_gc(:,1,:)-dim.R0)*dim.DX_inv)+dim.mid_Xzero;
         Z_ind=squeeze( output.x_gc(:,2,:)        *dim.DZ_inv)+dim.mid_Z;
         
-        expr_nan=isnan(X_ind);
         %epxr_nan=expr_nan(:);
         
         % Store psi and theta in output-struct
@@ -494,11 +532,13 @@ switch par.mode
         output.psi=NaN(size(output.x_gc,1),size(output.x_gc,3));
         output.theta=output.psi;
         
-        % Find theta
-        theta(~expr_nan) = interpolate_theta_XZ(X_ind(~expr_nan),Z_ind(~expr_nan));
-        
-        % Find psi (index)
-        psi=ba_interp2(maps(1).psi_XZ,Z_ind(~expr_nan),X_ind(~expr_nan),'cubic');
+		for part_index=1:size(X_ind,1)
+			% Find theta
+			expr_nan=isnan(X_ind(part_index,:));
+			output.theta(part_index,~expr_nan) = interpolate_theta_XZ(X_ind(part_index,~expr_nan),Z_ind(part_index,~expr_nan));        
+			% Find psi (index)
+			output.psi(part_index,~expr_nan)=ba_interp2(maps(1).psi_XZ,Z_ind(part_index,~expr_nan),X_ind(part_index,~expr_nan),'cubic');
+		end
         if par.SAVE_DATA_FILE
             save(par.SAVENAME,'input','output','par','ejected','process_time','-v7.3')
         end

@@ -21,7 +21,8 @@ par=[];     % Clear any possible parameter
 time=0;
 
 % Please enter the distribution name
-par.DISTNAME            ='./input/poincare_distribution_0.04eV_rand_edge.mat'; 
+% par.DISTNAME            ='./input/initial_alphas_MB_CZ4_distribution170.mat'; 
+par.DISTNAME            ='./input/poincare_distribution_0p32eV_rand_edge.mat'; 
 
 %% PROCESSORS
 switch nargin
@@ -114,7 +115,7 @@ par.superimpose_2D_3D	=true; 					% Superimpose (if possible) the 2D and 3D fiel
 
 par.APPLY_RMP           =true;                  % Resonant Magnetic Perturbations (RMP)
 if par.APPLY_RMP
-    par.RMP_file        =['../data_tokamak/RMP_n=2_odd_flux_2018-01-07.mat']; 
+    par.RMP_file        =['../data_tokamak/MARSF_15611_bres.mat']; 
 end
 par.APPLY_TFR           =false;                 % Toroidal Field Ripple
 if par.APPLY_TFR
@@ -147,6 +148,7 @@ end
 % Simulation type / distribution
 par.GET_PREC_INFO       =true;                  % Find precession data in original 2D-field (trapped or not etc.)
 par.SAVE_DATA_FILE      =true;                  % Save output files (raw + full + possible prec)
+par.SAVE_RAW_FILE       =false;                 % Remove the infor from raw files (unnecessary in most cases)
 
 
 
@@ -161,6 +163,7 @@ par.SAVE_DATA_FILE      =true;                  % Save output files (raw + full 
 % 6  - SAWTOOTH simulation
 par.mode=5; % par.Poincare_plot=true; 
 par.Poincare_plot=false;
+par.calculate_length_trajectory=false;
 
 %% Time paramters and savenames etc. sim_parameters;            
 sim_parameters;            % Parameters (e.g. number of time steps and simulation length )

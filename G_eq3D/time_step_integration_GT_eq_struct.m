@@ -3,6 +3,9 @@ function [x,v,B,E]=time_step_integration_GT_eq_struct(x,v,Fc_field)
 % Multifunctional timestep with BORIS or Fabien method.
 global qom par
 
+% for distance(Delta_l) calculation
+x_prev=x;
+
 %% Get B field
 switch par.scheme
     case {'FabienB'}
@@ -87,6 +90,8 @@ x(:,3)=x(:,3)+asin(Rphi_update.*R_inv);
 v_tmp=v;
 v(:,1)=( R_update   .*v_tmp(:,1)+   Rphi_update.*v_tmp(:,3)).*R_inv;
 v(:,3)=(-Rphi_update.*v_tmp(:,1)+	R_update   .*v_tmp(:,3)).*R_inv;
+
+
 
 return
 end

@@ -66,11 +66,12 @@ else
     % Load first file
     base=load(fnames{1}); % Skip 1 and 2 (. and ..)
     par=base.par;
-    par.N_PROCESS=500
+    par.N_PROCESS=200
     
-    if length(fnames)~=par.N_PROCESS
-        error('Failed to match number of processes with files')
-    end
+    %if length(fnames)~=par.N_PROCESS
+	%    fnames
+    %    error('Failed to match number of processes with files')
+    %end
     
     %% Find calculated field
     BA_fields=fieldnames(base.field.(type{1}))';     % Find which fields have been determined (BR,BZ,Bphi)
@@ -203,14 +204,14 @@ switch mode
                 for i=1:length(fnames)
                     new=load(fnames{i}); % Load the field and parameters
                     for BA=BA_fields
-                        %for c=1:length(new.field.(type{1}))
+                        for c=1:length(new.field.(type{1}))
                             % Add them with the proper sign
-                            sign_coils=RMP_coils.(type{1}).sign;
-							data_coils=new.field.(type{1}).(BA{1});
+                            sign_coils=RMP_coils.(type{1})(c).sign;
+							data_coils=new.field.(type{1})(c).(BA{1});
 							data_coils=data_coils';
                             total_field.(BA{1})(new.par.indexes)=total_field.(BA{1})(new.par.indexes)+...
                                 sign_coils*data_coils;
-                        %end
+                        end
                     end
                     
                     disp(['Succesfully added ',num2str(i),' of ',num2str(par.N_PROCESS),' at: ',num2str(i*100/length(fnames),'%2.0f'),'%'])

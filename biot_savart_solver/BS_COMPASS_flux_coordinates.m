@@ -17,21 +17,17 @@ end
 load('../data_tokamak/motions_map_dimensions.mat', 'scale_X', 'scale_Z', 'R0')
 load('../data_tokamak/flux_geometry.mat','Z_PR_map', 'X_PR_map','psi_scale');
 
-z_axis=-0.031281806367984
+% z_axis=-0.031281806367984
 
 %% Load Z-position shift from experimental data 
 % (but the data file should be available for this process)
 if ~exist('z_axis')
 	%% Load Z-position from experimental data
 	warning('Using data file to read Z-offset. Revise this section of the code!!!')
-	filename='../data_tokamak/30382P01.CDF';
+	filename='../METIS_profiles.mat';
 	if exist(filename,'file')
-		z_axis=ncread(filename,'YAXIS');        % position magnetic axis (cm)
-		T_data=ncread(filename,'TIME');         % time
-		time_eq=2.5; % time equilibrium 
-		[~,index_time]=min(abs(T_data-time_eq));
-	%     index_time=108;
-		z_axis=z_axis(index_time)*0.01;         % position magnetic axis (m)
+		load(filename,'METISgeo');        % position magnetic axis (cm)
+		z_axis= METISgeo.Zaxis;           % position of FINESSE Z=0 with respect to (X,Y,Z) geometrical Z=0 (coils)
 	else
 		error('File with Z-axis data not found in data_tokamak folder')
 	%     Z_axis=0.074397392;

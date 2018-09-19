@@ -18,17 +18,19 @@ switch par.example
                 
                 %% Load data and define size                
                 par.size_total=[nr_theta nr_psi nr_phi];
-				disp(['par.PROCESS_NUMBER' num2str(par.PROCESS_NUMBER)]);
-				disp(['par.N_PROCESS' num2str(par.N_PROCESS)]);
                 par.indexes=get_expr_job(par.size_total,par.N_PROCESS,par.PROCESS_NUMBER,'ind'); %Parallize on phi
-				
-				%disp('par.size_total');par.size_total;				
-				%disp('par.N_PROCESS');par.N_PROCESS;
                 dim=load('../data_tokamak/motions_map_dimensions.mat','Z_axis');
                 
                 [n3D_map,data_tokamak]=BS_COMPASS_flux_coordinates(n3D_map); % Determine with flux coordinates (psi,theta,phi)
                 
-                Z_correction=double(data_tokamak.z_axis)-dim.Z_axis;
+                % Z_correction expresses how much to shift vertically the
+                % plasma positions in order to have same Z=0 as coils.
+                % When equilibrium was based on lab (coils) Z=0 there is
+                % nothing to do : otherwise, shift back so that you are at
+                % the correct distance from the coils
+                Z_correction=double(data_tokamak.z_axis);
+%                 Z_correction=double(data_tokamak.z_axis)-dim.Z_axis;
+
                 %% Determine indexes used for finesse mesh
                 data_tokamak.theta_index=interp1(1:data_tokamak.size(1),linspace(1,data_tokamak.size(1),nr_theta),'nearest');
                 data_tokamak.psi_index=interp1(1:data_tokamak.size(2),linspace(1,data_tokamak.size(2),nr_psi),'nearest');
@@ -60,7 +62,7 @@ switch par.example
             % Positions in extra positions for in phi-coordinate for dA/dphi-terms to provide
             % canonical toroidal angular momentom            
             avg_angle=2*pi/(nr_phi-1);          % difference in toroidal angle
-            par.delta_phi2=avg_angle/20;        % Angle difference around point in grid 1
+            par.delta_phi2=avg_angle/10;        % Angle difference around point in grid 1
             phi_arounds=par.delta_phi2*[-2 -1 1 2]; % Angles around point 1
             n3D_map.R2=repmat(n3D_map.R,1,4);
             n3D_map.Z2=repmat(n3D_map.Z,1,4);

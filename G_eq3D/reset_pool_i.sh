@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-m=200
+m=256
 module load stopos
 stopos purge -p pool$ID
 stopos create -p pool$ID

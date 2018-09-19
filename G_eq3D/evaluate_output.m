@@ -81,13 +81,13 @@ output.psi_norm   (output.psi_norm   >dim.NB_PSI)=dim.NB_PSI;
 output.psi_norm_gc(output.psi_norm_gc>dim.NB_PSI)=dim.NB_PSI;
 
 %% Psi-surfaces
-output.psi=interp1(1:dim.NB_PSI,dim.psi_scale,output.psi_norm,'linear');
-output.psi_gc=interp1(1:dim.NB_PSI,dim.psi_scale,output.psi_norm_gc,'linear');
+output.psi=interp1(1:dim.NB_PSI,dim.psi_scale,output.psi_norm,'pchip');
+output.psi_gc=interp1(1:dim.NB_PSI,dim.psi_scale,output.psi_norm_gc,'pchip');
 
 %% q-values
 q_prf=load(strcat(par.paths.DATA_FOLDER,'q_profile.mat'),'q_initial_profile');
-output.q   =interp1(1:dim.NB_PSI,q_prf.q_initial_profile,output.psi_norm,'linear');
-output.q_gc=interp1(1:dim.NB_PSI,q_prf.q_initial_profile,output.psi_norm_gc,'linear');
+output.q   =interp1(1:dim.NB_PSI,q_prf.q_initial_profile,output.psi_norm,'pchip');
+output.q_gc=interp1(1:dim.NB_PSI,q_prf.q_initial_profile,output.psi_norm_gc,'pchip');
 
 %% Pphi-calculation
 norm_fac=input.Z*...
@@ -100,7 +100,7 @@ end
 % Analytical value (0 in 2D)
 if par.CALCULATE_PPHI_3D && isfield(output,'pphi_an_temp')
     output.pphi_an =output.pphi_an_temp /norm_fac;
-    output.pphi_an=bsxfun(@plus,input.pphi_kin,output.pphi_an);
+    output.pphi_an=bsxfun(@plus,squeeze(output.pphi_kin(:,1)),output.pphi_an);
     output=rmfield(output,'pphi_an_temp');
 end
 

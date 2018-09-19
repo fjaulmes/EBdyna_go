@@ -7,11 +7,14 @@
 ## FILL IN NAME OF SCRIPT
 run='./combine_output_eq'
 
+## FILL IN ID (to locate output folder)
+export ID=1915611
+
 ## Make directories for execution and output
 cd $PBS_O_WORKDIR
 mkdir -p $PBS_O_WORKDIR/output
 
-module load matlab/2016a
+module load matlab/2017b
 cp  ../01\ general_functions/* ./
 mcc -m combine_output_eq.m
 rm -f run_combine_output_eq.sh
@@ -31,7 +34,7 @@ echo the ID of simulation folder where files will be combined is $ID
 
 cp -r  $PBS_O_WORKDIR/output_$ID $TMPDIR/execution_folder
 
-module load mcr/2016a
+module load mcr/2017b
 cd $TMPDIR/execution_folder
 $run $ID prec
 

@@ -16,8 +16,8 @@ par.SAVENAME_RAW        =['./output/',par.ID_NAME, '_raw_process',num2str(par.PR
 par.SAVENAME_STATS      =['./output/',par.ID_NAME,'_prec_process',num2str(par.PROCESS_NUMBER),'.mat'];      % Precession data (e.g. trapped or passing)
 par.SAVENAME            =['./output/',par.ID_NAME,'_full_process',num2str(par.PROCESS_NUMBER),'.mat'];      % Name of full data, with post-determined parameters (e.g. magnetic moment, toroidal angular momentum)
 
-% the above makes little sense
-par.SAVENAME_STATS      =['./input/poincarre_stats.mat'];      % Precession data (e.g. trapped or passing)
+% the above makes little sense for 1 processor
+% par.SAVENAME_STATS      =['./input/poincarre_stats.mat'];      % Precession data (e.g. trapped or passing)
 
 loc_ID=strfind(par.ID_NAME,par.ID);
 if isempty(loc_ID)
@@ -61,18 +61,18 @@ par.NR_FUND_IN_LOOP = 100;  % Nr. fundamental steps in one loop
 % Simulation dependent time parameters:
 switch par.mode
     case 1 % TEST                      
-        par.dt                      =1e-9;                          % Fundamental time step
-        t_sim                       =2.0e-5;                          % Length of simulation
-        par.NB_TIME_STAMPS          =100; 
+        par.dt                      =0.5*1e-9;                          % Fundamental time step
+        t_sim                       =1e-3;                          % Length of simulation
+        par.NB_TIME_STAMPS          =1000; 
         PC_SAVE                     =Inf;   
         par.NB_STAMPS_saved         =par.NB_TIME_STAMPS;
         
     case 2 % PRECESSION
-        par.dt                      =0.5e-9;                          % Fundamental time step
-        t_sim                       =4.0e-4;                        % Length of simulation
-        par.NB_TIME_STAMPS          =500;                           % # stored values (stamps)
+        par.dt                      =1e-9;                        % Fundamental time step
+        t_sim                       =0.1*1e-3;                          % Length of simulation
+        par.NB_TIME_STAMPS          =100;                           % # stored values (stamps)
         PC_SAVE                     =Inf;                           % percentage after which a intermediate save is done (for debugging)
-        par.NB_STAMPS_saved         =10;
+        par.NB_STAMPS_saved         =100;
         
         % Load the distribution
         par.LOADNAME                =par.DISTNAME;                  % Load in distribution file
@@ -81,16 +81,16 @@ switch par.mode
         par.APPLY_SAWTOOTH          =false;                         % Tur off ST simulation
     case 3 % FULL                         
         par.dt                      =1e-9;                          % Fundamental time step
-        t_sim                       =3e-4;                          % Length of simulation
-        par.NB_TIME_STAMPS          =100;                           % # stored values (stamps)
+        t_sim                       =0.1*1e-3;                          % Length of simulation
+        par.NB_TIME_STAMPS          =200;                           % # stored values (stamps)
         PC_SAVE                     =Inf;                           % percentage after which a intermediate save is done (for debugging)
-        par.NB_STAMPS_saved         =100;        
+        par.NB_STAMPS_saved         =200;        
     case 4
         error('Mode is obsolete')
     case 5 % POINCARE
         par.dt                      =2e-9;                          % Fundamental time step
-        par.NR_FUND_IN_LOOP         =10;                           % # Fundamental time steps per loop
-        t_sim                       =0.2;                          % Length of simulation
+        par.NR_FUND_IN_LOOP         =10;                            % # Fundamental time steps per loop
+        t_sim                       =0.4;                           % Length of simulation
         par.NB_TIME_STAMPS          =1e3;                           % # stored values (stamps)
         PC_SAVE                     =10;        % percentage after which a intermediate save is done (for debugging)        
         

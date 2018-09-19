@@ -7,7 +7,7 @@ format compact
 
 %% Looking for files
 if nargin==0
-    ID='19xx';
+    ID='1915611';
     type_sim='prec';
 elseif nargin==1
     type_sim='full';
@@ -28,16 +28,19 @@ disp(length(files)-2)
 
 for i=3:length(files)
     filename=files(i).name
-    if isempty(strfind(filename,'matprec')) && isempty(strfind(filename,'filepart'))
+    if strcmp(type_sim,'full') && isempty(strfind(filename,'matprec')) && isempty(strfind(filename,'filepart')) && isempty(strfind(filename,[ID,'_raw']))
 		%disp(['scanning file #' num2str(i)]);
         fnames{end+1}=[save_folder,files(i).name]; %#ok<AGROW>
-    elseif (~isempty(strfind(filename,ID)) || ~isempty(strfind(filename,[ID(1:2),'xx_raw'])))&& ~isempty(strfind(filename,'matprec')) && isempty(strfind(filename,'filepart'))
+    elseif strcmp(type_sim,'prec') && isempty(strfind(filename,'matprec')) && isempty(strfind(filename,'filepart')) 
+		%disp(['scanning file #' num2str(i)]);
+        fnames{end+1}=[save_folder,files(i).name]; %#ok<AGROW>
+    elseif (~isempty(strfind(filename,ID)) || ~isempty(strfind(filename,[ID,'_raw'])))&& ~isempty(strfind(filename,'matprec')) && isempty(strfind(filename,'filepart'))
 		%disp(['scanning file #' num2str(i)]);
         fnames_matprec{end+1}=[save_folder,files(i).name]; %#ok<AGROW>
     end
 end
 
-nr_files=length(fnames);
+nr_files=length(fnames)
 %% Load first file
 base=load(fnames{1}); % Skip 1 and 2 (. and ..)
 par=base.par;

@@ -8,7 +8,7 @@ module load stopos
 ## FILL IN NAME OF SCRIPT
 run='./BS_COMPASS_RMP_main'
 # Number of parts in this pool
-m=`stopos status -p pool_RMP 2>&1 | grep added | awk '{print $3;}'`
+m=`stopos status -p pool_RMP_15611 2>&1 | grep added | awk '{print $3;}'`
 echo "Number of parts $m"
 
 ## Make directories for execution and output
@@ -19,6 +19,7 @@ cd $PBS_O_WORKDIR
 mkdir -p $TMPDIR/execution_folder/input
 mkdir -p $TMPDIR/execution_folder/output
 cp -r  ../data_tokamak $TMPDIR
+cp ../METIS_profiles.mat $TMPDIR
 cp -r  $PBS_O_WORKDIR/input $TMPDIR/execution_folder
 cp $PBS_O_WORKDIR/$run $TMPDIR/execution_folder
 cp $PBS_O_WORKDIR/task_script_RMP.sh $TMPDIR/execution_folder
