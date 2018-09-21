@@ -227,6 +227,18 @@ size_r=round(psi_mix_rank+4)
 
 evaluate_volume_flux_surfaces_Nradial;
 
+surf_flux_diff=surf_flux(2:end)-surf_flux(1:end-1);
+corr_surf=sum(dSurf,1)./surf_flux_diff;
+[ mincorr mincorr_pos ]=min(corr_surf);
+for r=1:mincorr_pos
+	dSurf(:,r)=dSurf(:,r)/mincorr;
+end
+for r=mincorr_pos+1:Nradial-1
+	dSurf(:,r)=dSurf(:,r)/corr_surf(r);
+end
+%elementary volumes
+dVol=2*pi*Rpos_values.*dSurf;
+
 % *************************************************************
 % defining the safety factor q=1 contour
 % *************************************************************

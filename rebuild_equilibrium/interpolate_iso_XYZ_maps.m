@@ -9,6 +9,15 @@ radial_XZ_map=ones(NZ,NZ)*Nradial;
 
 % q_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),finesse_data(:,end),XX,ZZ,'cubic');
 theta_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),theta_data,XX,ZZ,'cubic');
+theta_XZ_map(isnan(theta_XZ_map)) = 0; 
+theta_XZ_map=theta_XZ_map';
+
+theta_full_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),theta_full_data,XX,ZZ,'cubic');
+theta_full_XZ_map(isnan(theta_full_XZ_map)) = 0; 
+theta_full_XZ_map=theta_full_XZ_map';
+if SIGN_CO_CURRENT_FIELD<0
+    theta_full_XZ_map=2*pi-theta_full_XZ_map;
+end
 % psi_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),finesse_data(:,end-1),XX,ZZ,'cubic');
 r_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),r_data,XX,ZZ,'cubic');
 %radial_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),radial_data,XX,ZZ,'cubic');
@@ -30,6 +39,13 @@ dl_Z=griddata(finesse_data_X,finesse_data_Z,dl_data,XX,ZZ,'cubic');
 dl_Z(isnan(dl_Z))=0;
 dl_Z=dl_Z';
 
+%gf_data=reshape(theta_PR_map_gf(:,1:NP-1),Nradial*(NP-1),1);
+%theta_XZ_map_gridfit=gridfit(finesse_data_X_gf,finesse_data_Z_gf,gf_data,X_scale,Z_scale,'smoothness',GRIDFIT_SMOOTHNESS);
+%theta_XZ_map_gridfit(isnan(theta_XZ_map_gridfit)) = 0; 
+%theta_XZ_map_gridfit=theta_XZ_map_gridfit';
+
+%theta_XZ_map_gridfit=max(theta_XZ_map_gridfit,0);
+%theta_XZ_map_gridfit=min(theta_XZ_map_gridfit,pi);
 
 
 
@@ -138,7 +154,6 @@ mask_XZ_map=ones(NZ,NZ).*(q_XZ_map_linear~=0);
 
 
 
-theta_XZ_map(isnan(theta_XZ_map)) = 0; 
 
 r_XZ_map(isnan(r_XZ_map)) = 0; 
 
@@ -148,7 +163,7 @@ BR_XZ_map(isnan(BR_XZ_map)) = 0;
 dl_XZ_map(isnan(dl_XZ_map)) = 0; 
 P_XZ_map(isnan(P_XZ_map)) = 0; 
 
-if SIGN_TOROIDAL_FIELD==1
+if SIGN_CO_CURRENT_FIELD==1
     [value X2_out]=max(psi_XZ_map_linear(mid_X:end,Z_axis_pos));
 else
     [value X2_out]=min(psi_XZ_map_linear(mid_X:end,Z_axis_pos));
@@ -180,10 +195,20 @@ Bphi_XZ_map = Baxis*Bphi_XZ_map';
 %BR_XZ_map = Baxis*BR_XZ_map'; 
 dl_XZ_map = a*dl_XZ_map'; 
 %Bpol_XZ_map = Baxis*Bpol_XZ_map'; 
-theta_XZ_map=theta_XZ_map';
+
+
+
+
+%theta_XZ_map_gridfit=theta_XZ_map_gridfit.*mask_XZ_map;
+%if SIGN_CO_CURRENT_FIELD<0
+%    theta_XZ_map_gridfit=2*pi-theta_XZ_map_gridfit;
+%end
+
+%theta_XZ_map=0.5*(theta_XZ_map+theta_XZ_map_gridfit);
 
 theta_XZ_map=max(theta_XZ_map,0);
-theta_XZ_map=min(theta_XZ_map,2*pi);
+theta_XZ_map=min(theta_XZ_map,pi);
+theta_XZ_map=theta_XZ_map.*mask_XZ_map;
 
 F_XZ_map=Bphi_XZ_map.*(Rpos_map);
 
@@ -192,14 +217,25 @@ F_XZ_map=Bphi_XZ_map.*(Rpos_map);
 % Cleaning the theta_map
 %----------------------------------
 theta_axis=zeros(1,NR);
+theta_axis2=zeros(1,NR);
+DELTA_THETA=0.001*pi;
 for (x=1:X_axis_pos)
-    [eps theta_axis(x)]=min(abs(pi-theta_XZ_map(x,:)));
-    if (eps == pi)
+    [eps theta_axis(x)]=min(abs(pi-DELTA_THETA-theta_XZ_map(x,:)));
+	theta_axis(x)=theta_axis(x);
+    if (eps == pi-DELTA_THETA)
         theta_axis(x)=0;
     end
+	[eps theta_axis2(x)]=min(abs(pi-theta_XZ_map(x,:)));
+	%theta_axis(x)=Z_axis_pos-DELTA_AXIS+theta_axis(x);
+    if (eps == pi)
+        theta_axis2(x)=0;
+    end
+    if (theta_axis(x) ~= theta_axis2(x))
+        theta_axis(x)=max(theta_axis(x),theta_axis2(x));
+    end
 end
-X1_out=min(find(theta_axis))
-Z_up_half=max(theta_axis);
+X1_out=min(find(theta_axis>0))
+
 
 %theta_XZ_map=theta_XZ_map+(mask_XZ_map-1)*(-20);
 for (x=X_axis_pos:X2_out)
@@ -211,7 +247,13 @@ theta_axis(X_axis_pos)=Z_axis_pos;
 theta_axis(X_axis_pos+1)=Z_axis_pos;
 %theta_XZ_map=theta_XZ_map+(mask_XZ_map-1)*(+20);
 
-[theta_axis_max X_theta_axis_max]=max(theta_axis);
+if SIGN_CO_CURRENT_FIELD<0
+[ theta_axis_max  X_theta_axis_max ]=max(theta_axis(X1_out+3:X2_out));
+X_theta_axis_max=X_theta_axis_max+X1_out+2
+else
+[ theta_axis_max  X_theta_axis_max ]=min(theta_axis(X1_out+3:X2_out));
+X_theta_axis_max=X_theta_axis_max+X1_out+2
+end
 % [theta_axis_max X_theta_axis_max]=max(theta_axis(1:X_theta_axis_max-1));
 % for (x=X_theta_axis_max:X2_out)
 %     if theta_axis(x+1)>theta_axis(x)
@@ -219,22 +261,41 @@ theta_axis(X_axis_pos+1)=Z_axis_pos;
 %     end
 % end
 
-for(x=X1_out:X2_out)
+for(x=X1_out:X_axis_pos-1)
+    for (z=1:NZ)
+        if(theta_full_XZ_map(x,z)~=0)
+            theta_XZ_map(x,z)=theta_full_XZ_map(x,z);
+        end
+    end
+end
+
+for(x=X_axis_pos:X2_out)
     Z_up_half=theta_axis(x);
+	if SIGN_CO_CURRENT_FIELD<0
     for (z=1:Z_up_half-1)
         if(theta_XZ_map(x,z)~=0)
             theta_XZ_map(x,z)=2*pi-theta_XZ_map(x,z);
         end
     end
+	else
+    for (z=Z_up_half+1:NZ)
+        if(theta_XZ_map(x,z)~=0)
+            theta_XZ_map(x,z)=2*pi-theta_XZ_map(x,z);
+        end
+    end
+	end
 end
 
 
-if SIGN_TOROIDAL_FIELD<0
+if SIGN_CO_CURRENT_FIELD<0
     theta_XZ_map=2*pi-theta_XZ_map;
 end
 
     
 theta_XZ_map=theta_XZ_map.*mask_XZ_map;
+
+
+save thetamap2 theta_XZ_map theta_full_XZ_map theta_axis theta_axis2
 
 %rescaling the pressure
 % Pmax_finesse=max(max(P_XZ_map));

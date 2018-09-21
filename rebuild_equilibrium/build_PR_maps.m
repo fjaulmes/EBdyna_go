@@ -1,6 +1,7 @@
 
 
 theta_PR_map=zeros(NP,Nradial);
+theta_PR_map_gf=theta_PR_map;
 X_PR_map=zeros(NP,Nradial);
 Z_PR_map=zeros(NP,Nradial);
 inv_Rpos_PR_map=zeros(NP,Nradial);
@@ -47,20 +48,27 @@ for(p=1:NP)
 		% this relation should always yield psi=0 at the separatrix
         psi_PR_map(p,r)=SIGN_CO_CURRENT_FIELD*finesse_data(n,end-1)+0.5*(SIGN_TOROIDAL_FIELD-1);
         theta_PR_map(p,r)=theta_scale(p);
-        BX_PR_map(p,r)=finesse_data(n,end-25);
-        BZ_PR_map(p,r)=SIGN_CO_CURRENT_FIELD*finesse_data(n,end-19);
-        dBXdX_PR_map(p,r)=finesse_data(n,end-24);
-		dBXdZ_PR_map(p,r)=finesse_data(n,end-23);
-        dBZdX_PR_map(p,r)=SIGN_CO_CURRENT_FIELD*finesse_data(n,end-18);
-        dBZdZ_PR_map(p,r)=SIGN_CO_CURRENT_FIELD*finesse_data(n,end-17);
+		% Because we have flipped up down the Z axis, BX sign is reversed!!
+		% we thus lose the direct theta angle (Bpol<0) but it is better like this
+		% (poloidal flux pointing upward)
+		% q should have been negative but we take positive convention.
+        BX_PR_map(p,r)=SIGN_TOROIDAL_FIELD*finesse_data(n,end-25);
+        BZ_PR_map(p,r)=finesse_data(n,end-19);
+        dBXdX_PR_map(p,r)=SIGN_TOROIDAL_FIELD*finesse_data(n,end-24);
+		dBXdZ_PR_map(p,r)=SIGN_TOROIDAL_FIELD*finesse_data(n,end-23);
+        dBZdX_PR_map(p,r)=finesse_data(n,end-18);
+        dBZdZ_PR_map(p,r)=finesse_data(n,end-17);
         Bpol_PR_map(p,r)=sqrt(finesse_data(n,end-19)^2+finesse_data(n,end-25)^2);
         Btor_PR_map(p,r)=SIGN_CO_CURRENT_FIELD*finesse_data(n,end-13);
         pressure_PR_map(p,r)=finesse_data(n,end-31);
         if (theta_scale(p)<=pi)
             theta_data(n)=theta_scale(p);
+			theta_PR_map_gf(p,r)=theta_scale(p);
         else
             theta_data(n)=2*pi-theta_scale(p);
+			theta_PR_map_gf(p,r)=2*pi-theta_scale(p);
         end
+		theta_full_data(n)=theta_scale(p);
         cos_theta_data(n)=cos(theta_data(n));
         r_data(n)=sqrt((X_PR_map(p,r)-X_axis)^2+(Z_PR_map(p,r)-Z_axis)^2);
         radial_data(n)=r;
@@ -69,126 +77,100 @@ for(p=1:NP)
 end
 
 
+% Building triangles for area calculation
+% edges are named a,b,c,d and e for the diagonal
+dl_a_X=zeros(NP-1,Nradial-1);
+dl_a_Z=zeros(NP-1,Nradial-1);
+dl_b_X=zeros(NP-1,Nradial-1);
+dl_b_Z=zeros(NP-1,Nradial-1);
+dl_c_X=zeros(NP-1,Nradial-1);
+dl_c_Z=zeros(NP-1,Nradial-1);
+dl_d_X=zeros(NP-1,Nradial-1);
+dl_d_Z=zeros(NP-1,Nradial-1);
+dl_e_X=zeros(NP-1,Nradial-1);
+dl_e_Z=zeros(NP-1,Nradial-1);
+Rpos1_values=zeros(NP-1,Nradial-1);
+Zpos1_values=zeros(NP-1,Nradial-1);
+Rpos2_values=zeros(NP-1,Nradial-1);
+Zpos2_values=zeros(NP-1,Nradial-1);
+r1_Xpos_values=zeros(NP-1,Nradial-1);
+r1_Zpos_values=zeros(NP-1,Nradial-1);
+r2_Xpos_values=zeros(NP-1,Nradial-1);
+r2_Zpos_values=zeros(NP-1,Nradial-1);
+
+for(p=1:NP-1)
+    for(r=1:Nradial-1)
+		dl_a_X(p,r)=X_PR_map(p,r)-X_PR_map(p+1,r);
+		dl_a_Z(p,r)=Z_PR_map(p,r)-Z_PR_map(p+1,r);
+		dl_b_X(p,r)=X_PR_map(p,r+1)-X_PR_map(p,r);
+		dl_b_Z(p,r)=Z_PR_map(p,r+1)-Z_PR_map(p,r);
+		dl_c_X(p,r)=X_PR_map(p+1,r+1)-X_PR_map(p,r+1);
+		dl_c_Z(p,r)=Z_PR_map(p+1,r+1)-Z_PR_map(p,r+1);
+		dl_d_X(p,r)=X_PR_map(p+1,r)-X_PR_map(p+1,r+1);
+		dl_d_Z(p,r)=Z_PR_map(p+1,r)-Z_PR_map(p+1,r+1);
+		dl_e_X(p,r)=X_PR_map(p,r+1)-X_PR_map(p+1,r);
+		dl_e_Z(p,r)=Z_PR_map(p,r+1)-Z_PR_map(p+1,r);
+		r1_Xpos_values(p,r)=0.5*(X_PR_map(p+1,r)+X_PR_map(p+1,r+1));
+		r1_Zpos_values(p,r)=0.5*(Z_PR_map(p+1,r)+Z_PR_map(p+1,r+1));
+		r2_Xpos_values(p,r)=0.5*(X_PR_map(p,r)+X_PR_map(p,r+1));
+		r2_Zpos_values(p,r)=0.5*(Z_PR_map(p,r)+Z_PR_map(p,r+1));
+		Rpos1_values(p,r)=R0+(X_PR_map(p,r)+X_PR_map(p,r+1)+X_PR_map(p+1,r))/3;
+		Zpos1_values(p,r)=(Z_PR_map(p,r)+Z_PR_map(p,r+1)+Z_PR_map(p+1,r))/3;
+		Rpos2_values(p,r)=R0+(X_PR_map(p,r+1)+X_PR_map(p+1,r+1)+X_PR_map(p+1,r))/3;
+		Zpos2_values(p,r)=(Z_PR_map(p,r+1)+Z_PR_map(p+1,r+1)+Z_PR_map(p+1,r))/3;
+	end	
+end
+
+dl_a=sqrt(dl_a_X.^2+dl_a_Z.^2);
+dl_b=sqrt(dl_b_X.^2+dl_b_Z.^2);
+dl_c=sqrt(dl_c_X.^2+dl_c_Z.^2);
+dl_d=sqrt(dl_d_X.^2+dl_d_Z.^2);
+dl_e=sqrt(dl_e_X.^2+dl_e_Z.^2);
+% half perimeter of triangles
+dl_t1=0.5*(dl_a+dl_b+dl_e);
+dl_t2=0.5*(dl_c+dl_d+dl_e);
+%Areas of triangles
+dA1=sqrt(dl_t1.*(dl_t1-dl_a).*(dl_t1-dl_b).*(dl_t1-dl_e));
+dA2=sqrt(dl_t2.*(dl_t2-dl_c).*(dl_t2-dl_d).*(dl_t2-dl_e));
+
+dSurf=dA1+dA2;
+%barycenter of quadrilateral
+Rpos_values=(Rpos1_values.*dA1+Rpos2_values.*dA2)./dSurf;
+Xpos_values=Rpos_values-R0;
+Zpos_values=(Zpos1_values.*dA1+Zpos2_values.*dA2)./dSurf;
+r_values=sqrt((Xpos_values-X_axis).^2+(Zpos_values-Z_axis).^2);
+r1_values=sqrt((r1_Xpos_values-X_axis).^2+(r1_Zpos_values-Z_axis).^2);
+r2_values=sqrt((r2_Xpos_values-X_axis).^2+(r2_Zpos_values-Z_axis).^2);
+angle_values=acos((r1_values.^2+r2_values.^2-dl_c.^2)./(2*r1_values.*r2_values));
+
+% the angle calculations are far too approximate but we assume they give the right ratios
+% we normalize them so that one turn is 2*pi
+for(r=1:Nradial-1)
+    angle_values(:,r)=2*pi*angle_values(:,r)/sum(angle_values(:,r));
+end
+% recalculating the surface elements according to curved contour
+% WARNING : this is still too approximate and will b erescaled ultimately after surface integration
+dSurf=0.5*r_values.*angle_values.*(dl_b+dl_d);
+
+%elementary volumes
+dVol=2*pi*Rpos_values.*dSurf;
 
 Rpos_PR_map=R0+X_PR_map;
 
 
-% map for contour integration
-
-
-for(p=2:NP-1)
-    for(r=2:Nradial-1)
-        dl_avg_X=X_PR_map(p+1,r)-X_PR_map(p-1,r);
-        dl_avg_Z=Z_PR_map(p+1,r)-Z_PR_map(p-1,r);
-        dl_avg=0.5*sqrt(dl_avg_X^2+dl_avg_Z^2);
-        
-        dr_avg_X=X_PR_map(p,r+1)-X_PR_map(p,r-1);
-        dr_avg_Z=Z_PR_map(p,r+1)-Z_PR_map(p,r-1);
-        dr_avg=0.5*sqrt(dr_avg_X^2+dr_avg_Z^2);
-        
-        cos_ki_avg=0.25*(dl_avg_X*dr_avg_X+dl_avg_Z*dr_avg_Z);
-        dl_PR_map(p,r)=dl_avg;
-        dl_X_PR_map(p,r)=0.5*dl_avg_X/dl_avg;
-        dl_Z_PR_map(p,r)=0.5*dl_avg_Z/dl_avg;
-        dr_PR_map(p,r)=dr_avg;
-		dr_X_PR_map(p,r)=0.5*dr_avg_X/dr_avg;
-        dr_Z_PR_map(p,r)=0.5*dr_avg_Z/dr_avg;
-        cos_ki_PR_map(p,r)=cos_ki_avg/(dl_avg*dr_avg);
-        radial_PR_map(p,r)=sqrt((X_PR_map(p,r)-X_axis)^2+(Z_PR_map(p,r)-Z_axis)^2);
-    end
-end
-p=1;
-for(r=2:Nradial-1)
-	dl_avg_X=X_PR_map(p+1,r)-X_PR_map(NP-1,r);
-	dl_avg_Z=Z_PR_map(p+1,r)-Z_PR_map(NP-1,r);
-	dl_avg=0.5*sqrt(dl_avg_X^2+dl_avg_Z^2);
-	
-	dr_avg_X=X_PR_map(p,r+1)-X_PR_map(p,r-1);
-	dr_avg_Z=Z_PR_map(p,r+1)-Z_PR_map(p,r-1);
-	dr_avg=0.5*sqrt(dr_avg_X^2+dr_avg_Z^2);
-	
-	cos_ki_avg=0.25*(dl_avg_X*dr_avg_X+dl_avg_Z*dr_avg_Z);
-	dl_PR_map(p,r)=dl_avg;
-	dl_X_PR_map(p,r)=0.5*dl_avg_X/dl_avg;
-	dl_Z_PR_map(p,r)=0.5*dl_avg_Z/dl_avg;
-	dr_PR_map(p,r)=dr_avg;
-	dr_X_PR_map(p,r)=0.5*dr_avg_X/dr_avg;
-	dr_Z_PR_map(p,r)=0.5*dr_avg_Z/dr_avg;
-	cos_ki_PR_map(p,r)=cos_ki_avg/(dl_avg*dr_avg);
-    radial_PR_map(p,r)=sqrt((X_PR_map(p,r)-X_axis)^2+(Z_PR_map(p,r)-Z_axis)^2);
-end
+% maps for contour integration
+dl_PR_map(2:end,2:end)=0.5*(dl_a+dl_c);
 length_contour_profile=sum(dl_PR_map,1);
+dr_PR_map=0.5*(dl_b+dl_d);
+radial_PR_map=sqrt((X_PR_map-X_axis)^2+(Z_PR_map-Z_axis)^2);
+
 p=NP;
 for(r=2:Nradial-1)
-    dl_avg_X=X_PR_map(2,r)-X_PR_map(p-1,r);
-    dl_avg_Z=Z_PR_map(2,r)-Z_PR_map(p-1,r);
-    dl_avg=0.5*sqrt(dl_avg_X^2+dl_avg_Z^2);
-    
-    dr_avg_X=X_PR_map(p,r+1)-X_PR_map(p,r-1);
-    dr_avg_Z=Z_PR_map(p,r+1)-Z_PR_map(p,r-1);
-    dr_avg=0.5*sqrt(dr_avg_X^2+dr_avg_Z^2);
-    
-    cos_ki_avg=0.25*(dl_avg_X*dr_avg_X+dl_avg_Z*dr_avg_Z);
-    dl_X_PR_map(p,r)=0.5*dl_avg_X/dl_avg;
-    dl_Z_PR_map(p,r)=0.5*dl_avg_Z/dl_avg;
-    
-    dl_PR_map(p,r)=dl_avg;
-    dr_PR_map(p,r)=dr_avg;
- 	dr_X_PR_map(p,r)=0.5*dr_avg_X/dr_avg;
-    dr_Z_PR_map(p,r)=0.5*dr_avg_Z/dr_avg;
-    cos_ki_PR_map(p,r)=cos_ki_avg/(dl_avg*dr_avg);
     DX_axis(r)=0.5*(X_PR_map(p,r+1)-X_PR_map(p,r-1));
-    radial_PR_map(p,r)=sqrt((X_PR_map(p,r)-X_axis)^2+(Z_PR_map(p,r)-Z_axis)^2);
 end
 
 
-% code below seems to be obsolete: 
-% calculate some psi value according to BZ flux....
-% no need to!
 
-% finesse_mesh=[finesse_data(:,1) finesse_data(:,2)];
-% [finesse_mesh, IDTRI, J] = unique(finesse_mesh,'last','rows');
-% finesse_mesh_dtri=DelaunayTri(finesse_mesh);
-% data=SIGN_TOROIDAL_FIELD*finesse_data(:,end-19);
-% BZ_XZ_map=dtinterp(finesse_mesh,finesse_mesh_dtri,data(IDTRI),XX,ZZ,'quadratic');
-% BZ_XZ_map(isnan(BZ_XZ_map)) = 0; 
-% BZ_XZ_map=BZ_XZ_map';
-% BZ_XZ_map=Baxis*BZ_XZ_map;
-% 
-% BZ_axis=zeros(NZ,1);
-% BZ_axis=BZ_XZ_map(:,Z_axis_pos);
-% integ_BZ=zeros(NZ,1);
-% for(x=2:NZ)
-%     integ_BZ(x)=0.5*(BZ_axis(x)+BZ_axis(x-1))*((R0+(x-1)*DX-(mid_X-1)*DX)+0.5*DX);
-% end
-% psi_axis=zeros(NZ,1);
-% for(x=2:NZ)
-%     psi_axis(x)=psi_axis(x-1)+integ_BZ(x)*DX;
-% end
-% if (SIGN_TOROIDAL_FIELD>0)
-%     psi0_recalc=min(psi_axis)
-% else
-%     psi0_recalc=max(psi_axis)
-% end
-% 
-% data=SIGN_TOROIDAL_FIELD*finesse_data(:,end-1)-0.5*(SIGN_TOROIDAL_FIELD-1);
-% % psi_XZ_map=dtinterp(finesse_mesh,finesse_mesh_dtri,data(IDTRI),XX,ZZ,'quadratic');
-% psi_XZ_map=griddata(finesse_data(:,1),finesse_data(:,2),data,XX,ZZ,'cubic');
-% if (SIGN_TOROIDAL_FIELD>0)
-% psi_XZ_map(isnan(psi_XZ_map))=1;
-% else
-% psi_XZ_map(isnan(psi_XZ_map))=0;
-% end
-% if (SIGN_TOROIDAL_FIELD>0)
-%     psi_XZ_map=abs(psi0_recalc)*(psi_XZ_map)';
-% else
-%     psi_XZ_map=abs(psi0_recalc)*(psi_XZ_map)';
-% end
-% optimize_psi2D_fromBZ;
-% 
-% 
-% psi_XZ_map=psi_fac*psi_XZ_map;
-% psi0_recalc=psi0_recalc*psi_fac;
 
 
 
@@ -203,7 +185,7 @@ dBXdZ_PR_map=Baxis*dBXdZ_PR_map;
 dBZdX_PR_map=Baxis*dBZdX_PR_map;
 dBZdZ_PR_map=Baxis*dBZdZ_PR_map;
 Bpol_PR_map=Baxis*Bpol_PR_map;
-% bug in sign of field in finesse output
+% sign of field taken here
 Btor_PR_map=SIGN_TOROIDAL_FIELD*abs(Baxis)*abs(Btor_PR_map);
 
 Bpol_surf=mean(Bpol_PR_map(1:NP-1,:),1);

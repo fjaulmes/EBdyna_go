@@ -33,7 +33,8 @@ save (FILENAME,'psi_scale','tor_flux_scale','rho_tor_scale','theta_ki_psi_map','
 
 Z_psi_fit_up=Z_psi_fit;
 FILENAME=strcat(DATA_FOLDER,'volume_flux_geometry.mat')
-save (FILENAME,'tor_flux_profile','volume_tor','volume_tor_diff','Z_psi_fit_up','Z_psi_fit_down','X1_Nradial','X2_Nradial');
+save (FILENAME,'Rpos_values','Zpos_values','r_values','angle_values','dSurf','dVol',...
+'tor_flux_profile','volume_tor','volume_tor_diff','Z_psi_fit_up','Z_psi_fit_down','X1_Nradial','X2_Nradial');
 
 FILENAME=strcat(DATA_FOLDER,'grad_flux_geometry.mat')
 save (FILENAME,'grad_theta_PR_map_X','grad_theta_PR_map_Z','g_polX_XZ_map','g_polZ_XZ_map');
