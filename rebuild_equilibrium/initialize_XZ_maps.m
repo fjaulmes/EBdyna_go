@@ -31,7 +31,7 @@ DX=(sup_Z-inf_Z)/(4*NX-1);
 
 % max_X=max(abs(inf_X),sup_X);
 % margin necessary becaus of poor centering
-max_Z=max(abs(inf_Z),sup_Z)+100*DX;
+max_Z=max(abs(inf_Z),sup_Z)+150*DX;
 
 inf_X=-max_Z;
 sup_X=max_Z;

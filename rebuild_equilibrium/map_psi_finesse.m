@@ -25,8 +25,8 @@ create_physics_constants;
 %save('../METIS_finesse_data.mat','-append','F2poly_coefs','Ppoly_coefs')
 
 
-Nradial=513;
-NP=513;
+Nradial=257;
+NP=257;
 DP=(2*pi)/(NP-1);
 for(p=1:NP)
     theta_scale(p)=(p-1)*DP;    
