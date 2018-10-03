@@ -1,0 +1,4 @@
+doask=1
+.r getpict
+doask=0
+.r plotfunc

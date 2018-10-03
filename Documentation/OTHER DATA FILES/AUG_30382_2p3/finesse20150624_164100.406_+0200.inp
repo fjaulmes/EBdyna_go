@@ -1,0 +1,83 @@
+ &FINESSE_GLOBAL_PARAMETERS
+ FINESSE_INPUT_FILE_VERSION      = '1.1',
+ ANNOTATION      = 'AUG static                                                                      '
+ /
+ &FINESSE_IO_PARAMETERS
+ FAST_DB_FILENAME        = 'X.fbdb                                                                                                   
+                                                                                                                                     
+                  ',
+ SLOW_DB_FILENAME        = 'X.sbdb                                                                                                   
+                                                                                                                                     
+                  ',
+ DATA_FILE       = T,
+ DX_FILE = F,
+ HAGIS_FILE      = F,
+ PHOENIX_FILE    = F,
+ POSTSCRIPT_FILE = T,
+ VAC_FILE        = F,
+ VTK_FILE        = F
+ /
+ &FINESSE_MODE_PARAMETERS
+ MODE    = 'static                        ',
+ APPLICATION     = 'tokamak                       ',
+ BERNOULLI_SOLUTION_METHOD       = 'root-finding                  '
+ /
+ &FINESSE_PHYSICS_PARAMETERS
+ GAMMA   =   1.66666666666667     
+ /
+ &FINESSE_PROFILE_PARAMETERS
+ C       =   29.0000000000000     ,  -13.5000000000000     ,  -9.10000000000000     ,   16.6000000000000     ,
+    5.00000000000000     ,  -1.85000000000000     ,  -1.50000000000000     ,  -3.80000000000000     , -0.100000000000000     ,
+   0.000000000000000E+000,   1.00000000000000     ,  -6.03000000000000     ,   21.0000000000000     ,  -46.2000000000000     ,
+    62.0000000000000     ,  -45.0000000000000     ,   13.2350000000000     , 3*0.000000000000000E+000  ,   1.00000000000000     ,
+  -5.500000000000000E-002,  -5.60000000000000     ,   22.0000000000000     ,  -45.0000000000000     ,   45.0000000000000     ,
+   -17.0000000000000     , 13*0.000000000000000E+000  ,   1.00000000000000     , 19*0.000000000000000E+000  ,
+ A_N     =   1.00000000000000     ,   4.80000000000000     ,   1.00000000000000     , 3*0.000000000000000E+000  ,
+ SIGN_CHI_PRIME  =   1.00000000000000     ,
+ SIGN_OMEGA      =   1.00000000000000     ,
+ SIGN_I  =  -1.00000000000000     
+ /
+ &FINESSE_FLUX_PARAMETERS
+ ALPHA   =   2.29000000000000     ,
+ AVERAGE_FLUXPROFILE     = 'none                          ',
+ FLUXFUNCTION    = 'temperature                   ',
+ FLUXPROFILES    = 'primitive                     '
+ /
+ &FINESSE_DELTA_PARAMETERS
+ DELTAPROFILES   = 6*'polynomial                    ',
+ INTERPOLATION_TYPE      = 'cubic                         '
+ /
+ &FINESSE_GEOMETRY_PARAMETERS
+ EPSILON =  0.314500000000000     ,
+ TOP_DOWN_SYMMETRIC      = F,
+ RZ_NORMALIZATION        = 'tokamak                       '
+ /
+ &FINESSE_SHAPE_PARAMETERS
+ CS_SHAPE        = 'data                          ',
+ NM      =          32,
+ ELLIPS  =   1.00000000000000     ,
+ TRIANG  =  0.000000000000000E+000,
+ QUADRA  =  0.000000000000000E+000
+ /
+ &FINESSE_BC_PARAMETERS
+ BC_TYPE = 'none                          ', 'essential                     ', 2*'periodic                      '
+ /
+ &FINESSE_GRID_PARAMETERS
+ NR      =         129,
+ NP      =         129,
+ INVERSECOORDINATES      = T,
+ STRAIGHTFIELDLINES      = T,
+ NR_INVERSE      =         257,
+ NP_INVERSE      =         257,
+ GRID_TYPE       = 2*'linear                        '
+ /
+ &FINESSE_FLOW_DOMAIN_PARAMETERS
+ FLOW_DOMAIN     = 'sub-slow                      '
+ /
+ &FINESSE_DEBUG_PARAMETERS
+ DEBUG_MROOT     = F,
+ DEBUG_MDOMAIN   = F,
+ DEBUG_MUPDATEM2 = F,
+ DEBUG_MINVERSECOORDINATES       = F,
+ DEBUG_MSTRAIGHTFIELDLINES       = F
+ /

@@ -1,0 +1,16 @@
+./compile_Epot_evol1.sh &
+./compile_Epot_evol2.sh &
+./compile_Epot_evol3.sh &
+./compile_Epot_evol4.sh &
+./compile_Epot_evol5.sh &
+./compile_Epot_evol6.sh &
+./compile_Epot_evol7.sh &
+./compile_Epot_evol8.sh &
+./compile_Epot_evol9.sh &
+./compile_Epot_evol10.sh &
+./compile_Epot_evol11.sh &
+./compile_Epot_evol12.sh &
+./compile_Epot_evol13.sh &
+./compile_Epot_evol14.sh &
+./compile_Epot_evol15.sh &
+./compile_Epot_evol16.sh &

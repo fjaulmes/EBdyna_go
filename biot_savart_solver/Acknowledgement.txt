@@ -1,0 +1,2 @@
+The code BSmag has been based on a package written by:
+L. Quéval, “BSmag Toolbox User Manual,” Tech. report, Dept. Elect. Eng., University of Applied Sciences Düsseldorf, Germany, April 2015. Available: http://www.lqueval.com [Accessed January. 26, 2016].

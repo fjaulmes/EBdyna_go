@@ -1,0 +1,957 @@
+ &FINESSE_ERROR_FORMATS
+ ERR(1,1)='("***MDOMAIN_SETUP_BOUNDARY_INFO: "/T7
+            "Could not deallocate components of argument element ",
+            "boundary(",I1,").")'
+ ERR(2,1)='("***MDOMAIN_SETUP_BOUNDARY_INFO: "/T7
+            "Could not deallocate argument boundary.")'
+ ERR(3,1)='("***MDOMAIN_SETUP_BOUNDARY_INFO: "/T7
+            "Could not allocate space for argument boundary.")'
+ ERR(4,1)='("***MDOMAIN_SETUP_BOUNDARY_INFO: "/T7
+            "Could not allocate space for components of argument ",
+            "domain%boundary(",I1,").")'
+ ERR(5,1)='("***MDOMAIN_SETUP_INTERIOR_INFO: "/T7
+            "Could not deallocate components of argument interior.")'
+ ERR(6,1)='("***MDOMAIN_SETUP_INTERIOR_INFO: "/T7
+            "Could not deallocate argument interior.")'
+ ERR(7,1)='("***MDOMAIN_SETUP_INTERIOR_INFO: "/T7
+            "Could not allocate space for argument interior.")'
+ ERR(8,1)='("***MDOMAIN_SETUP_INTERIOR_INFO: "/T7
+            "Could not allocate space for components of argument interior.")'
+
+ ERR(1,2)='("***MELEMENTS_CELL_EXTREMA_OF_F: "/T7
+            "One or more argument sizes are incorrect.")'
+
+ ERR(1,3)='("***MGAUSSLEGENDRE_SETUP_GAUSS_LEGENDRE: "/T7
+	    "Could not allocate space for global variables"/T7
+	    "p_gl, w_gl, and h_gl.")'
+ ERR(2,3)='("***MGAUSSLEGENDRE_SETUP_GAUSS_LEGENDRE: "/T7
+	    "Could not deallocate global variables solution_gl and Jh_gl_xy.")'
+ ERR(3,3)='("***MGAUSSLEGENDRE_SETUP_GAUSS_LEGENDRE: "/T7
+	    "Could not allocate space for global variables"/T7
+	    "solution_gl and Jh_gl_xy.")'
+ ERR(4,3)='("***MGAUSSLEGENDRE_CLEANUP_GAUSS_LEGENDRE_STUFF: "/T7
+	    "Could not deallocate global variables solution_gl and Jh_gl_xy.")'
+
+ ERR(1,4)='("***MKXB_SETUP_K_AND_B: "/T7
+	    "Could not deallocate K, b, non_zero_b_storage_entries, ",
+	    "non_zero_K_entries, non_zero_K_storage_entries, and ",
+	    "stored_K_entries_mask.")'
+ ERR(2,4)='("***MKXB_SETUP_K_AND_B: "/T7
+	    "Could not allocate K, b, non_zero_b_storage_entries, ",
+	    "non_zero_K_entries, stored_K_entries_mask.")'
+ ERR(3,4)='("***MKXB_SETUP_NON_ZERO_ENTRIES: "/T7
+	    "non_zero_b_entries and non_zero_K_entries have not been ",
+	    "allocated.")'
+ ERR(4,4)='("***MKXB_SETUP_NON_ZERO_ENTRIES: "/T7
+	    "Could not allocate space for local variable row.")'
+ ERR(5,4)='("***MKXB_SETUP_NON_ZERO_ENTRIES: "/T7
+	    "Could not deallocate local variable row.")'
+ ERR(6,4)='("***MKXB_SETUP_STORED_ENTRIES_MASK: "/T7
+            "non_zero_K_entries and stored_K_entries_mask have not been ",
+	    "allocated.")'
+ ERR(7,4)='("***MKXB_SETUP_NON_ZERO_STORAGE_ENTRIES: "/T7
+            "non_zero_K_entries and stored_K_entries_mask have not been ",
+	    "allocated.")'
+ ERR(8,4)='("***MKXB_SETUP_NON_ZERO_STORAGE_ENTRIES: "/T7
+	    "Could not deallocate non_zero_K_storage_entries.")'
+ ERR(9,4)='("***MKXB_SETUP_NON_ZERO_STORAGE_ENTRIES: "/T7
+	    "Could not allocate space for non_zero_K_storage_entries.")'
+ ERR(10,4)='("***MKXB_CLEANUP_K_AND_B_STUFF: "/T7
+	     "Could not deallocate global variables K, b,"/T7
+	     "non_zero_K_entries, stored_K_entries_mask,"/T7
+             "non_zero_K_storage_entries, and non_zero_b_storage_entries.")'
+ ERR(11,4)='("***MKXB_FORM_K: "/T7
+	    "Could not deallocate local variable contributions.")'
+ ERR(12,4)='("***MKXB_GET_CELL_CONTRIBUTIONS_TO_K: "/T7
+	     "Could not allocate space for local variable contributions.")'
+ ERR(13,4)='("***MKXB_GET_CELL_CONTRIBUTIONS_TO_K: "/T7
+	     "Could not deallocate local variables factor_ and J2gradh2_.")'
+ ERR(14,4)='("***MKXB_ADD_CELL_CONTRIBUTIONS_TO_K: "/T7
+	     "Argument contributions is not conformable with global ",
+	     "variable non_zero_K_storage_entries.")'
+ ERR(15,4)='("***MKXB_FORM_B: "/T7
+	     "Could not deallocate local variable contributions.")'
+ ERR(16,4)='("***MKXB_GET_CELL_CONTRIBUTIONS_TO_B: "/T7
+	     "Could not allocate space for local variables contributions and ",
+	     "and Big_Gamma_.")'
+ ERR(17,4)='("***MKXB_GET_CELL_CONTRIBUTIONS_TO_B: "/T7
+	     "Could not deallocate local variables factor_ and Big_Gamma_.")'
+ ERR(18,4)='("***MKXB_FACTORK: "/T7
+	     "Arguments M2, R, and J are not conformable.")'
+ ERR(19,4)='("***MKXB_FACTORK: "/T7
+	     "Could not allocate space for local variable factorK.")'
+ ERR(20,4)='("***MKXB_J2GRADH2: "/T7
+	     "Arguments Jhx and Jhy are not conformant.")'
+ ERR(21,4)='("***MKXB_J2GRADH2: "/T7
+	     "Could not allocate space for local variable J2gradh2.")'
+ ERR(22,4)='("***MKXB_FACTORB: "/T7
+	     "Arguments R and J are not conformable.")'
+ ERR(23,4)='("***MKXB_FACTORB: "/T7
+	     "Could not allocate space for local variable factorb.")'
+ ERR(24,4)='("***MKXB_SAVE_COLS: "/T7
+	     "Arguments cols and second dimension of saved are not ",
+	     "conformant.")'
+ ERR(25,4)='("***MKXB_CLEAR_K_ROWS: "/T7
+	     "Values of argument rows_ are out of bounds.")'
+ ERR(26,4)='("***MKXB_CLEAR_K_COLUMNS: "/T7
+	     "Values of argument columns are out of bounds.")'
+ ERR(27,4)='("***MKXB_SET_K_DIAGONALSS: "/T7
+	     "Value of argument diags is out of bounds.")'
+ ERR(28,4)='("***MKXB_SET_K_DIAGONALSV: "/T7
+	     "Values of argument diags are out of bounds.")'
+ ERR(29,4)='("***MKXB_SET_OR_ADD_K_ENTRIES1DS: "/T7
+	     "Could not allocate space for local variable st_entries.")'
+ ERR(30,4)='("***MKXB_SET_OR_ADD_K_ENTRIES1DS: "/T7
+	     "Could not deallocate local variable st_entries.")'
+ ERR(31,4)='("***MKXB_SET_OR_ADD_K_ENTRIES2DS: "/T7
+	     "Could not allocate space for local variable st_entries.")'
+ ERR(32,4)='("***MKXB_SET_OR_ADD_K_ENTRIES2DS: "/T7
+	     "Could not deallocate local variable st_entries.")'
+ ERR(33,4)='("***MKXB_SET_OR_ADD_K_ENTRIES1DV: "/T7
+	     "Arguments values and entries are no conformant.")'
+ ERR(34,4)='("***MKXB_SET_OR_ADD_K_ENTRIES1DV: "/T7
+	     "Could not allocate space for local variables st_entries and ",
+	     "masked_values.")'
+ ERR(35,4)='("***MKXB_SET_OR_ADD_K_ENTRIES1DV: "/T7
+	     "Could not deallocate local variables st_entries and ",
+	     "masked_values.")'
+ ERR(36,4)='("***MKXB_SET_OR_ADD_K_ENTRIES2DV: "/T7
+	     "Arguments values and entries are not conformant.")'
+ ERR(37,4)='("***MKXB_SET_OR_ADD_K_ENTRIES2DV: "/T7
+	     "Could not allocate space for local variables st_entries and ",
+	     "masked_values.")'
+ ERR(38,4)='("***MKXB_SET_OR_ADD_K_ENTRIES2DV: "/T7
+	     "Could not deallocate local variables st_entries and ",
+	     "masked_values.")'
+ ERR(39,4)='("***MKXB_SET_OR_ADD_B_ENTRIES1DV: "/T7
+	     "Arguments values and rows are not conformant.")'
+ ERR(40,4)='("***MKXB_SET_OR_ADD_B_ENTRIES2DV: "/T7
+	     "Arguments values and rows are not conformant.")'
+
+ ERR(1,5)='("***MNODES_SETUP_CELLS_AND_NODES: "/T7
+	    "Could not deallocate argument cell_node_connections.")'
+ ERR(2,5)='("***MNODES_SETUP_CELLS_AND_NODES: "/T7
+	    "Could not allocate space for argument cell_node_connections.")'
+ ERR(3,5)='("***MNODES_SETUP_CELL_NODE_CONNECTIONS: "/T7
+	    "Could not allocate space for local variable ll.")'
+ ERR(4,5)='("***MNODES_SETUP_CELL_NODE_CONNECTIONS: "/T7
+	    "Could not deallocate local variable ll.")'
+ ERR(5,5)='("***MNODES_NODE_LIST0D: "/T7
+	    "Argument cell_node_connections is not associated.")'
+ ERR(6,5)='("***MNODES_NODE_LIST0D: "/T7
+	    "Size of second dimension of argument cell_node_connections ",
+            "does not equal ",I1,".")'
+ ERR(7,5)='("***MNODES_NODE_LIST0D: "/T7
+	    "Value of argument cells does not lie withing lower- and "/T7
+            "upperbound of the first dimension of argument ",
+            "cell_node_connections.")'
+ ERR(8,5)='("***MNODES_NODE_LIST0D: "/T7
+	    "Argument cell_node_connections is not associated.")'
+ ERR(9,5)='("***MNODES_NODE_LIST0D: "/T7
+	    "Size of second dimension of argument cell_node_connections ",
+            "does not equal ",I1,".")'
+ ERR(10,5)='("***MNODES_NODE_LIST0D: "/T7
+	     "Value of argument cells does not lie withing lower- and "/T7
+             "upperbound of the first dimension of argument ",
+             "cell_node_connections.")'
+
+ ERR(1,9)='("***MSHAPE_SOLOVIEV_TOKAMAK_RADIUS2: NNM*NM = ",I5/T7
+            "It is required (HGOLIB restriction) that NNM*NM <= 1024.")'
+ ERR(2,9)='("***MSHAPE_SOLOVIEV_TOKAMAK_RADIUS2: "/T7
+            "Could not allocate space for local variable a2.)'
+
+ ERR(1,10)='("***MSHAPE_TDS_TOKAMAK_RADIUS2: NNM*NM = ",I5/T7
+            "It is required (HGOLIB restriction) that NNM*NM <= 1024.")'
+ ERR(2,10)='("***MSHAPE_TDS_TOKAMAK_RADIUS2: "/T7
+            "Could not allocate space for local variable a2.)'
+
+ ERR(1,11)='("***MSHAPE_WIND_RADIUS1: NNM*NM = ",I5/T7
+            "It is required (HGOLIB restriction) that NNM*NM <= 1024.")'
+ ERR(2,11)='("***MSHAPE_WIND_RADIUS1: "/T7
+            "Could not allocate space for local variable a1.)'
+ ERR(3,11)='("***MSHAPE_WIND_RADIUS2: NNM*NM = ",I5/T7
+            "It is required (HGOLIB restriction) that NNM*NM <= 1024.")'
+ ERR(4,11)='("***MSHAPE_WIND_RADIUS2: "/T7
+            "Could not allocate space for local variable a2.)'
+
+ ERR(1,13)='("***MSOLUTION_SETUP_INITIAL_SOLUTION: "/T7
+             "Could not deallocate global variable solution.")'
+ ERR(2,13)='("***MSOLUTION_SETUP_INITIAL_SOLUTION: "/T7
+             "Could not allocate space for global variable solution.")'
+ ERR(3,13)='("***MSOLUTION_SOLUTION_PSI_TO_X: "/T7
+             "Size  of argument solution does not equal NF time size of"/T7
+	     "argument x.")'
+ ERR(4,13)='("***MSOLUTION_X_TO_SOLUTION_PSI: "/T7
+             "Size  of argument solution does not equal NF time size of"/T7
+	     "argument x.")'
+ ERR(5,13)='("***MSOLUTION_CONTRAVARIANT_METRIC_TENSOR: "/T7
+             "Arguments x, dpsidx, dpsidy, dchidx, and dchidy are not"/T7
+	     "conformant.")'
+ ERR(6,13)='("***MSOLUTION_CONTRAVARIANT_METRIC_TENSOR: "/T7
+             "Could not deallocate global variable G.")'
+ ERR(7,13)='("***MSOLUTION_CONTRAVARIANT_METRIC_TENSOR: "/T7
+             "Could not allocate space for global variable G.")'
+
+ ERR(1,16)='("***MSOLVE:"/T7
+             "Could not deallocate local variable ipiv.")'
+ ERR(2,16)='("***MSOLVE:"/T7
+             "Could not allocate space for local variable ipiv.")'
+ ERR(3,16)='("***MSOLVE:"/T7
+             "Singular matrix detected: ",I,"th diagonal entry of U is ",
+             "exactly zero.")'
+ ERR(4,16)='("***MSOLVE:"/T7
+             "The leading minor of order ",I4," is not positive "/T7
+             "definite and the factorization could not be completed.")'
+ ERR(5,16)='("***MSOLVE:"/T7
+             "Arguments x and b are not conformant.")'
+ ERR(6,16)='("***MSOLVE:"/T7
+             "Argument x is not conformant with second dimensiom of K.")'
+
+ ERR(1,6)='("***MPICARD_OUTER_PICARD_ITERATION:"/T7
+            "Could not allocate space for local variables x, xold1, xold2,"/T7
+            "solutionold1, solutionold2, psidiff, and M2diff.")'
+ ERR(2,6)='("***MPICARD_OUTER_PICARD_ITERATION:"/T7
+	    "Maximum outer iterations exceeded.")'
+ ERR(3,6)='("***MPICARD_OUTER_PICARD_ITERATION:"/T7
+            "Could not deallocate local variables x, xold1, xold2,"/T7
+            "solutionold1, solutionold2, psidiff, and M2diff.")'
+ ERR(4,6)='("***MPICARD_INNER_PICARD_ITERATION:"/T7
+            "Could not allocate space for local variables x, xold1,"/T7
+            "and xold2.")'
+ ERR(5,6)='("***MPICARD_INNER_PICARD_ITERATION:"/T7
+	    "Maximum inner iterations exceeded.")'
+ ERR(6,6)='("***MPICARD_INNER_PICARD_ITERATION:"/T7
+            "Could not deallocate local variables x, xold1, and xold2.")'
+ ERR(7,6)='("***MPICARD_FIND_MAGNETIC_AXIS:"/T7
+            "Could not find minimum of psi in cell = ",I4,".")'
+ ERR(8,6)='("***MPICARD_FIND_CELL_CONTAINING_MINIMUM:"/T7
+            "Minimum of psi lies outside domain."/T7
+            "Minimum at nodes obtained at node = ",I4,".")'
+
+ ERR(1,17)='("***MBCS_IMPOSE_PERIODIC_BCS:"/T7
+            "Could not allocate space for local variables entries ",
+            "and values.")'
+ ERR(2,17)='("***MBCS_IMPOSE_PERIODIC_BCS:"/T7
+            "Could not deallocate local variables entries and values.")'
+ ERR(3,17)='("***MBCS_IMPOSE_PERIODIC_BCS:"/T7
+            "Could not allocate space for local variable entries.")'
+ ERR(4,17)='("***MBCS_IMPOSE_PERIODIC_BCS:"/T7
+            "Could not deallocate local variable entries.")'
+ ERR(5,17)='("***MBCS_IMPOSE_PERIODIC_BCS:"/T7
+            "Arguments cols, iminsaved, imaxsaved, iminb, imaxb, values, and ",
+	    "the second dimension of saved are not conformant.")'
+
+ ERR(1,18)='("***MNAMELISTIO_DO_FINESSE_NAMELIST_IO: argument action = ",A/T7
+            "Argument action should equal r or w.")'
+ ERR(2,18)='("***MNAMELISTIO_DO_BDB_NAMELIST_IO: argument action = ",A/T7
+            "Argument action should equal r or w.")'
+
+ ERR(1,19)='("***MFUNCTIONS_P1D: "/T7
+	     "Arguments psi, x, and y are not conformant.")'
+ ERR(2,19)='("***MFUNCTIONS_P2D: "/T7
+	     "Arguments psi, x, and y are not conformant.")'
+ ERR(3,19)='("***MFUNCTIONS_P3D: "/T7
+	     "Arguments psi, x, and y are not conformant.")'
+ ERR(4,19)='("***MFUNCTIONS_Q1D: A"/T7
+	     "rguments psi, x, and y are not conformant.")'
+ ERR(5,19)='("***MFUNCTIONS_Q2D: "/T7
+	     "Arguments psi, x, and y are not conformant.")'
+ ERR(6,19)='("***MFUNCTIONS_Q3D: "/T7
+	     "Arguments psi, x, and y are not conformant.")'
+
+ ERR(1,20)='("***MMISCPROFILES_Pi1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(2,20)='("***MMISCPROFILES_Pi2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(3,20)='("***MMISCPROFILES_Pi3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(4,20)='("***MMISCPROFILES_dPidpsi1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(5,20)='("***MMISCPROFILES_dPidpsi2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(6,20)='("***MMISCPROFILES_dPidpsi3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(7,20)='("***MMISCPROFILES_dPidx1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(8,20)='("***MMISCPROFILES_dPidx2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(9,20)='("***MMISCPROFILES_dPidx3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(10,20)='("***MMISCPROFILES_dPidy1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(11,20)='("***MMISCPROFILES_dPidy2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(12,20)='("***MMISCPROFILES_dPidy3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(13,20)='("***MMISCPROFILES_d2Pidpsi21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(14,20)='("***MMISCPROFILES_d2Pidpsi22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(15,20)='("***MMISCPROFILES_d2Pidpsi23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(16,20)='("***MMISCPROFILES_d2Pidx21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(17,20)='("***MMISCPROFILES_d2Pidx22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(18,20)='("***MMISCPROFILES_d2Pidx23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(19,20)='("***MMISCPROFILES_d2Pidy21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(20,20)='("***MMISCPROFILES_d2Pidy22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(21,20)='("***MMISCPROFILES_d2Pidy23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(22,20)='("***MMISCPROFILES_d2Pidpsidx1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(23,20)='("***MMISCPROFILES_d2Pidpsidx2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(24,20)='("***MMISCPROFILES_d2Pidpsidx3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(25,20)='("***MMISCPROFILES_d2Pidpsidy1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(26,20)='("***MMISCPROFILES_d2Pidpsidy2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(27,20)='("***MMISCPROFILES_d2Pidpsidy3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(28,20)='("***MMISCPROFILES_d2Pidxdy1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(29,20)='("***MMISCPROFILES_d2Pidxdy2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(30,20)='("***MMISCPROFILES_d2Pidxdy3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(31,20)='("***MMISCPROFILES_Pi1D_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(32,20)='("***MMISCPROFILES_Pi2D_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(33,20)='("***MMISCPROFILES_Pi3D_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(34,20)='("***MMISCPROFILES_Pi1D_1: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(35,20)='("***MMISCPROFILES_Pi2D_1: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(36,20)='("***MMISCPROFILES_Pi3D_1: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(37,20)='("***MMISCPROFILES_Pi1D_3: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(38,20)='("***MMISCPROFILES_Pi2D_3: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(39,20)='("***MMISCPROFILES_Pi3D_3: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(40,20)='("***MMISCPROFILES_dPi_1dpsi1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(41,20)='("***MMISCPROFILES_dPi_1dpsi2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(42,20)='("***MMISCPROFILES_dPi_1dpsi3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(43,20)='("***MMISCPROFILES_dPi_3dpsi1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(44,20)='("***MMISCPROFILES_dPi_3dpsi2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(45,20)='("***MMISCPROFILES_dPi_3dpsi3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(46,20)='("***MMISCPROFILES_d2Pi_1dpsi21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(47,20)='("***MMISCPROFILES_d2Pi_1dpsi22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(48,20)='("***MMISCPROFILES_d2Pi_1dpsi23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(49,20)='("***MMISCPROFILES_d2Pi_3dpsi21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(50,20)='("***MMISCPROFILES_d2Pi_3dpsi22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(51,20)='("***MMISCPROFILES_d2Pi_3dpsi23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(52,20)='("***MMISCPROFILES_dPi_1dx1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(53,20)='("***MMISCPROFILES_dPi_1dx2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(54,20)='("***MMISCPROFILES_dPi_1dx3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(55,20)='("***MMISCPROFILES_dPi_3dx1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(56,20)='("***MMISCPROFILES_dPi_3dx2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(57,20)='("***MMISCPROFILES_dPi_3dx3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(58,20)='("***MMISCPROFILES_d2Pi_1dx21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(59,20)='("***MMISCPROFILES_d2Pi_1dx22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(60,20)='("***MMISCPROFILES_d2Pi_1dx23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(61,20)='("***MMISCPROFILES_d2Pi_3dx21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(62,20)='("***MMISCPROFILES_d2Pi_3dx22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(63,20)='("***MMISCPROFILES_d2Pi_3dx23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(64,20)='("***MMISCPROFILES_dPi_1dy1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(65,20)='("***MMISCPROFILES_dPi_1dy2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(66,20)='("***MMISCPROFILES_dPi_1dy3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(67,20)='("***MMISCPROFILES_d2Pi_1dy21D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(68,20)='("***MMISCPROFILES_d2Pi_1dy22D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(69,20)='("***MMISCPROFILES_d2Pi_1dy23D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(70,20)='("***MMISCPROFILES_d2Pi_3dpsidx1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(71,20)='("***MMISCPROFILES_d2Pi_3dpsidx2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(72,20)='("***MMISCPROFILES_d2Pi_3dpsidx3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(73,20)='("***MMISCPROFILES_d2Pi_1dxdy1D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(74,20)='("***MMISCPROFILES_d2Pi_1dxdy2D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(75,20)='("***MMISCPROFILES_d2Pi_1dxdy3D: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(76,20)='("***MMISCPROFILES_Pi1D_1_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(77,20)='("***MMISCPROFILES_Pi2D_1_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(78,20)='("***MMISCPROFILES_Pi3D_1_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(79,20)='("***MMISCPROFILES_Pi1D_2_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(80,20)='("***MMISCPROFILES_Pi2D_2_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(81,20)='("***MMISCPROFILES_Pi3D_2_STATIC: "/T7
+	      "Arguments psi, x, and y are not conformant.")'
+ ERR(82,20)='("***MMISCPROFILES_G1D_wind_STATIC: "/T7
+	      "Arguments x, and y are not conformant.")'
+ ERR(83,20)='("***MMISCPROFILES_G2D_wind_STATIC: "/T7
+	      "Arguments x, and y are not conformant.")'
+ ERR(84,20)='("***MMISCPROFILES_G3D_wind_STATIC: "/T7
+	      "Arguments x, and y are not conformant.")'
+ ERR(85,20)='("***MMISCPROFILES_FILL_PROFILE_DATA_STRUCTURES: "/T7
+	      "Second dimension of argument C is not conformant with A_N")'
+ ERR(86,20)='("***MMISCPROFILES_SET_A_1: "/T7"A_1 negative!")'
+
+
+ ERR(1,21)='("***MUPDATEM2_UPDATE_M2_1D: "/T7
+             "Could not allocate space for local variables ",
+             "P_, Q_, and Phi_tilde_.")'
+ ERR(2,21)='("***MUPDATEM2_UPDATE_M2_1D: "/T7
+             "No solution of bernoulli everywhere."/T7
+             "Possible causes: 1) A_1 to small. ",
+             "2) Problems on symmetry axis.")'
+ ERR(3,21)='("***MUPDATEM2_UPDATE_M2_1D: "/T7
+             "Could not deallocate local variables P_, Q_, and Phi_tilde_.")'
+ ERR(4,21)='("***MUPDATEM2_UPDATE_M2_3D: "/T7
+             "Could not allocate space for local variables ",
+             "P_, Q_, and Phi_tilde_.")'
+ ERR(5,21)='("***MUPDATEM2_UPDATE_M2_3D: "/T7
+             "No solution of bernoulli everywhere."/T7
+             "Possible causes: 1) A_1 to small. ",
+             "2) Problems on symmetry axis.")'
+ ERR(6,21)='("***MUPDATEM2_UPDATE_M2_3D: "/T7
+             "Could not deallocate local variables P_, Q_, and Phi_tilde_.")'
+
+ ERR(1,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_1D: "/T7
+             "Arguments P_, Q_, Phi_tilde_, and M2 are not conformant.")'
+ ERR(2,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_1D: "/T7
+             "No sub-slow solution of Bernoulli everywhere: P>Pdagger.")'
+ ERR(3,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_1D: "/T7
+             "No slow solution of Bernoulli everywhere: P>Pdagger.")'
+ ERR(4,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_1D: "/T7
+             "No fast solution of Bernoulli everywhere: Q>1.")'
+ ERR(5,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_2D: "/T7
+             "Arguments P_, Q_, Phi_tilde_, and M2 are not conformant.")'
+ ERR(6,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_2D: "/T7
+             "No sub-slow solution of Bernoulli everywhere: P>Pdagger.")'
+ ERR(7,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_2D: "/T7
+             "No slow solution of Bernoulli everywhere: P>Pdagger.")'
+ ERR(8,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_2D: "/T7
+             "No fast solution of Bernoulli everywhere: Q>1.")'
+ ERR(9,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_3D: "/T7
+             "Arguments P_, Q_, Phi_tilde_, and M2 are not conformant.")'
+ ERR(10,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_3D: "/T7
+              "No sub-slow solution of Bernoulli everywhere: P>Pdagger.")'
+ ERR(11,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_3D: "/T7
+              "No slow solution of Bernoulli everywhere: P>Pdagger.")'
+ ERR(12,22)='("***MROOTFINDINGM2_ROOT_FINDING_M2_3D: "/T7
+              "No fast solution of Bernoulli everywhere: Q>1.")'
+
+ ERR(1,23)='("***MINTERPOLATEM2_INTERPOLATE_M2_1D: "/T7
+             "Arguments P_, Q_, Phi_tilde_, and M2 are not conformant.")'
+ ERR(2,23)='("***MINTERPOLATEM2_INTERPOLATE_M2_2D: "/T7
+             "Arguments P_, Q_, Phi_tilde_, and M2 are not conformant.")'
+ ERR(3,23)='("***MINTERPOLATEM2_INTERPOLATE_M2_3D: "/T7
+             "Arguments P_, Q_, Phi_tilde_, and M2 are not conformant.")'
+ ERR(4,23)='("***MINTERPOLATEM2_FIND_DATABASE_ENTRIES_FOR_Y_1D: "/T7
+             "Arguments Y and entries are not conformant.")'
+ ERR(5,23)='("***MINTERPOLATEM2_FIND_DATABASE_ENTRIES_FOR_Y_2D: "/T7
+             "Arguments Y and entries are not conformant.")'
+ ERR(6,23)='("***MINTERPOLATEM2_FIND_DATABASE_ENTRIES_FOR_Y_3D: "/T7
+             "Arguments Y and entries are not conformant.")'
+ ERR(7,23)='("***MINTERPOLATEM2_print_database_boundary_1D: "/T7,
+             A," extend of Bernoulli database to small.")'
+ ERR(8,23)='("***MINTERPOLATEM2_print_database_boundary_2D: "/T7,
+             A," extend of Bernoulli database to small.")'
+ ERR(9,23)='("***MINTERPOLATEM2_print_database_boundary_3D: "/T7,
+             A," extend of Bernoulli database to small.")'
+
+ ERR(1,24)='("***MBERNOULLI_X0_1D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(2,24)='("***MBERNOULLI_X0_1D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(3,24)='("***MBERNOULLI_X0_1D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(4,24)='("***MBERNOULLI_X0_1D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(5,24)='("***MBERNOULLI_X0_2D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(6,24)='("***MBERNOULLI_X0_2D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(7,24)='("***MBERNOULLI_X0_2D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(8,24)='("***MBERNOULLI_X0_2D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(9,24)='("***MBERNOULLI_X0_3D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(10,24)='("***MBERNOULLI_X0_3D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(11,24)='("***MBERNOULLI_X0_3D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(12,24)='("***MBERNOULLI_X0_3D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(13,24)='("***MBERNOULLI_X1_1D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(14,24)='("***MBERNOULLI_X1_1D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(15,24)='("***MBERNOULLI_X1_1D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(16,24)='("***MBERNOULLI_X1_1D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(17,24)='("***MBERNOULLI_X1_2D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(18,24)='("***MBERNOULLI_X1_2D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(19,24)='("***MBERNOULLI_X1_2D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(20,24)='("***MBERNOULLI_X1_2D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(21,24)='("***MBERNOULLI_X1_3D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(22,24)='("***MBERNOULLI_X1_3D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(23,24)='("***MBERNOULLI_X1_3D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(24,24)='("***MBERNOULLI_X1_3D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(25,24)='("***MBERNOULLI_X2_1D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(26,24)='("***MBERNOULLI_X2_1D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(27,24)='("***MBERNOULLI_X2_1D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(28,24)='("***MBERNOULLI_X2_1D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(29,24)='("***MBERNOULLI_X2_2D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(30,24)='("***MBERNOULLI_X2_2D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(31,24)='("***MBERNOULLI_X2_2D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(32,24)='("***MBERNOULLI_X2_2D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(33,24)='("***MBERNOULLI_X2_3D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(34,24)='("***MBERNOULLI_X2_3D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(35,24)='("***MBERNOULLI_X2_3D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(36,24)='("***MBERNOULLI_X2_3D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(37,24)='("***MBERNOULLI_X3_1D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(38,24)='("***MBERNOULLI_X3_1D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(39,24)='("***MBERNOULLI_X3_1D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(40,24)='("***MBERNOULLI_X3_1D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(41,24)='("***MBERNOULLI_X3_2D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(42,24)='("***MBERNOULLI_X3_2D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(43,24)='("***MBERNOULLI_X3_2D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(44,24)='("***MBERNOULLI_X3_2D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(45,24)='("***MBERNOULLI_X3_3D: "/T7,
+             "Arguments P, Q, and Phi are not conformant.")'
+ ERR(46,24)='("***MBERNOULLI_X3_3D: "/T7,
+             "Arguments P, and X0_lbound are not conformant.")'
+ ERR(47,24)='("***MBERNOULLI_X3_3D: "/T7,
+             "Arguments P, and X0_ubound are not conformant.")'
+ ERR(48,24)='("***MBERNOULLI_X3_3D: "/T7,
+             "Argument restrictions P >= 0, Q >= 0, and Phi >= 0 ",
+             "are not met.")'
+ ERR(49,24)='("***MBERNOULLI_XC_1D: "/T7,
+             "Arguments P, and Xc_lbound are not conformant.")'
+ ERR(50,24)='("***MBERNOULLI_XC_1D: "/T7,
+             "Arguments P, and Xc_ubound are not conformant.")'
+ ERR(51,24)='("***MBERNOULLI_XC_1D: "/T7,
+             "Argument restriction P >= 0 is not met.")'
+ ERR(52,24)='("***MBERNOULLI_XC_2D: "/T7,
+             "Arguments P, and Xc_lbound are not conformant.")'
+ ERR(53,24)='("***MBERNOULLI_XC_2D: "/T7,
+             "Arguments P, and Xc_ubound are not conformant.")'
+ ERR(54,24)='("***MBERNOULLI_XC_2D: "/T7,
+             "Argument restriction P >= 0 is not met.")'
+ ERR(55,24)='("***MBERNOULLI_XC_3D: "/T7,
+             "Arguments P, and Xc_lbound are not conformant.")'
+ ERR(56,24)='("***MBERNOULLI_XC_3D: "/T7,
+             "Arguments P, and Xc_ubound are not conformant.")'
+ ERR(57,24)='("***MBERNOULLI_XC_3D: "/T7,
+             "Argument restriction P >= 0 is not met.")'
+ ERR(58,24)='("***MBERNOULLI_XS_1D: "/T7,
+             "Arguments P, and Q are not conformant.")'
+ ERR(59,24)='("***MBERNOULLI_XS_1D: "/T7,
+             "Arguments P, and Xs_lbound are not conformant.")'
+ ERR(60,24)='("***MBERNOULLI_XS_1D: "/T7,
+             "Arguments P, and Xs_ubound are not conformant.")'
+ ERR(61,24)='("***MBERNOULLI_XS_1D: "/T7,
+             "Argument restrictions P >= 0 and Q>=0 are not met.")'
+ ERR(62,24)='("***MBERNOULLI_XS_1D: "/T7,
+             "Arguments P, and Q are not conformant.")'
+ ERR(63,24)='("***MBERNOULLI_XS_2D: "/T7,
+             "Arguments P, and Xs_lbound are not conformant.")'
+ ERR(64,24)='("***MBERNOULLI_XS_2D: "/T7,
+             "Arguments P, and Xs_ubound are not conformant.")'
+ ERR(65,24)='("***MBERNOULLI_XS_2D: "/T7,
+             "Argument restrictions P >= 0 and Q>=0 are not met.")'
+ ERR(66,24)='("***MBERNOULLI_XS_3D: "/T7,
+             "Arguments P, and Q are not conformant.")'
+ ERR(67,24)='("***MBERNOULLI_XS_3D: "/T7,
+             "Arguments P, and Xs_lbound are not conformant.")'
+ ERR(68,24)='("***MBERNOULLI_XS_3D: "/T7,
+             "Arguments P, and Xs_ubound are not conformant.")'
+ ERR(69,24)='("***MBERNOULLI_XS_3D: "/T7,
+             "Argument restrictions P >= 0 and Q>=0 are not met.")'
+ ERR(70,24)='("***MBERNOULLI_XF_1D: "/T7,
+             "Arguments P, and Q are not conformant.")'
+ ERR(71,24)='("***MBERNOULLI_XF_1D: "/T7,
+             "Arguments P, and Xf_lbound are not conformant.")'
+ ERR(72,24)='("***MBERNOULLI_XF_1D: "/T7,
+             "Arguments P, and Xf_ubound are not conformant.")'
+ ERR(73,24)='("***MBERNOULLI_XF_1D: "/T7,
+             "Argument restrictions P >= 0 and Q>=0 are not met.")'
+ ERR(74,24)='("***MBERNOULLI_XF_2D: "/T7,
+             "Arguments P, and Q are not conformant.")'
+ ERR(75,24)='("***MBERNOULLI_XF_2D: "/T7,
+             "Arguments P, and Xf_lbound are not conformant.")'
+ ERR(76,24)='("***MBERNOULLI_XF_2D: "/T7,
+             "Arguments P, and Xf_ubound are not conformant.")'
+ ERR(77,24)='("***MBERNOULLI_XF_2D: "/T7,
+             "Argument restrictions P >= 0 and Q>=0 are not met.")'
+ ERR(78,24)='("***MBERNOULLI_XF_3D: "/T7,
+             "Arguments P, and Q are not conformant.")'
+ ERR(79,24)='("***MBERNOULLI_XF_3D: "/T7,
+             "Arguments P, and Xf_lbound are not conformant.")'
+ ERR(80,24)='("***MBERNOULLI_XF_3D: "/T7,
+             "Arguments P, and Xf_ubound are not conformant.")'
+ ERR(81,24)='("***MBERNOULLI_XF_3D: "/T7,
+             "Argument restrictions P >= 0 and Q>=0 are not met.")'
+
+ ERR(1,25)='("***MBDB_CREATE_DB: "/T7
+             "Could not allocate space for fast P, Q, and Phi ",
+             "grid variables.")'
+ ERR(2,25)='("***MBDB_CREATE_DB: "/T7
+             "Could not allocate space for fast database components.")'
+ ERR(3,25)='("***MBDB_CREATE_DB: "/T7
+             "Could not deallocate fast P, Q, and Phi grid variables.")'
+ ERR(4,25)='("***MBDB_CREATE_DB: "/T7
+             "Could not allocate space for slow P, Q, and Phi ",
+             "grid variables.")'
+ ERR(5,25)='("***MBDB_CREATE_DB: "/T7
+             "Could not allocate space for slow database components.")'
+ ERR(6,25)='("***MBDB_CREATE_DB: "/T7
+             "Could not deallocate slow P, Q, and Phi grid variables.")'
+ ERR(7,25)='("***MBDB_READ_DB: "/T7,
+             A," is not a valid Bernoulli database format."/T7
+             "Incorrect format description in database header.")'
+ ERR(8,25)='("***MBDB_OPEN_DB: "/T7
+             "File ",A," not recognized as FINESSE database.")'
+ ERR(9,25)='("***MBDB_OPEN_DB: "/T7
+             "Unrecognized format of FINESSE database: ",A/T7
+             "Only Fast or Slow databases are implemented.)'
+ ERR(10,25)='("***MBDB_READ_DB_FILE_HEADER: "/T7
+             "Database version number ",A," is newer than current"/T7
+             "FINESSE version.  FINESSE is not upward compatible!!!")'
+ ERR(11,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "File ",A," has been closed already or has never been opened.")'
+ ERR(12,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of P grid info to fast database file.")'
+ ERR(13,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Q grid info to fast database file.")'
+ ERR(14,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Phi grid info to fast database file.")'
+ ERR(15,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Xf data to fast database file.")'
+ ERR(16,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of X0 data to fast database file.")'
+ ERR(17,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of X1 data to fast database file.")'
+ ERR(18,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of P grid info to slow database file.")'
+ ERR(19,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Q grid info to slow database file.")'
+ ERR(20,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Phi grid info to slow database file.")'
+ ERR(21,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Xs data to slow database file.")'
+ ERR(22,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of Xc data to slow database file.")'
+ ERR(23,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of X2 data to slow database file.")'
+ ERR(24,25)='("***MBDB_WRITE_DB_ASCII: "/T7
+             "Error during writing of X3 data to slow database file.")'
+ ERR(25,25)='("***MBDB_READ_DB_ASCII: "/T7
+             "Could not allocate space for dB%Xf, dB%X0, and dB%X1 ",
+             "variables.")'
+ ERR(26,25)='("***MBDB_READ_DB_ASCII: "/T7
+             "Could not allocate space for dB%Xs, dB%Xc, dB%X2, and"/T7
+             "dB%X3 variables.")'
+ ERR(27,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "File ",A," has been closed already or has never been opened.")'
+ ERR(28,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of P grid info to fast database file.")'
+ ERR(29,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Q grid info to fast database file.")'
+ ERR(30,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Phi grid info to fast database file.")'
+ ERR(31,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Xf data to fast database file.")'
+ ERR(32,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of X0 data to fast database file.")'
+ ERR(33,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of X1 data to fast database file.")'
+ ERR(34,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of P grid info to slow database file.")'
+ ERR(35,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Q grid info to slow database file.")'
+ ERR(36,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Phi grid info to slow database file.")'
+ ERR(37,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Xs data to slow database file.")'
+ ERR(38,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of Xc data to slow database file.")'
+ ERR(39,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of X2 data to slow database file.")'
+ ERR(40,25)='("***MBDB_WRITE_DB_UNFORMATTED: "/T7
+             "Error during writing of X3 data to slow database file.")'
+ ERR(41,25)='("***MBDB_READ_DB_UNFORMATTED: "/T7
+             "Could not allocate space for dB%Xf, dB%X0, and dB%X1 ",
+             "variables.")'
+ ERR(42,25)='("***MBDB_READ_DB_UNFORMATTED: "/T7
+             "Could not allocate space for dB%Xs, dB%Xc, dB%X2, and"/T7
+             "dB%X3 variables.")'
+
+ ERR(1,26)='("***MVALIDATEINPUT_VALIDATE_GLOBAL_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(2,26)='("***MVALIDATEINPUT_VALIDATE_IO_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(3,26)='("***MVALIDATEINPUT_VALIDATE_MODE_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(4,26)='("***MVALIDATEINPUT_VALIDATE_PHYSICS_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(5,26)='("***MVALIDATEINPUT_VALIDATE_PROFILE_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(6,26)='("***MVALIDATEINPUT_VALIDATE_FLUX_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(7,26)='("***MVALIDATEINPUT_VALIDATE_GEOMETRY_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(8,26)='("***MVALIDATEINPUT_VALIDATE_SHAPE_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(9,26)='("***MVALIDATEINPUT_VALIDATE_BC_PARAMETERS: "/T7
+             "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(10,26)='("***MVALIDATEINPUT_VALIDATE_GRID_PARAMETERS: "/T7
+              "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(11,26)='("***MVALIDATEINPUT_VALIDATE_FLOW_DOMAIN_PARAMETERS: "/T7
+              "Invalid parameter settings, see log file ",A," for more info.")'
+ ERR(12,26)='("***MVALIDATEINPUT_VALIDATE_BDB_GRID_PARAMETERS: "/T7
+              "Invalid parameter settings, see log file ",A," for more info.")'
+
+ ERR(1,27)='("***MUSER_BCS_GENERAL_ESSENTIAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(2,27)='("***MUSER_BCS_GENERAL_ESSENTIAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(3,27)='("***MUSER_BCS_GENERAL_ESSENTIAL_BCS: "/T7
+             "No user defined essential bcs implemented for boundary ",I,".")'
+ ERR(4,27)='("***MUSER_BCS_GENERAL_NATURAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(5,27)='("***MUSER_BCS_GENERAL_NATURAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(6,27)='("***MUSER_BCS_GENERAL_NATURAL_BCS: "/T7
+             "No user defined natural bcs implemented for boundary ",I,".")'
+
+ ERR(1,28)='("***MUSER_BCS_TOKAMAK_ESSENTIAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(2,28)='("***MUSER_BCS_TOKAMAK_ESSENTIAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(3,28)='("***MUSER_BCS_TOKAMAK_ESSENTIAL_BCS: "/T7
+             "No user defined essential bcs implemented for boundary ",I,".")'
+ ERR(4,28)='("***MUSER_BCS_TOKAMAK_NATURAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(5,28)='("***MUSER_BCS_TOKAMAK_NATURAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(6,28)='("***MUSER_BCS_TOKAMAK_NATURAL_BCS: "/T7
+             "No user defined natural bcs implemented for boundary ",I,".")'
+
+ ERR(1,29)='("***MUSER_BCS_WIND_ESSENTIAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(2,29)='("***MUSER_BCS_WIND_ESSENTIAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(3,29)='("***MUSER_BCS_WIND_ESSENTIAL_BCS: "/T7
+             "No user defined essential bcs implemented for boundary ",I,".")'
+ ERR(4,29)='("***MUSER_BCS_WIND_NATURAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(5,29)='("***MUSER_BCS_WIND_NATURAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(6,29)='("***MUSER_BCS_WIND_NATURAL_BCS: "/T7
+             "No user defined natural bcs implemented for boundary ",I,".")'
+
+ ERR(1,30)='("***MUSER_BCS_LOOP_ESSENTIAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(2,30)='("***MUSER_BCS_LOOP_ESSENTIAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(3,30)='("***MUSER_BCS_LOOP_ESSENTIAL_BCS: "/T7
+             "No user defined essential bcs implemented for boundary ",I,".")'
+ ERR(4,30)='("***MUSER_BCS_LOOP_NATURAL_BCS: "/T7
+             "Arguments x, and y are not conformant.")'
+ ERR(5,30)='("***MUSER_BCS_LOOP_NATURAL_BCS: "/T7
+             "Could not allocate space for function value.")'
+ ERR(6,30)='("***MUSER_BCS_LOOP_NATURAL_BCS: "/T7
+             "No user defined natural bcs implemented for boundary ",I,".")'
+
+ ERR(1,31)='("***MSHAPE_LOOP_RADIUS2: NNM*NM = ",I5/T7
+            "It is required (HGOLIB restriction) that NNM*NM <= 1024.")'
+ ERR(2,31)='("***MSHAPE_LOOP_RADIUS2: "/T7
+            "Could not allocate space for local variable a2.)'
+
+ ERR(1,32)='("***MINVERSECOORDINATES_INVERSE_COORDINATES: "/T7
+             "Call to inverse coordinates only makes sense for tokamak ",
+	     "applications.")'
+ ERR(2,32)='("***MINVERSECOORDINATES_INVERSE_COORDINATES: "/T7
+             "Could not allocate space for local variables psii, thetaj,"/T7
+             "and interpolated_solution")'
+ ERR(3,32)='("***MINVERSECOORDINATES_INVERSE_COORDINATES: "/T7
+             "Could not deallocate local variables psii, thetaj,"/T7
+             "and interpolated_solution")'
+ ERR(4,32)='("***MINVERSECOORDINATES_INTERPOLATE_ON_PSI_THETA_GRID: "/T7
+             "Size of argument interpolated_solution is not conformant",/T7
+	     "with product of sizes of arguments thetaj and psii.")'
+ ERR(5,32)='("***MINVERSECOORDINATES_FIND_LOCI_OF_PSII_THETAJ_NODES: "/T7
+             "Size of first dimension of argument node_cells is not ",
+	     "conformant with argument thetaj.")'
+ ERR(6,32)='("***MINVERSECOORDINATES_FIND_LOCI_OF_PSII_THETAJ_NODES: "/T7
+             "Size of second dimension of argument node_cells is not ",
+	     "conformant with argument psii.")'
+ ERR(7,32)='("***MINVERSECOORDINATES_FIND_LOCI_OF_PSII_THETAJ_NODES: "/T7
+             "Arguments node_points and node_cells are not conformant.")'
+ ERR(8,32)='("***MINVERSECOORDINATES_FIND_LOCI_OF_PSII_THETAJ_NODES: "/T7
+             "Could not allocate space for local variables psimin, psimax,"/T7
+             "thetamin, and thetamax.")'
+ ERR(9,32)='("***MINVERSECOORDINATES_FIND_LOCI_OF_PSII_THETAJ_NODES: "/T7
+             "Could not find new node: ",I4,".")'
+ ERR(10,32)='("***MINVERSECOORDINATES_FIND_LOCI_OF_PSII_THETAJ_NODES: "/T7
+              "Could not deallocate local variables psimin, psimax,"/T7
+              "thetamin, and thetamax.")'
+ ERR(11,32)='("***MINVERSECOORDINATES_CELL_EXTREMA_OF_THETA: "/T7
+              "Arguments thetamin and thetamax are not conformant.")'
+ ERR(12,32)='("***MINVERSECOORDINATES_CELL_EXTREMA_OF_THETA: "/T7
+              "Size of arguments thetamin and thetamax should equal ncells.")'
+ ERR(13,32)='("***MINVERSECOORDINATES_CELL_EXTREMA_OF_THETA: "/T7
+              "Could not allocate space for local variable theta.")'
+ ERR(14,32)='("***MINVERSECOORDINATES_CELL_EXTREMA_OF_THETA: "/T7
+              "Could not deallocate local variable theta.")'
+ ERR(15,32)='("***MINVERSECOORDINATES_MAGNETIC_AXIS_BASED_THETA1D: "/T7
+              "Arguments x and y are not conformant.")'
+ ERR(16,32)='("***MINVERSECOORDINATES_PBOUNDARY_NODE_POSITION: "/T7
+              "Something is wrong: constant psi value in boundary cell ",I4,
+	      ".")'
+ ERR(17,32)='("***MINVERSECOORDINATES_NEW_FEM_REPRESENTATION: "/T7
+              "Could not deallocate global variable solution.")'
+ ERR(18,32)='("***MINVERSECOORDINATES_NEW_FEM_REPRESENTATION: "/T7
+              "Could not allocate space for global variable solution.")'
+ ERR(19,32)='("***MINVERSECOORDINATES_NEW_FEM_REPRESENTATION: "/T7
+              "Could not allocate space for local variable theta.")'
+ ERR(20,32)='("***MINVERSECOORDINATES_NEW_FEM_REPRESENTATION: "/T7
+              "Could not deallocate local variable theta.")'
+ ERR(21,32)='("***MINVERSECOORDINATES_ELONGATION_ON_MAGNETIC_AXIS: "/T7
+              "Something is wrong: a<0.")'
+ ERR(22,32)='("***MINVERSECOORDINATES_ELONGATION_ON_MAGNETIC_AXIS: "/T7
+              "Something is wrong: b<0.")'
+
+ ERR(1,33)='("***MSOLOVIEVTEST_SOLOVIEV_ACCURACY_TEST: "/T7
+             "Could not allocate space for local variable psi_soloviev.")'
+ ERR(2,33)='("***MSOLOVIEVTEST_SOLOVIEV_ACCURACY_TEST: "/T7
+             "Could not deallocate local variable psi_soloviev.")'
+
+ ERR(1,34)='("***MSTRAIGHTFIELDLINES_STRAIGHT_FIELDLINES: "/T7
+             "Call to straight_fieldlines only makes sense for tokamak ",
+	     "applications with INVERSECOORDINATES option turned on.")'
+ ERR(2,34)='("***MSTRAIGHTFIELDLINES_STRAIGHT_FIELDLINES: "/T7
+             "Could not deallocate global variable chi.")'
+ ERR(3,34)='("***MSTRAIGHTFIELDLINES_STRAIGHT_FIELDLINES: "/T7
+             "Could not allocate space for global variable chi.")'
+ ERR(4,34)='("***MSTRAIGHTFIELDLINES_STRAIGHT_FIELDLINES: "/T7
+             "Could not allocate space for local variables psii, chij,"/T7
+             "and interpolated_solution.")'
+ ERR(5,34)='("***MSTRAIGHTFIELDLINES_STRAIGHT_FIELDLINES: "/T7
+             "solution%psi does not represent an inverse coordinate"/T7
+	     "solution.  Has a call been made to inverse_coordinates?")'
+ ERR(6,34)='("***MSTRAIGHTFIELDLINES_STRAIGHT_FIELDLINES: "/T7
+             "Could not deallocate local variables psii, chij,"/T7
+             "M2, and interpolated_solution.")'
+ ERR(7,34)='("***MSTRAIGHTFIELDLINES_INTERPOLATE_ON_PSI_CHI_GRID: "/T7
+             "Size of argument interpolated_solution not conformant with ",
+	     "product of sizes of arguments chij and psii.")'
+ ERR(8,34)='("***MSTRAIGHTFIELDLINES_INTERPOLATE_ON_PSI_CHI_GRID: "/T7
+             "Size of argument psii is not equal to NR.")'
+ ERR(9,34)='("***MSTRAIGHTFIELDLINES_INTERPOLATE_ON_PSI_CHI_GRID: "/T7
+             "Could not deallocate global variable q.")'
+ ERR(10,34)='("***MSTRAIGHTFIELDLINES_INTERPOLATE_ON_PSI_CHI_GRID: "/T7
+              "Could not allocate space for global variable q.")'
+ ERR(11,34)='("***MSTRAIGHTFIELDLINES_CHI_AND_Q: "/T7
+              "Size of q and chi(1,:) are not conformant.")'
+ ERR(12,34)='("***MSTRAIGHTFIELDLINES_CHI_AND_Q: "/T7
+              "Could not allocate space for local variables M2, A_,"/T7
+              "summation, dJds, cells,x_gl, y_gl, J_gl, dJ_glds, A_gl,"/T7
+              "psi_gl, and M2_gl.")'
+ ERR(13,34)='("***MSTRAIGHTFIELDLINES_CHI_AND_Q: "/T7
+              "Could not deallocate local variables M2, A_, summation,"/T7
+              "dJds, cells,x_gl, y_gl, J_gl, dJ_glds, A_gl, psi_gl,"/T7
+              "and M2_gl.")'
+ ERR(14,34)='("***MSTRAIGHTFIELDLINES_FIND_LOCI_OF_CHIJ_NODES: "/T7
+             "Arguments chij, node_in_segment, and node_t, are not"/T7
+	     "conformant.")'
+ ERR(15,34)='("***MSTRAIGHTFIELDLINES_FIND_LOCI_OF_CHIJ_NODES: "/T7
+             "Could not find new node: ",I4,".")'
+ ERR(16,34)='("***MSTRAIGHTFIELDLINES_CHI_NODE_POSITION: "/T7
+             "Something is wrong: constant chi value, no root can be found.")'
+ ERR(17,34)='("***MSTRAIGHTFIELDLINES_SFL_FEM_REPRESENTATION: "/T7
+              "Could not deallocate local variable interpolated_solution.")'
+ ERR(18,34)='("***MSTRAIGHTFIELDLINES_SFL_FEM_REPRESENTATION: "/T7
+              "Could not allocate space for local variable "/T7
+              "interpolated_solution.")'
+/
+
+

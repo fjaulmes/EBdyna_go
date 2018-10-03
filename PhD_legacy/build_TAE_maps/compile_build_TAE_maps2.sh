@@ -1,0 +1,16 @@
+./compile_build_TAE17.sh &
+./compile_build_TAE18.sh &
+./compile_build_TAE19.sh &
+./compile_build_TAE20.sh &
+./compile_build_TAE21.sh &
+./compile_build_TAE22.sh &
+./compile_build_TAE23.sh &
+./compile_build_TAE24.sh &
+./compile_build_TAE25.sh &
+./compile_build_TAE26.sh &
+./compile_build_TAE27.sh &
+./compile_build_TAE28.sh &
+./compile_build_TAE29.sh &
+./compile_build_TAE30.sh &
+./compile_build_TAE31.sh &
+./compile_build_TAE32.sh &
