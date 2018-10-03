@@ -22,7 +22,7 @@ time=0;
 
 % Please enter the distribution name
 % par.DISTNAME            ='./input/initial_alphas_MB_CZ4_distribution170.mat'; 
-par.DISTNAME            ='./input/poincare_distribution_0p32eV_rand_edge.mat'; 
+par.DISTNAME            ='./input/initial_FLAT_D_E0_distribution1k.mat'; 
 
 %% PROCESSORS
 switch nargin
@@ -111,9 +111,9 @@ par.ID_NAME=strcat('G_eq_',par.ID);     % Name to save files
 par.coord_syst='flux';              % Switch for 3D coordinate system. Use 'flux': (theta,psi,phi) or 'toroidal': (R,Z,phi)
 
 % 3D field
-par.superimpose_2D_3D	=true; 					% Superimpose (if possible) the 2D and 3D fields, making a 2D interpolation obsolete and speeding up EBdyna_go. Disable to avoid numerical differences.
+par.superimpose_2D_3D	=false; 					% Superimpose (if possible) the 2D and 3D fields, making a 2D interpolation obsolete and speeding up EBdyna_go. Disable to avoid numerical differences.
 
-par.APPLY_RMP           =true;                  % Resonant Magnetic Perturbations (RMP)
+par.APPLY_RMP           =false;                  % Resonant Magnetic Perturbations (RMP)
 if par.APPLY_RMP
     par.RMP_file        =['../data_tokamak/MARSF_15611_bres.mat']; 
 end
@@ -161,7 +161,7 @@ par.SAVE_RAW_FILE       =false;                 % Remove the infor from raw file
 % 4  - FULL (without precession)
 % 5  - POINCARE (need hard setting of the `mode')
 % 6  - SAWTOOTH simulation
-par.mode=5; % par.Poincare_plot=true; 
+par.mode=1; % par.Poincare_plot=true; 
 par.Poincare_plot=false;
 par.calculate_length_trajectory=false;
 

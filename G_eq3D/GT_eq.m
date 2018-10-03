@@ -105,6 +105,7 @@ vpll_ej=dot(B,v,2)./Bfield;
 Eperp=0.5*(input.m/const.eV)*((dot(v,v,2))-vpll_ej.^2);
 x_gc=x+bsxfun(@times,1./(qom*Bfield_sq),cross(v,B,2));
 
+v_n=v;
 
 
 sign_Z_nu=sign(x_gc(:,2)-dim.func_Z_cross(x_gc(:,1))); % Add shift for current equilibrium found empirically! Change when using other equilibrium
@@ -145,14 +146,19 @@ end
         if ~par.CALCULATE_PPHI_3D
             for i=1:par.NR_FUND_IN_LOOP
                 x_prev=x;
-                [x(n_ejected,:),v(n_ejected,:)]=time_step_integration_GT_eq_struct(x(n_ejected,:),v(n_ejected,:),input.Fc_field(n_ejected,:));
+                 v_temp_2=v;
+               [x(n_ejected,:),v(n_ejected,:)]=time_step_integration_GT_eq_struct(x(n_ejected,:),v(n_ejected,:),input.Fc_field(n_ejected,:));
                 time=time+par.dt;
+                % Estimate velocity at n
+               v_n(n_ejected,:)=0.5*(v(n_ejected,:)+v_temp_2(n_ejected,:));
+
 				if par.calculate_length_trajectory
 					Delta_l=sqrt((x(:,1).*cos(x(:,3))-x_prev(:,1).*cos(x_prev(:,3))).^2+...
 						 (x(:,1).*sin(x(:,3))-x_prev(:,1).*sin(x_prev(:,3))).^2+...
 						 ((x(:,2))-x_prev(:,2)).^2);
 					elem_Delta_l(n_ejected)=elem_Delta_l(n_ejected)+Delta_l(n_ejected);
-				end
+                end
+                
             end
         else
             for i=1:par.NR_FUND_IN_LOOP
@@ -164,7 +170,7 @@ end
                 [x(n_ejected,:),v(n_ejected,:)]=time_step_integration_GT_eq_struct(x(n_ejected,:),v(n_ejected,:),input.Fc_field(n_ejected,:));
                 time=time+par.dt;
                 % Estimate velocity at n
-                v_n=0.5*(v(n_ejected,:)+v_temp_2(n_ejected,:));
+                v_n(n_ejected,:)=0.5*(v(n_ejected,:)+v_temp_2(n_ejected,:));
                 
                 % Evaluate pphi
                 Delta_pphi_an(n_ejected)=Delta_pphi_an(n_ejected)...
@@ -224,7 +230,7 @@ end
         %% vpll crossing and midplane crossing
         [~,B]=B_interpolation(x);
         Bfield_sq=dot(B,B,2);
-        x_gc=x+bsxfun(@times,1./(qom*Bfield_sq),cross(v,B,2));
+        x_gc=x+bsxfun(@times,1./(qom*Bfield_sq),cross(v_n,B,2));
         
         % Increase the number of Z-crossings
         sign_Z_nu=sign(x_gc(:,2)-dim.func_Z_cross(x_gc(:,1)));
@@ -339,10 +345,13 @@ end
 
             %% Store x and v
         elseif (mod(time_step,par.TIME_STAMP_PRECISION)==0)
+            % standard storage at each time stamp
+            % further quantities are calculateed inevaluate_output
             time_stamp=ceil((time_step)/par.TIME_STAMP_PRECISION);
             output.x(:,:,time_stamp)=x;
             output.v(:,:,time_stamp)=v;
-            
+            output.x_gc(:,:,time_stamp)=x_gc;
+           
             % Recorrect time-global for precision
             time=par.time_scale(time_stamp)+par.dt;
             

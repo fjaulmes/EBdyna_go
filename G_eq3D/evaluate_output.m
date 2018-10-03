@@ -46,7 +46,7 @@ par.dt=2*par.dt;
 %% Find sfl-coordinates in case no par.coord_syst isn't 'flux' and hence not already in previous output
 X_ind=((output.x(:,1,:)-dim.R0)*dim.DX_inv)+dim.mid_Xzero;
 Z_ind=( output.x(:,2,:)        *dim.DZ_inv)+dim.mid_Z;
-output.psi_norm=ba_interp2(maps(1).psi_norm_XZ,Z_ind,X_ind,'linear');
+output.psi_norm=ba_interp2(maps(1).psi_norm_XZ,Z_ind,X_ind,'cubic');
 
 if par.interp_scheme==1
     [X_ind,Z_ind] = interp_index_list_2D ([dim.size_X,dim.size_Z],X_ind,Z_ind);     % Return the indexes / slopes as reps. X_ind and Z_ind
@@ -55,6 +55,14 @@ expr_calc=isfinite(output.x(:,1,:));
 output.theta = interpolate_theta_XZ(X_ind,Z_ind,expr_calc);
 
 %% B field and speed
+% for t_ind = size(output.x,3)
+%     B_t_ind=ba_interp2(maps(1).B_2D       ,squeeze(Z_ind(:,t_ind)),squeeze(X_ind(:,t_ind)),'cubic');
+%     B(:,:,t_ind)=squeeze(B_t_ind);
+% end
+B=ba_interp2(maps(1).B_2D       ,Z_ind,X_ind,'cubic');
+B=squeeze(B);
+B=permute(B,[1 3 2]);
+
 Bfield=sqrt(dot(B,B,2));
 b=bsxfun(@times,Bfield.^-1,B);
 
@@ -64,7 +72,10 @@ v_plus_1_sq=            dot(output.v_plus_1 ,output.v_plus_1,2);
 v_perp_sq  =v_plus_1_sq-dot(output.vpll     ,output.vpll    ,2);
 
 %% GC_of orbit 
-output.x_gc=output.x+bsxfun(@times,(input.m/const.eV)*1./(input.Z*Bfield),cross(output.v_plus_1,b,2));
+% this calculation turned out to be inaccurate
+% for an undefined reason
+gc_x_corr=bsxfun(@times,(input.m/const.eV)*1./(input.Z*Bfield),cross(output.v_plus_1,b,2));
+output.x_gc=output.x+gc_x_corr;
 
 %% Radial index gyro center
 X_ind_gc=((output.x_gc(:,1,:)-dim.R0)*dim.DX_inv)+dim.mid_Xzero;

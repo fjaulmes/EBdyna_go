@@ -61,9 +61,9 @@ par.NR_FUND_IN_LOOP = 100;  % Nr. fundamental steps in one loop
 % Simulation dependent time parameters:
 switch par.mode
     case 1 % TEST                      
-        par.dt                      =0.5*1e-9;                          % Fundamental time step
-        t_sim                       =1e-3;                          % Length of simulation
-        par.NB_TIME_STAMPS          =1000; 
+        par.dt                      =0.2*1e-9;                          % Fundamental time step
+        t_sim                       =1.4*1e-4;                          % Length of simulation
+        par.NB_TIME_STAMPS          =7000; 
         PC_SAVE                     =Inf;   
         par.NB_STAMPS_saved         =par.NB_TIME_STAMPS;
         
