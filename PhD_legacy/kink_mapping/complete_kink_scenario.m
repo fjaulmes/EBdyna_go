@@ -1,5 +1,0 @@
-format compact
-psi_star_initial_kadomtsev
-psi_star_kink_PR
-psi_star_finishing_last_kink
-adjust_time_evol_data

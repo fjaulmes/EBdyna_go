@@ -1,3 +1,0 @@
-mcc -m ./GT_few_evolution_collapse.m ./initialize_folder_names.m ./load_Emaps_frame_rank.m ./load_Bmaps_frame_rank.m  ./update_psi_star_frame_rank.m ./update_E_b_fields.m ./interpolate_theta_psi_fromXZ.m ./time_step_integration_GT_collapse.m  ./adapt_speed_pphi_G.m ./adapt_speed_Ekin_G.m ./estimate_half_time_step_positions_G.m ./update_GT_3D_collapse.m ./update_Gfields_collapse.m ./reposition_lost_particles_3DG.m ./wrap2pi.m ./interp3_phi_theta_psi.m ./interp2_XZ.m ./lininterp3.m ./build_3Dinterp_indexarrays.m ./interp2_omega_map.m
-cp ./GT_few_evolution_collapse ./outputs/GTc_few_evolution_collapse
-rm ./run_GT_few_evolution_collapse.sh

@@ -1,3 +1,0 @@
-calculate_Efield_Phi_complete_phi_evol1;
-calculate_Bfield_psi_complete_phi_evol1;
-
