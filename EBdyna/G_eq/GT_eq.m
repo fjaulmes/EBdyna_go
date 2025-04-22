@@ -47,6 +47,9 @@ end
 if ~isfield(par,'remove_thermalized_markers')
     par.remove_thermalized_markers=0;
 end
+if ~isfield(par,'full_2D_neutrals')
+    par.full_2D_neutrals=0;
+end
 if isfield(par,'isDTbackground')
     if par.isDTbackground
         disp('DT background simulation, changing bulk plasma isotope mass.')
@@ -611,7 +614,15 @@ time_stamp=1;
 			vth_i(COLL_GROUP)=sqrt(2*Ti(COLL_GROUP)*(const.eV/const.mBulk));
             
             if par.CALCULATE_CX
-                neutral_density(COLL_GROUP)=interp1qr(dim.pn,dim.n0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
+                if ~par.full_2D_neutrals
+                    neutral_density(COLL_GROUP)=interp1qr(dim.pn,dim.n0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
+                else
+                    if par.N0_FAC_D2>0
+                        [neutral_density(COLL_GROUP),neutral_density_D2(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
+                    else
+                        [neutral_density(COLL_GROUP),~]=neutrals_2D_interp(x(COLL_GROUP));
+                    end
+                end
                 if par.USE_T0_TABLE
                     neutral_temp(COLL_GROUP)=interp1qr(dim.pn,dim.T0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
                 end
@@ -714,7 +725,9 @@ time_stamp=1;
                         sigma_cx_D2(COLL_GROUP)=100*sigma_cx_D2(COLL_GROUP);
                     end
                 end
-                neutral_density_D2(COLL_GROUP_D2)=interp1qr(dim.pn,dim.n0_prof_D2,psi_gc_value(COLL_GROUP_D2),psi_xi_pos(COLL_GROUP_D2),psi_slope(COLL_GROUP_D2));
+                if ~par.full_2D_neutrals
+                    neutral_density_D2(COLL_GROUP_D2)=interp1qr(dim.pn,dim.n0_prof_D2,psi_gc_value(COLL_GROUP_D2),psi_xi_pos(COLL_GROUP_D2),psi_slope(COLL_GROUP_D2));
+                end
                 CX_rate(COLL_GROUP_D2)=CX_rate(COLL_GROUP_D2)+sigma_cx_D2(COLL_GROUP_D2).*neutral_density_D2(COLL_GROUP_D2).*vnbiD(COLL_GROUP_D2);
                 % decreased cumulative rate to reflect extended marker life
 				CX_val(COLL_GROUP)=CX_val(COLL_GROUP).*exp(-(par.NR_FUND_IN_LOOP.*par.dt).*CX_rate(COLL_GROUP));

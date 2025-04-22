@@ -67,7 +67,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Simulation time parameters
 % General
-par.NR_FUND_IN_LOOP = 1;  % Nr. fundamental steps in one loop
+par.NR_FUND_IN_LOOP = 5;  % Nr. fundamental steps in one loop
 
 % Simulation dependent time parameters:
 par.DISPLAY_TIMESTAMP_LOSSES = 1;
@@ -93,7 +93,7 @@ switch par.mode
         par.APPLY_SAWTOOTH          =false;                         % Tur off ST simulation
     case 3 % FULL                         
         par.dt                          =1*1e-9;                        % Fundamental time step
-        t_sim                           =1*1e-5;                        % Length of simulation : 60 mus
+        t_sim                           =1*1e-6;                        % Length of simulation : 60 mus
         par.NB_TIME_STAMPS              =100;                           % # stored values (stamps)
         PC_SAVE                         =Inf;                           % percentage after which a intermediate save is done (for debugging)
         par.NB_STAMPS_saved             =100;        
