@@ -620,7 +620,7 @@ time_stamp=1;
                     if par.N0_FAC_D2>0
                         [neutral_density(COLL_GROUP),neutral_density_D2(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
                     else
-                        [neutral_density(COLL_GROUP),~]=neutrals_2D_interp(x(COLL_GROUP));
+                        [neutral_density(COLL_GROUP),~]=neutrals_2D_interp(x(COLL_GROUP,:));
                     end
                 end
                 if par.USE_T0_TABLE
