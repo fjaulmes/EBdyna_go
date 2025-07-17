@@ -1,5 +1,5 @@
 echo "********************************************"
-export EBdyna_rundir=d3d_184342_2500_15R_00
+export EBdyna_rundir=d3d_184342_2500_15R_01
 echo "Coying 3 main files from EBdyna_rundir=" $EBdyna_rundir
 cp ./$EBdyna_rundir/G_eq.m ./
 cp ./$EBdyna_rundir/define_basic_parameters.m ./
