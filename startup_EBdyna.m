@@ -1,7 +1,10 @@
 %% this script intiailizes the folder architecture for the EBdyna solver
 restoredefaultpath
 
-addpath('./d3d_184342_2500_15R_00')
+% addpath('./d3d_184342_2500_15R_00')
+SIM_FOLDER='./CU_5400_1150_RT42_01'
+addpath(SIM_FOLDER);
+
 
 % main folder for running the solver
 addpath(genpath('./EBdyna/G_eq'))

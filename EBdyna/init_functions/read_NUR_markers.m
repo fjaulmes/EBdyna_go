@@ -1,9 +1,11 @@
+SIM_FOLDER
+NUR_OUT_FILE='NUR_markers_Rt42_300k'
+EBDYNA_IN_FILE=['EBdyna_',NUR_OUT_FILE]
+
+load([SIM_FOLDER,'/NUR_out/',NUR_OUT_FILE,'.mat'])
 
 
-load('./NUR_data/NUR_out_CU_2NBI_phi45_Rt40.mat')
-
-
-load('./data_tokamak/physics_constants.mat');
+load('./data_common/physics_data/physics_constants.mat');
 mass=mD
 charge=1
 
@@ -78,7 +80,7 @@ Ekin_recalc=sum(input.v.^2,2);
 Ekin_recalc=0.5*mD/eV*Ekin_recalc;
 
 
-save('./G_eq3D/input/NUR_markers_R40_600k.mat','input')
+save([SIM_FOLDER,'/G_eq3D/input/',EBDYNA_IN_FILE,'.mat','input'])
 input
 
 xgc=Rpos.*cos(phipos);

@@ -11,12 +11,17 @@ end
 %% Load in map files
 disp('Load in map files....')
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
-m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
+% m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
+m=load(filename,'Bphi_map','Br_map','Bz_map','psi_global','psi_map','psi_n_map','theta_map');
 
 d2=load(filename,'size_X','size_Z');
 filename=[par.folders.DATA_SHOT,'motions_map_dimensions.mat'];
-d=load(filename,'mid_X','mid_Z','mid_Zzero','DX','scale_X','scale_Z','NB_PSI','R0','Z_axis','mid_Xzero','X_axis','psi_scale','scale_psi_mp');
-d.mid_X=double(d.mid_X);d.mid_Z=double(d.mid_Z);d.mid_Zzero=double(d.mid_Zzero);d.mid_Xzero=double(d.mid_Xzero);
+d=load(filename,'mid_X','mid_Z','DX','scale_X','scale_Z','R0','R_axis','Z_axis','psi_scale','scale_psi_mp');
+d.X_axis=d.R_axis-d.R0;
+d.mid_X=double(d.mid_X);d.mid_Z=double(d.mid_Z);
+
+% d=load(filename,'mid_X','mid_Z','mid_Zzero','DX','scale_X','scale_Z','NB_PSI','R0','Z_axis','mid_Xzero','X_axis','psi_scale','scale_psi_mp');
+% d.mid_X=double(d.mid_X);d.mid_Z=double(d.mid_Z);d.mid_Zzero=double(d.mid_Zzero);d.mid_Xzero=double(d.mid_Xzero);
 d=combine_structs(d,d2);
 d.size_Z=length(d.scale_Z);
 d.size_X=length(d.scale_X);

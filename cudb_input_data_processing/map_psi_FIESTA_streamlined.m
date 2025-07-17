@@ -68,7 +68,7 @@ map2D = FIESTA.map2D;
 xnodes = linspace(Rmin, Rmax, NX);
 ynodes = linspace(Zmin, Zmax, NZ);
 %[X_grid, Z_grid] = meshgrid(xnodes, ynodes);
-[Z_grid, X_grid] = meshgrid(ynodes, xnodes);
+[scale_Z, scale_X] = meshgrid(ynodes, xnodes);
 % Z_grid=Zg;
 % X_grid=Rg;
 
@@ -82,36 +82,36 @@ switch lower(interp_method)
         % F_Bz       = scatteredInterpolant(Rg(:), Zg(:), map2D.Bz(:), 'natural', 'none');
 
         % pressure_map = F_pressure(X_grid, Z_grid);
-        psi_map      = F_psi(X_grid, Z_grid);
-        [dpsidZ_map, dpsidR_map] = gradient(psi_map, Z_grid, R_grid);
+        psi_map      = F_psi(scale_X, scale_Z);
+        [dpsidZ_map, dpsidR_map] = gradient(psi_map, scale_Z, R_grid);
 
         % psi_n_map    = F_psi_n(X_grid, Z_grid);
         % Bphi_map     = F_Bphi(X_grid, Z_grid);
         % Br_map       = F_Br(X_grid, Z_grid);
         % Bz_map       = F_Bz(X_grid, Z_grid);
     case 'spline'
-        X_vec = X_grid(:);
-        Y_vec = Z_grid(:);
+        X_vec = scale_X(:);
+        Y_vec = scale_Z(:);
 
         sp_psi = csapi({FIESTA.map2D.scale_R, FIESTA.map2D.scale_Z}, FIESTA.map2D.psi);
         psi_vec = fnval(sp_psi, [X_vec'; Y_vec']);  % Must be a matrix with 2 lines
-        psi_map = reshape(psi_vec, size(X_grid));        
+        psi_map = reshape(psi_vec, size(scale_X));        
         %sp_br = csapi({FIESTA.map2D.scale_R, FIESTA.map2D.scale_Z}, FIESTA.map2D.Br);
         %Br_map = reshape(fnval(sp_br, [X_vec'; Y_vec']), size(X_grid));        
         %sp_bz = csapi({FIESTA.map2D.scale_R, FIESTA.map2D.scale_Z}, FIESTA.map2D.Bz);
         %Bz_map = reshape(fnval(sp_bz, [X_vec'; Y_vec']), size(X_grid));        
         % Compute smooth partial derivatives using fnder
         sp_dpsi_dR = fnder(sp_psi, [1 0]);  % ∂ψ/∂R
-        dpsidR_map = reshape(fnval(sp_dpsi_dR, [X_vec'; Y_vec']), size(X_grid));        
+        dpsidR_map = reshape(fnval(sp_dpsi_dR, [X_vec'; Y_vec']), size(scale_X));        
         sp_dpsi_dZ = fnder(sp_psi, [0 1]);  % ∂ψ/∂Z
-        dpsidZ_map = reshape(fnval(sp_dpsi_dZ, [X_vec'; Y_vec']), size(X_grid));        
+        dpsidZ_map = reshape(fnval(sp_dpsi_dZ, [X_vec'; Y_vec']), size(scale_X));        
 
     case 'gridfit'
         gf_data=reshape(FIESTA.map2D.psi,1,length(FIESTA.map2D.scale_R)*length(FIESTA.map2D.scale_Z));
         FIESTA_data_X_gf=repmat(FIESTA.map2D.scale_R,1,length(FIESTA.map2D.scale_Z))-R0;
         FIESTA_data_Z_gf = reshape(repmat(FIESTA.map2D.scale_Z, length(FIESTA.map2D.scale_R), 1), [], 1);
         psi_map      = gridfit(FIESTA_data_X_gf,FIESTA_data_Z_gf,gf_data,xnodes,ynodes,'smoothness',GRIDFIT_SMOOTHNESS);
-        [dpsidZ_map, dpsidR_map] = gradient(psi_map, Z_grid, R_grid);
+        [dpsidZ_map, dpsidR_map] = gradient(psi_map, scale_Z, R_grid);
 
         % pressure_map = gridfit(Rg(:), Zg(:), map2D.pressure(:), xnodes, ynodes);
         % psi_map      = gridfit(Rg(:), Zg(:), map2D.psi(:), xnodes, ynodes);
@@ -126,12 +126,12 @@ end
 
 %% === Coordinates for EBdyna grid ===
 R_grid = xnodes;
-X_grid = R_grid-R0;
-Z_grid = ynodes;
+scale_X = R_grid-R0;
+scale_Z = ynodes;
 NR = NX;
 NZ = NZ;
 DX = mean(diff(R_grid));
-DZ = mean(diff(Z_grid));
+DZ = mean(diff(scale_Z));
 mid_X = round(NR / 2);
 mid_Z = round(NZ / 2);
 Rpos = R_grid;
@@ -147,13 +147,14 @@ psi_boundary = FIESTA.psi_boundary;   % in Wb
 % Compute normalized poloidal flux
 psi_n_map = (psi_map - psi_axis) ./ (psi_boundary - psi_axis);
 % Mask of points below the X-point (private flux region)
-private_flux_mask = Z_grid < FIESTA.Z_xpoint;
+private_flux_mask = scale_Z < FIESTA.Z_xpoint;
 % Force psi_n = 1 in the private flux region
 psi_n_map=private_flux_mask+psi_n_map.*(1-private_flux_mask);
-psi_n_map = min(max(psi_n_map, 0), 1);
+psi_norm_map = psi_n_map;
+psi_norm1_map = min(max(psi_n_map, 0), 1);
 
 % Interpolate F onto the 2D psi_n grid
-F_XZ_map = interp1(FIESTA.prof.psiN, FIESTA.prof.f, psi_n_map, 'makima', 'extrap');
+F_XZ_map = interp1(FIESTA.prof.psiN, FIESTA.prof.f, psi_norm1_map, 'makima', 'extrap');
 % Compute Bphi using Bphi = F / R
 Bphi_map = F_XZ_map ./ Rpos_XZ_map;
 
@@ -174,12 +175,12 @@ end
 
 %% === Save motions_map_dimensions.mat ===
 if SAVEFILE
-    save([DATA_PLASMA_FOLDER,'motions_map_dimensions.mat'], 'R0','R_axis','Z_axis','NR', 'NZ', 'X_grid', 'Z_grid', 'Rpos_XZ_map', 'DX', 'DZ', 'mid_X', 'mid_Z');
+    save([DATA_PLASMA_FOLDER,'motions_map_dimensions.mat'], 'R0','R_axis','Z_axis','NR', 'NZ', 'scale_X', 'scale_Z', 'Rpos_XZ_map', 'DX', 'DZ', 'mid_X', 'mid_Z');
 end
 
 %% === Save XZsmall_fields_tokamak_pre_collapse.mat ===
 if SAVEFILE
-    save([DATA_PLASMA_FOLDER,'XZsmall_fields_tokamak_pre_collapse.mat'],  'psi_map', 'psi_n_map', 'Bphi_map', 'Br_map', 'Bz_map', 'R_grid', 'Z_grid');
+    save([DATA_PLASMA_FOLDER,'XZsmall_fields_tokamak_pre_collapse.mat'],  'psi_map', 'psi_norm_map', 'Bphi_map', 'Br_map', 'Bz_map', 'R_grid', 'scale_X','scale_Z');
 end
 
 disp('EBdyna input files generated.')
