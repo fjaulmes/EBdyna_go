@@ -14,7 +14,7 @@ DATA_PHYS_FOLDER=['../data_common/physics_data/']
 SAVEFILE = true;
 Rmin = 0.59; Rmax = 1.24;   % Grid boundaries for interpolation
 R0 = 0.894
-NX = 400; NZ = 800;       % Grid resolution
+NX = 400; NZ = 820;       % Grid resolution
 Delta_Z=NZ*(Rmax-Rmin)/NX;
 Zmin = -0.5*Delta_Z; Zmax = 0.5*Delta_Z;
 interp_method = 'spline'; % Options: 'gridfit', 'scattered', 'spline'
@@ -86,9 +86,9 @@ switch lower(interp_method)
         [dpsidZ_map, dpsidR_map] = gradient(psi_map, scale_Z, R_grid);
 
         % psi_n_map    = F_psi_n(X_grid, Z_grid);
-        % Bphi_map     = F_Bphi(X_grid, Z_grid);
-        % Br_map       = F_Br(X_grid, Z_grid);
-        % Bz_map       = F_Bz(X_grid, Z_grid);
+        % Bphi_XZ     = F_Bphi(X_grid, Z_grid);
+        % Br_XZ       = F_Br(X_grid, Z_grid);
+        % Bz_XZ       = F_Bz(X_grid, Z_grid);
     case 'spline'
         X_vec = scale_X(:);
         Y_vec = scale_Z(:);
@@ -97,13 +97,13 @@ switch lower(interp_method)
         psi_vec = fnval(sp_psi, [X_vec'; Y_vec']);  % Must be a matrix with 2 lines
         psi_map = reshape(psi_vec, size(scale_X));        
         %sp_br = csapi({FIESTA.map2D.scale_R, FIESTA.map2D.scale_Z}, FIESTA.map2D.Br);
-        %Br_map = reshape(fnval(sp_br, [X_vec'; Y_vec']), size(X_grid));        
+        %Br_XZ = reshape(fnval(sp_br, [X_vec'; Y_vec']), size(X_grid));        
         %sp_bz = csapi({FIESTA.map2D.scale_R, FIESTA.map2D.scale_Z}, FIESTA.map2D.Bz);
-        %Bz_map = reshape(fnval(sp_bz, [X_vec'; Y_vec']), size(X_grid));        
+        %Bz_XZ = reshape(fnval(sp_bz, [X_vec'; Y_vec']), size(X_grid));        
         % Compute smooth partial derivatives using fnder
-        sp_dpsi_dR = fnder(sp_psi, [1 0]);  % ∂ψ/∂R
+        sp_dpsi_dR = fnder(sp_psi, [1 0]);  % /R
         dpsidR_map = reshape(fnval(sp_dpsi_dR, [X_vec'; Y_vec']), size(scale_X));        
-        sp_dpsi_dZ = fnder(sp_psi, [0 1]);  % ∂ψ/∂Z
+        sp_dpsi_dZ = fnder(sp_psi, [0 1]);  % /Z
         dpsidZ_map = reshape(fnval(sp_dpsi_dZ, [X_vec'; Y_vec']), size(scale_X));        
 
     case 'gridfit'
@@ -116,9 +116,9 @@ switch lower(interp_method)
         % pressure_map = gridfit(Rg(:), Zg(:), map2D.pressure(:), xnodes, ynodes);
         % psi_map      = gridfit(Rg(:), Zg(:), map2D.psi(:), xnodes, ynodes);
         % psi_n_map    = gridfit(Rg(:), Zg(:), map2D.psi_n(:), xnodes, ynodes);
-        % Bphi_map     = gridfit(Rg(:), Zg(:), map2D.Bphi(:), xnodes, ynodes);
-        % Br_map       = gridfit(Rg(:), Zg(:), map2D.Br(:), xnodes, ynodes);
-        % Bz_map       = gridfit(Rg(:), Zg(:), map2D.Bz(:), xnodes, ynodes);
+        % Bphi_XZ     = gridfit(Rg(:), Zg(:), map2D.Bphi(:), xnodes, ynodes);
+        % Br_XZ       = gridfit(Rg(:), Zg(:), map2D.Br(:), xnodes, ynodes);
+        % Bz_XZ       = gridfit(Rg(:), Zg(:), map2D.Bz(:), xnodes, ynodes);
 
     otherwise
         error('Unknown interpolation method: %s', interp_method);
@@ -136,8 +136,8 @@ mid_X = round(NR / 2);
 mid_Z = round(NZ / 2);
 Rpos = R_grid;
 Rpos_XZ_map = repmat(Rpos(:)', NZ, 1)';
-Br_map = -dpsidZ_map ./ Rpos_XZ_map / (2*pi);
-Bz_map =  dpsidR_map ./ Rpos_XZ_map / (2*pi);
+Br_XZ = -dpsidZ_map ./ Rpos_XZ_map / (2*pi);
+Bz_XZ =  dpsidR_map ./ Rpos_XZ_map / (2*pi);
 R_axis=FIESTA.r_mag;
 Z_axis=FIESTA.z_mag;
 
@@ -156,7 +156,7 @@ psi_norm1_map = min(max(psi_n_map, 0), 1);
 % Interpolate F onto the 2D psi_n grid
 F_XZ_map = interp1(FIESTA.prof.psiN, FIESTA.prof.f, psi_norm1_map, 'makima', 'extrap');
 % Compute Bphi using Bphi = F / R
-Bphi_map = F_XZ_map ./ Rpos_XZ_map;
+Bphi_XZ = F_XZ_map ./ Rpos_XZ_map;
 
 %% === Save pressure_profile.mat ===
 if SAVEFILE
@@ -180,7 +180,7 @@ end
 
 %% === Save XZsmall_fields_tokamak_pre_collapse.mat ===
 if SAVEFILE
-    save([DATA_PLASMA_FOLDER,'XZsmall_fields_tokamak_pre_collapse.mat'],  'psi_map', 'psi_norm_map', 'Bphi_map', 'Br_map', 'Bz_map', 'R_grid', 'scale_X','scale_Z');
+    save([DATA_PLASMA_FOLDER,'XZsmall_fields_tokamak_pre_collapse.mat'],  'psi_map', 'psi_norm_map', 'Bphi_XZ', 'Br_XZ', 'Bz_XZ', 'R_grid', 'scale_X','scale_Z');
 end
 
 disp('EBdyna input files generated.')

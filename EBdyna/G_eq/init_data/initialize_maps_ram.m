@@ -12,7 +12,7 @@ end
 disp('Load in map files....')
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
 % m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
-m=load(filename,'Bphi_map','Br_map','Bz_map','psi_global','psi_map','psi_n_map','theta_map');
+m=load(filename,'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_map','psi_n_map','theta_map','R_grid','scale_Z');
 
 d2=load(filename,'size_X','size_Z');
 filename=[par.folders.DATA_SHOT,'motions_map_dimensions.mat'];
@@ -27,7 +27,9 @@ d.size_Z=length(d.scale_Z);
 d.size_X=length(d.scale_X);
 % d2=load(strcat(par.paths.DATA_FOLDER,'psi_profiles.mat'),'psi_pol_initial_profile'); 
 % d.psi_scale_correct=d2.psi_pol_initial_profile;
-d.psi_scale_correct = d.psi_scale;
+filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
+d2=load(filename,'psi_scale');
+d.psi_scale_correct = d2.psi_scale;
 
 if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
@@ -179,8 +181,19 @@ end
 
 if par.USE_VESSEL_LIMIT
      filename=[par.VESSEL_FILENAME]
-     vessel=load(filename);
-	 d.vessel=vessel;
+     contour_vessel=load(filename);
+     R_vessel=contour_vessel.wall_CU.R(1:2:end);
+     Z_vessel=contour_vessel.wall_CU.Z(1:2:end);
+     Gridpoints_R=meshgrid(m.R_grid,m.scale_Z)';
+     Gridpoints_Z=meshgrid(m.scale_Z,m.R_grid);
+     Mask_wall=zeros(size(Gridpoints_R));
+     % for index_R=1:size(Gridpoints_R,1)
+     %     for index_Z=1:size(Gridpoints_R,2)
+     %         Mask_wall(index_R,index_Z)=1-inpolygon(Gridpoints_R(index_R,index_Z),Gridpoints_Z(index_R,index_Z),R_vessel,Z_vessel);
+     %     end
+     % end
+     Mask_wall=1-inpolygon(Gridpoints_R(:,:),Gridpoints_Z(:,:),R_vessel,Z_vessel)
+	 d.vessel=Mask_wall;
 end
 
 % Split two theta maps, to prevent interpolation error at 2*pi border
@@ -203,8 +216,8 @@ d.DZ_inv=1/d.DZ;   %NOTE: Z in 2D maps has equal distance to DX
 
 % Replace values outside LCFS with NaN and store in m.B_2D-struct
 % expr=m.psi_norm_XZ>=d.NB_PSI;
-m.B_2D.BR       =m.BpolX_initial_XZ;
-m.B_2D.BZ       =m.BpolZ_initial_XZ;
+m.B_2D.BR       =m.Br_XZ;
+m.B_2D.BZ       =m.Bz_XZ;
 m.B_2D.Bphi     =m.Bphi_XZ;
 % m.B_2D.BR(expr)=NaN; m.B_2D.BZ(expr)=NaN; m.B_2D.Bphi(expr)=NaN;
 m=remove_fields(m,{'BpolX_initial_XZ','BpolZ_initial_XZ','Bphi_XZ'});
