@@ -4,20 +4,10 @@
 OLD_WALL=0;
 
 % first load data
-DATA_FOLDER='../../data_tokamak/';
-WALL_FOLDER='C:\Users\fabien\EBdyna_go\data_common\';
-try
-load([DATA_FOLDER 'physics_constants.mat']);
-catch
- DATA_FOLDER='./data_tokamak/';
-%  WALL_FOLDER='../data_common/';
-end
-try
-load([DATA_FOLDER 'physics_constants.mat']);
-catch
- DATA_FOLDER='../data_tokamak/';
-%  WALL_FOLDER='../../data_common/'
-end
+DATA_FOLDER=[SCEN_SIM_FOLDER,'/data_plasma/'];
+WALL_FOLDER='./data_common/compassu/';
+
+
 load([DATA_FOLDER 'XZsmall_fields_tokamak_pre_collapse.mat']);
 load([DATA_FOLDER 'motions_map_dimensions.mat']);
 try
@@ -35,8 +25,8 @@ set(gca,'linewidth',4)
 
 ZOFF_FIX=1e22;
 
-[Cvals,ch] =contour(scale_X+R0,scale_Z,psi_XZsmall_map',15,'color',[0.4 0 0],'linewidth',1.5);
-% contour(scale_X+R0,scale_Z,psi_XZsmall_map',50,'linewidth',1.0);
+[Cvals,ch] =contour(scale_X+R0_grid,scale_Z,psi_XZ',15,'color',[0.4 0 0],'linewidth',1.5);
+% contour(scale_X+R0_grid,scale_Z,psi_XZsmall_map',50,'linewidth',1.0);
 %# change the ZData property of the inner patches
 hh = get(ch,'Children');    %# get handles to patch objects
 for i=1:numel(hh)
@@ -45,14 +35,14 @@ for i=1:numel(hh)
 end
 
 PSI_LIMIT=psi_scale(end);
-[Cvals,ch]=contour(scale_X+R0,scale_Z,psi_XZsmall_map',[PSI_LIMIT PSI_LIMIT],'color',[1.0 0.2 0.2],'linewidth',2.5);
+[Cvals,ch]=contour(scale_X+R0_grid,scale_Z,psi_XZ',[PSI_LIMIT PSI_LIMIT],'color',[1.0 0.2 0.2],'linewidth',2.5);
 hh = get(ch,'Children');    %# get handles to patch objects
 for i=1:numel(hh)
     zdata = ones(size( get(hh(i),'XData') ));
     set(hh(i), 'ZData',zdata+ZOFF_FIX)
 end
 
-ph=plot(Raxis,Z_axis,'rx');
+ph=plot(R_axis,Z_axis,'rx');
 ph.ZData=ph.ZData+ZOFF_FIX;
 
 if ~OLD_WALL

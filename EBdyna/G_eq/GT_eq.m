@@ -786,23 +786,23 @@ time_stamp=1;
         %% Determine losses and additional output
         % in case of a Nan in coordinate, consider it ejected
 		% ejected=ejected | isnan(x(:,1,:));
-		if par.USE_VESSEL_LIMIT            
+        if par.USE_VESSEL_LIMIT
             RZout_check(sn_ejected)=ba_interp2(dim.vessel.wall_RZmap,Z_ind(sn_ejected),X_ind(sn_ejected),'linear'); % find limit value [0-1]
-			ejected_wall(sn_ejected)    = logical(RZout_check(sn_ejected)>=EJECTED_THRESH | ...
-			x(sn_ejected,2) <= dim.Zlow_lim | x(sn_ejected,2) >= dim.Zup_lim | ...
-			x(sn_ejected,1) <= dim.Rlow_lim | x(sn_ejected,1) >= dim.Rup_lim);
-			ejected(sn_ejected)    = ejected(sn_ejected) | ejected_wall(sn_ejected);
-		else			
-			psi_value(sn_ejected)=ba_interp2(maps(1).psi_XZ,Z_ind(sn_ejected),X_ind(sn_ejected),'linear'); % find psi-value
-			if (dim.psi_scale(end)-dim.psi_scale(1))>0  		% psi_Scale increasing 
+            ejected_wall(sn_ejected)    = logical(RZout_check(sn_ejected)>=EJECTED_THRESH | ...
+    			x(sn_ejected,2) <= dim.Zlow_lim | x(sn_ejected,2) >= dim.Zup_lim | ...
+    			x(sn_ejected,1) <= dim.Rlow_lim | x(sn_ejected,1) >= dim.Rup_lim);
+            ejected(sn_ejected)    = ejected(sn_ejected) | ejected_wall(sn_ejected);
+        else
+            psi_value(sn_ejected)=ba_interp2(maps(1).psi_XZ,Z_ind(sn_ejected),X_ind(sn_ejected),'linear'); % find psi-value
+            if (dim.psi_scale(end)-dim.psi_scale(1))>0  		% psi_Scale increasing
                 ejected_wall(sn_ejected) = psi_value(sn_ejected) >= PSI_LIMIT_EJECTED;
-				ejected(sn_ejected)=ejected(sn_ejected) | ejected_wall(sn_ejected);
-			else 						% psi_scale decreasing 
+                ejected(sn_ejected)=ejected(sn_ejected) | ejected_wall(sn_ejected);
+            else 						% psi_scale decreasing
                 ejected_wall(sn_ejected) = psi_value(sn_ejected) <= PSI_LIMIT_EJECTED;
-				ejected(sn_ejected)=ejected(sn_ejected) | ejected_wall(sn_ejected);
+                ejected(sn_ejected)=ejected(sn_ejected) | ejected_wall(sn_ejected);
             end
         end
-        
+
         %remove thermalized markers that have Ekin above 1.5*Ti
         if par.COULOMB_COLL
 		    if par.remove_thermalized_markers

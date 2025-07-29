@@ -12,11 +12,13 @@ end
 disp('Load in map files....')
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
 % m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
-m=load(filename,'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_map','psi_n_map','theta_map','R_grid','scale_Z');
+m=load(filename,'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_XZ','psi_n_XZ','theta_map','R_grid','Z_grid');
 
 d2=load(filename,'size_X','size_Z');
 filename=[par.folders.DATA_SHOT,'motions_map_dimensions.mat'];
-d=load(filename,'mid_X','mid_Z','DX','scale_X','scale_Z','R0','R_axis','Z_axis','psi_scale','scale_psi_mp');
+d=load(filename,'mid_X','mid_Xzero','mid_Z','DX','scale_X','scale_Z','R0_grid','R_axis','Z_axis');
+d.R0=d.R0_grid;
+d=rmfield(d,'R0_grid');
 d.X_axis=d.R_axis-d.R0;
 d.mid_X=double(d.mid_X);d.mid_Z=double(d.mid_Z);
 
@@ -28,8 +30,8 @@ d.size_X=length(d.scale_X);
 % d2=load(strcat(par.paths.DATA_FOLDER,'psi_profiles.mat'),'psi_pol_initial_profile'); 
 % d.psi_scale_correct=d2.psi_pol_initial_profile;
 filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
-d2=load(filename,'psi_scale');
-d.psi_scale_correct = d2.psi_scale;
+d2=load(filename,'scale_psi_mp');
+d.psi_scale_correct = d2.scale_psi_mp;
 
 if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
@@ -184,16 +186,16 @@ if par.USE_VESSEL_LIMIT
      contour_vessel=load(filename);
      R_vessel=contour_vessel.wall_CU.R(1:2:end);
      Z_vessel=contour_vessel.wall_CU.Z(1:2:end);
-     Gridpoints_R=meshgrid(m.R_grid,m.scale_Z)';
-     Gridpoints_Z=meshgrid(m.scale_Z,m.R_grid);
+     Gridpoints_R=meshgrid(m.R_grid,m.Z_grid)';
+     Gridpoints_Z=meshgrid(m.Z_grid,m.R_grid);
      Mask_wall=zeros(size(Gridpoints_R));
      % for index_R=1:size(Gridpoints_R,1)
      %     for index_Z=1:size(Gridpoints_R,2)
      %         Mask_wall(index_R,index_Z)=1-inpolygon(Gridpoints_R(index_R,index_Z),Gridpoints_Z(index_R,index_Z),R_vessel,Z_vessel);
      %     end
      % end
-     Mask_wall=1-inpolygon(Gridpoints_R(:,:),Gridpoints_Z(:,:),R_vessel,Z_vessel)
-	 d.vessel=Mask_wall;
+     Mask_wall=1-inpolygon(Gridpoints_R(:,:),Gridpoints_Z(:,:),R_vessel,Z_vessel);
+	 d.vessel.wall_RZmap=Mask_wall;
 end
 
 % Split two theta maps, to prevent interpolation error at 2*pi border

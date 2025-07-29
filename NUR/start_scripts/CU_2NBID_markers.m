@@ -23,9 +23,10 @@ load([DATA_PLASMA_FOLDER,'motions_map_dimensions.mat'])
 
 
 %R0=0.55;%C
-R0=0.894;%CU
+R0=0.894;
 
-psin_XZ_map=psi_n_map;
+psin_XZ_map=psi_n_XZ;
+clear psi_n_XZ
 % psin_XZ_map=(psi_map-psi_scale(1))/range(psi_scale);
 % figure;imagesc(Z_scale,R0+X_scale,psi_XZ_map)
 

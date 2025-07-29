@@ -86,6 +86,7 @@ plot_circle(0,0,max(wall_CU.R));
 
 %%
 figure
+SCEN_SIM_FOLDER='CU_5400_1150_RT42_01'
 plot_CU_TOK_background
 plot(Rpos,Zpos,'r.')
 % plot(NUR_out.R_i,NUR_out.Z_i,'b.');hold on
