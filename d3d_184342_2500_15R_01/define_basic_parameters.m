@@ -27,8 +27,9 @@ global par
     par.CALCULATE_PDEP       = 0 &  (par.SLOWING_DOWN);       % yields Power deposited info (a bit demanding computationnaly)
 
     par.CALCULATE_CX         = 1;       % yields Power deposited info (a bit demanding computationnaly)
-    par.N0_FAC_D             = 10.0;       % multiplicative factor on background D neutral density
-    par.N0_FAC_D2            = 10.0;       % multiplicative factor on background D2 neutral density
+    par.N0_FAC_D             = 1.0;       % multiplicative factor on background D neutral density
+    par.N0_FAC_D2            = 1.0;       % multiplicative factor on background D2 neutral density
+    par.full_2D_neutrals     = 1;
     par.ALLOW_REIONIZATIONS  = 1;       % default = 1 [for testing of the multiples ionization functionality]
     par.USE_T0_TABLE         = 1;       % default = 1 [for testing of the neutral temperature table]
 

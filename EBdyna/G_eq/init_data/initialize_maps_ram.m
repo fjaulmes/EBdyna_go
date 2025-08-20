@@ -13,6 +13,18 @@ disp('Load in map files....')
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
 % m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
 m=load(filename,'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_XZ','psi_n_XZ','theta_map','R_grid','Z_grid');
+<<<<<<< Updated upstream
+=======
+
+if par.full_2D_neutrals
+    m2=load(filename,'neutrals_XZsmall_map');
+    m=combine_structs(m,m2);    
+    if par.N0_FAC_D2>0
+        m3=load(filename,'neutralsD2_XZsmall_map');
+        m=combine_structs(m,m3);
+    end
+end
+>>>>>>> Stashed changes
 
 d2=load(filename,'size_X','size_Z');
 filename=[par.folders.DATA_SHOT,'motions_map_dimensions.mat'];
@@ -130,12 +142,18 @@ if par.CALCULATE_CX
     % kinetic profiles for neutrals
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
 %   also need the neutral profiles for CX calculations
-    d2=load(filename,'n0_prof','n0_prof_D2','T0_prof');
+    if ~par.full_2D_neutrals
+        d2=load(filename,'n0_prof','n0_prof_D2','T0_prof');
 %   rescaling the profiles to make a scan in density
-    d2.n0_prof=par.N0_FAC_D.*d2.n0_prof;
+        d2.n0_prof=par.N0_FAC_D.*d2.n0_prof;
     d2.n0_prof_D2=par.N0_FAC_D2.*d2.n0_prof_D2;
-    if size(d2.n0_prof,2)>size(d2.n0_prof,1)        d2.n0_prof=d2.n0_prof';end
-    if size(d2.n0_prof_D2,2)>size(d2.n0_prof_D2,1)        d2.n0_prof_D2=d2.n0_prof_D2'; end
+        if size(d2.n0_prof,2)>size(d2.n0_prof,1)        d2.n0_prof=d2.n0_prof';end
+        if size(d2.n0_prof_D2,2)>size(d2.n0_prof_D2,1)        d2.n0_prof_D2=d2.n0_prof_D2'; end
+    else
+        % still provding neutrals temperature on a profile ? (makes things easier to implement...)
+        d2=load(filename,'T0_prof');
+    end
+%   rescaling the profiles to make a scan in density
     if size(d2.T0_prof,2)>size(d2.T0_prof,1)        d2.T0_prof=d2.T0_prof'; end
     d=combine_structs(d,d2);
     
