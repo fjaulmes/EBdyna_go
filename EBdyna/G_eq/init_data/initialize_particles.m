@@ -58,6 +58,11 @@ elseif isfield(dist,'input')
 else
     error('PREC/DISTRIBUTION file does not contain proper fields for identification')
 end
+% convert everything to double for safety
+input.m=double(input.m);
+input.Z=double(input.Z);
+input.x=double(input.x);
+input.v=double(input.v);
 if ~isfield(input,'Ekin')
     input.Ekin=v_to_E(input.m,input.v);
 end
@@ -355,7 +360,7 @@ psi=interp2(dim.scale_Z,dim.scale_X,maps(1).psi_XZ,x(:,2),x(:,1)-dim.R0,'*linear
 % condition >=0 valid for JET 
 % for ASDEX, use psi<=0 instead
 if ~par.USE_VESSEL_LIMIT 
-    if mean(dim.psi_scale_correct)<0
+    if (dim.psi_scale(end)-dim.psi_scale(1))>0  		% psi_Scale increasing 
         ejected=ejected | isnan(psi) | psi>=par.PSI_LIMIT_EJECTED;
     else
         ejected=ejected | isnan(psi) | psi<=par.PSI_LIMIT_EJECTED;
@@ -367,6 +372,9 @@ v(ejected,:)=NaN;
 
 output.time_step_loss=NaN(input.N_job,1);
 output.time_step_loss(ejected)=0;
+
+output.time_stamp_loss=NaN(input.N_job,1);
+output.time_stamp_loss(ejected)=0;
 
 output.nr_midplane_crossing=zeros(input.N_job,1);
 output.nr_vpll_crossing    =zeros(input.N_job,1);

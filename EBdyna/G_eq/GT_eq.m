@@ -594,9 +594,9 @@ time_stamp=1;
                 COLL_GROUP_N=COLL_GROUP;
             end
             if par.USE_1DGC_POS
-                psi_gc_value(COLL_GROUP_N)=ba_interp2(maps(1).psi_norm1_XZ,Zgc_ind(COLL_GROUP_N),Xgc_ind(COLL_GROUP_N),'linear'); % find psi-gc-value
+                psi_gc_value(COLL_GROUP_N)=ba_interp2(maps(1).psi_n_XZ,Zgc_ind(COLL_GROUP_N),Xgc_ind(COLL_GROUP_N),'linear'); % find psi-gc-value
             else
-                psi_gc_value(COLL_GROUP_N)=ba_interp2(maps(1).psi_norm1_XZ,Z_ind(COLL_GROUP_N),X_ind(COLL_GROUP_N),'linear'); % find psi-value at particle [better!]
+                psi_gc_value(COLL_GROUP_N)=ba_interp2(maps(1).psi_n_XZ,Z_ind(COLL_GROUP_N),X_ind(COLL_GROUP_N),'linear'); % find psi-value at particle [better!]
                 psi_gc_value(COLL_GROUP_N)=min(psi_gc_value(COLL_GROUP_N),dim.pn_max);  % security because of poor rounding of interpolation function!
             end
             psi_value_avg(COLL_GROUP_N)=psi_value_avg(COLL_GROUP_N)+psi_gc_value(COLL_GROUP_N);
@@ -618,13 +618,15 @@ time_stamp=1;
                     neutral_density(COLL_GROUP)=interp1qr(dim.pn,dim.n0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
                 else
                     if par.N0_FAC_D2>0
-                        [neutral_density(COLL_GROUP),neutral_density_D2(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
+                        [neutral_density(COLL_GROUP),neutral_density_D2(COLL_GROUP),neutral_temp(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
                     else
-                        [neutral_density(COLL_GROUP),~]=neutrals_2D_interp(x(COLL_GROUP,:));
+                        [neutral_density(COLL_GROUP),~,neutral_temp(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
                     end
                 end
                 if par.USE_T0_TABLE
-                    neutral_temp(COLL_GROUP)=interp1qr(dim.pn,dim.T0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
+                    if ~par.full_2D_neutrals
+                        neutral_temp(COLL_GROUP)=interp1qr(dim.pn,dim.T0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
+                    end
                 end
             end
         end
@@ -904,6 +906,7 @@ time_stamp=1;
             output.mm_ej(part_just_lost)=Eperp(part_just_lost)./Bfield(part_just_lost);
             output.vpll_ej(part_just_lost)=vpll_ej(part_just_lost);
             output.time_step_loss(part_just_lost)=time_step;
+            output.time_stamp_loss(part_just_lost)=time_stamp;
         end
         
         part_lost_recently=(output.flag_loss_counter>=1)&(output.flag_loss_counter<=par.RECORD_AFTER_LOSS);
@@ -1249,6 +1252,7 @@ time_stamp=1;
 
 %% EVALUATE / SAVE DATA
 if par.PROGRESSIVE_BIRTH
+    output.birth_matrix = par.birth_matrix;
 	par=remove_fields(par,{'birth_matrix'});              % Remove these fields
 end
 switch par.mode
@@ -1290,7 +1294,7 @@ switch par.mode
             
             % a large amount of data is there but we keep the bare minimum
 			% pphi_kin can be used to check time step precision
-            output=remove_fields(output,[],{'x_gc','pphi_kin','v','time_step_loss','x_ej','loss','loss_wall','psi_outer','psi_gc_outer'});              % Remove any fields apart from...
+            output=remove_fields(output,[],{'x_gc','pphi_kin','v','time_step_loss', 'time_stamp_loss', 'x_ej','loss','loss_wall','psi_outer','psi_gc_outer'});              % Remove any fields apart from...
 %            	output=remove_fields(output,[],{'x','psi','v_plus_1','x_gc','pphi_kin','v','vpll','time_step_loss','x_ej','loss'});              % Remove any fields apart from...
 %             	output=remove_fields(output,[],{'x_gc','pphi_kin','v','vpll','time_step_loss','x_ej','loss'});              % Remove any fields apart from...
             
@@ -1371,7 +1375,7 @@ switch par.mode
         input.v_end=v;		% squeeze(output.v(:,:,end));
 		input=remove_fields(input,{'x_gc','v','Fc_field','x'});              % Remove these fields
 
-		FIELDS_TO_SAVE={'x','v','vpll','x_gc','time_step_loss','loss','loss_wall','deviation',...
+		FIELDS_TO_SAVE={'birth_matrix', 'x','v','vpll','x_gc','time_step_loss', 'time_stamp_loss', 'loss','loss_wall','deviation',...
 		 'x_ej','x_ej_next','Ekin_ej','vpll_ej','pphi_kin','mm',...
 		 'psi_value_avg','ndd_val','ndd_cum','Edep_th','Pdep_e','Pdep_i','Etot_e','Etot_i','delta_Ekin','cum_tor_ang_mom',...
          'Delta_pphi','pphi_an','dpphi_dt','ejected_wall','ejected_sd'};

@@ -13,20 +13,22 @@ disp('Load in map files....')
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
 % m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
 m=load(filename,'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_XZ','psi_n_XZ','theta_map','R_grid','Z_grid');
-<<<<<<< Updated upstream
-=======
 
 if par.full_2D_neutrals
-    m2=load(filename,'neutrals_XZsmall_map');
+    m2=load(filename,'neutrals_XZ');
     m=combine_structs(m,m2);    
     if par.N0_FAC_D2>0
-        m3=load(filename,'neutralsD2_XZsmall_map');
+        m3=load(filename,'neutralsD2_XZ');
         m=combine_structs(m,m3);
     end
+    m2=load(filename,'Tneutrals_XZ');
+    m=combine_structs(m,m2);    
 end
->>>>>>> Stashed changes
 
-d2=load(filename,'size_X','size_Z');
+%d2=load(filename,'size_X','size_Z');
+d2.size_X = length(m.R_grid)
+d2.size_Z = length(m.Z_grid)
+
 filename=[par.folders.DATA_SHOT,'motions_map_dimensions.mat'];
 d=load(filename,'mid_X','mid_Xzero','mid_Z','DX','scale_X','scale_Z','R0_grid','R_axis','Z_axis');
 d.R0=d.R0_grid;
@@ -42,8 +44,9 @@ d.size_X=length(d.scale_X);
 % d2=load(strcat(par.paths.DATA_FOLDER,'psi_profiles.mat'),'psi_pol_initial_profile'); 
 % d.psi_scale_correct=d2.psi_pol_initial_profile;
 filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
-d2=load(filename,'scale_psi_mp');
-d.psi_scale_correct = d2.scale_psi_mp;
+d2=load(filename,'psi_scale');
+d.psi_scale = d2.psi_scale;
+d.psi_scale_correct = d2.psi_scale; % modified later
 
 if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
@@ -57,6 +60,11 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
     if size(d2.Ti_prof,2)>size(d2.Ti_prof,1)        d2.Ti_prof=d2.Ti_prof';  end
     if size(d2.Te_prof,2)>size(d2.Te_prof,1)        d2.Te_prof=d2.Te_prof';end
     if size(d2.ne_prof,2)>size(d2.ne_prof,1)        d2.ne_prof=d2.ne_prof'; end
+
+    % security on psi_n map :
+    psi_n_max=max(d2.psi_norm);
+    m.psi_n_XZ=min(m.psi_n_XZ,psi_n_max);
+
         
     if isfield(par,'REMOVE_SOL_PLASMA')
         if par.REMOVE_SOL_PLASMA
@@ -154,8 +162,8 @@ if par.CALCULATE_CX
         d2=load(filename,'T0_prof');
     end
 %   rescaling the profiles to make a scan in density
-    if size(d2.T0_prof,2)>size(d2.T0_prof,1)        d2.T0_prof=d2.T0_prof'; end
-    d=combine_structs(d,d2);
+%    if size(d2.T0_prof,2)>size(d2.T0_prof,1)        d2.T0_prof=d2.T0_prof'; end
+%    d=combine_structs(d,d2);
     
     % CX cross sections tabulated with temperature
     filename=[par.folders.DATA_COMMON_PHYSICS,'sigma_cxD_T0_log.mat'];
@@ -202,8 +210,16 @@ end
 if par.USE_VESSEL_LIMIT
      filename=[par.VESSEL_FILENAME]
      contour_vessel=load(filename);
-     R_vessel=contour_vessel.wall_CU.R(1:2:end);
-     Z_vessel=contour_vessel.wall_CU.Z(1:2:end);
+     if strcmp(par.tokamak,'d3d')
+         R_vessel=contour_vessel.r(1:1:end); % conversion to SI units
+         Z_vessel=contour_vessel.z(1:1:end); 
+     elseif strcmp(par.tokamak,'cu')
+         R_vessel=contour_vessel.wall_CU.R(1:2:end);
+         Z_vessel=contour_vessel.wall_CU.Z(1:2:end);
+     else
+         R_vessel=contour_vessel.r(1:2:end);
+         Z_vessel=contour_vessel.z(1:2:end);
+     end
      Gridpoints_R=meshgrid(m.R_grid,m.Z_grid)';
      Gridpoints_Z=meshgrid(m.Z_grid,m.R_grid);
      Mask_wall=zeros(size(Gridpoints_R));
