@@ -15,10 +15,12 @@ par.SAVENAME_RAW        =['./output/',par.ID_NAME, '_raw_process',num2str(par.PR
 if ~par.USE_SPECIFIC_SAVENAME
    % use old way of naming prec file automatically
    if isfield(par,'SAVENAME_STATS') || isfield(par,'SAVENAME') 
-	warning('Overriding SAVENAMEs with default naming convention!');
+       log_msg('info', 'Overriding SAVENAMEs with default naming convention!');
+	   warning('Overriding SAVENAMEs with default naming convention!');
    end
    par.SAVENAME_STATS      =[par.folders.GEQ_OUTPUT,par.ID_NAME,'_prec_process',num2str(par.PROCESS_NUMBER),'.mat'];      % Precession data (e.g. trapped or passing)
    par.SAVENAME            =[par.folders.GEQ_OUTPUT,par.ID_NAME,'_full_process',num2str(par.PROCESS_NUMBER),'.mat'];      % Name of full data, with post-determined parameters (e.g. magnetic moment, toroidal angular momentum)
+   log_msg('info', 'SAVENAMEs are using default naming convention: %s and %s',par.SAVENAME_STATS,par.SAVENAME);
 end
 
 par.SAVENAME_RAW        =['./output/',par.ID_NAME, '_raw_process',num2str(par.PROCESS_NUMBER),'.mat'];      % Position data and intermediate storage
@@ -55,9 +57,10 @@ if ~par.TEST_DIST
 end
 %% Determine mode (type of simulation)
 if isfield(par,'mode')
-    warning(['Mode has been enforced to: ',num2str(par.mode)])
+    log_msg('info', 'Mode enforced to: %d', par.mode);
 elseif par.TEST_DIST
     par.mode=1;
+    log_msg('info', 'par.TEST_DIST activated : ', 'Mode enforced to: %d', par.mode);
 elseif par.GET_PREC_INFO && ~prec_data_avail   % A precession file is needed, therefore mode 2
     par.mode=2;    
 else
@@ -70,7 +73,6 @@ end
 par.NR_FUND_IN_LOOP = 1;  % Nr. fundamental steps in one loop
 
 % Simulation dependent time parameters:
-par.DISPLAY_TIMESTAMP_LOSSES = 1;
 switch par.mode
     case 1 % TEST                      
         par.dt                      =0.5*1e-9;                          % Fundamental time step
@@ -93,11 +95,10 @@ switch par.mode
         par.APPLY_SAWTOOTH          =false;                         % Tur off ST simulation
     case 3 % FULL                         
         par.dt                          =1*1e-9;                        % Fundamental time step
-        t_sim                           =10*1e-6;                       % Length of simulation : 10 mus
+        t_sim                           =1*1e-6;                       % Length of simulation : 1 mus
         par.NB_TIME_STAMPS              =10;                            % # stored values (stamps)
         PC_SAVE                         =Inf;                           % percentage after which a intermediate save is done (for debugging)
         par.NB_STAMPS_saved             =10;        
-        par.DISPLAY_TIMESTAMP_LOSSES    = 0;
    case 4
         error('Mode is obsolete')
     case 5 % POINCARE
@@ -162,7 +163,7 @@ end
 %% locating maps file
 filename=strcat(par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat');
 if ~exist(filename, 'file')
-    warning('XZsmall_fields_tokamak_pre_collapse not found in expected location. Trying to find proper folder...')
+    warning(['XZsmall_fields_tokamak_pre_collapse not found in expected location ',par.folders.DATA_SHOT,'. Trying to find proper folder...'])
     warning('folder not found')
     error('Manual error before recalculating B-field maps. Are you in the execution folder where this script is located?')
 end

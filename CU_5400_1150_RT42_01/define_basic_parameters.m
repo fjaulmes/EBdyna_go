@@ -1,4 +1,4 @@
-function define_basic_sim_parameters
+function define_basic_parameters
 global par
 
     % Please provide a unique ID 

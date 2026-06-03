@@ -20,14 +20,17 @@ par.mach='IPP.CR';
 maps=[];
 par=[];     % Clear any possible parameter
 time=0;
+par.verbose = 1;   % 0 = quiet, 1 = normal, 2 = verbose, 3 = debug
 par.shot_no=5400;
 par.tokamak='compassu';
 par.time_id='1150';
 par.nbi_id='RT42';
-par.sim_id='01'
+par.sim_id='01';
 par.shot_name=[num2str(par.shot_no)];
 par.ID=[par.shot_name,'_',par.time_id,'_',par.nbi_id,'_',par.sim_id];
 par.sim_folder_string=['CU_',par.ID];
+
+log_msg('info', 'EBdyna run: %s', par.sim_folder_string);
 
 par.mach='IT4I';
 folders=initialize_folder_names();
@@ -35,9 +38,9 @@ folders=initialize_folder_names();
 % input and output file names
 par.DO_NOT_USE_PREC      = false;
 par.USE_SPECIFIC_SAVENAME= true;
-par.SAVENAME_STATS       = [folders.GEQ_OUTPUT,'stats_NUR_markers_D3D.mat'];
-par.SAVENAME             = [folders.GEQ_OUTPUT,'full_NUR_markers_D3D.mat'];
-par.DISTNAME             = [folders.GEQ_INPUT,'EBdyna_NUR_markers_Rt42_300k.mat'];
+par.SAVENAME_STATS       = [folders.GEQ_OUTPUT,'stats_NUR_markers_CU.mat'];
+par.SAVENAME             = [folders.GEQ_OUTPUT,'full_NUR_markers_CU.mat'];
+par.DISTNAME             = [folders.GEQ_INPUT,'NUR_markers_Rt42_30k.mat'];
 par.VESSEL_FILENAME      = [folders.DATA_COMMON_TOKAMAK,'wallRZ_CU.mat'];
 par.USE_VESSEL_LIMIT     = 1;
 par.remove_thermalized_markers = 0;   % not a slowing down simulation
@@ -53,6 +56,8 @@ par.TEST_DIST=false;                   % Use the test distribution and parameter
 % 6  - SAWTOOTH simulation
 par.mode=3;
 
+log_msg('verbose', 'Mode: %d', par.mode);
+
 
 define_basic_parameters();
 
@@ -63,7 +68,7 @@ par.TESTING_SD=0;
 try
     dist=load(par.DISTNAME);
 catch
-    error('THE DISTRIBUTION FILE COULD NOT BE LOADED !!!')
+    error(['THE DISTRIBUTION FILE ',par.DISTNAME,' COULD NOT BE LOADED !!!'])
 end
 
 if isfield(dist,'input') % refers to an already formatted input dist data from a previous simulation

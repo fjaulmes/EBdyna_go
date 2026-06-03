@@ -321,19 +321,19 @@ end
 % continue_from_raw;
 
 
-%% Display input / output
-disp('**************************************************************');
-disp('PARAMETERS:')
-disp(par)
-disp('**************************************************************');
-disp('INPUT PARTICLES')
-disp(input)
-disp('**************************************************************');
-disp('RAW CONSISTS OF:')
-disp(output)
-% benchmarking time between two data recordings
-disp('**************************************************************');
-disp('**************************************************************');
+%% Display compact input / output summary
+if exist('log_msg','file') == 2
+    log_msg('info', 'Prepared simulation: markers=%d, steps=%d, stamps=%d', input.N_job, par.NB_TIME_STEPS, par.NB_TIME_STAMPS);
+    if isfield(par,'SAVENAME')
+        log_msg('verbose', 'Output file: %s', par.SAVENAME);
+    end
+    log_msg('verbose', 'Input arrays: x %s, v %s', mat2str(size(input.x)), mat2str(size(input.v)));
+    if isfield(output,'x') && isfield(output,'v')
+        log_msg('verbose', 'Raw storage: x %s, v %s', mat2str(size(output.x)), mat2str(size(output.v)));
+    end
+else
+    fprintf('Prepared simulation: markers=%d, steps=%d, stamps=%d\n', input.N_job, par.NB_TIME_STEPS, par.NB_TIME_STAMPS);
+end
 
 %% SET START PARAMETERS (Temporarily stored parameters etc.)
 [~,B]=B_interpolation(x);
@@ -1181,12 +1181,12 @@ time_stamp=1;
                 % fields required from initial particles: dim.x_ni dim.Ti_x_ni dim.ni_markers_weight               
             end
             if par.CALCULATE_CX
-                disp(['length(find(ejected_CX )) = ' num2str(length(find(ejected_CX)))]);
+                log_msg('verbose', 'Ejected CX markers: %d', nnz(ejected_CX));
             end
             if par.COULOMB_COLL
-                disp(['length(find(ejected_sd )) = ' num2str(length(find(ejected_sd)))]);
+                log_msg('verbose', 'Ejected slowing-down markers: %d', nnz(ejected_sd));
             end
-            disp(['length(find(ejected )) = ' num2str(length(find(ejected)))]);
+            log_msg('info', 'Stamp %d/%d at step %d: ejected=%d', time_stamp, par.NB_TIME_STAMPS, time_step, nnz(ejected));
             
             % further quantities are calculateed in evaluate_output
             output.x(:,:,time_stamp)=x;
@@ -1204,7 +1204,7 @@ time_stamp=1;
 			if par.COULOMB_COLL & par.CALCULATE_DEVIATION
 				output.deviation(:,time_stamp)=deviation;
 			end
-            disp(['storing x and v values at time stamp ' num2str(time_stamp) ' and time step ' num2str(time_step) '...' ])
+            % x/v storage at this timestamp is expected; keep quiet at normal verbosity
         end
         
         %% SAVE DATA FILE intermediately

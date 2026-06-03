@@ -9,10 +9,23 @@ end
 
 
 %% Load in map files
-disp('Load in map files....')
+log_msg('info', 'Loading map files...');
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
 % m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
-m=load(filename,'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_XZ','psi_n_XZ','theta_map','R_grid','Z_grid');
+required_map_fields = {'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_XZ','psi_n_XZ','R_grid','Z_grid'};
+m=load(filename,required_map_fields{:});
+vars_in_map_file = whos('-file',filename);
+vars_in_map_file = {vars_in_map_file.name};
+if any(strcmp(vars_in_map_file,'theta_map'))
+    m2=load(filename,'theta_map');
+    m=combine_structs(m,m2);
+else
+    log_msg('debug', 'Optional field theta_map not found in %s', filename);
+end
+
+if ~isfield(par,'full_2D_neutrals')
+    par.full_2D_neutrals = 0;
+end
 
 if par.full_2D_neutrals
     m2=load(filename,'neutrals_XZ');
@@ -26,8 +39,9 @@ if par.full_2D_neutrals
 end
 
 %d2=load(filename,'size_X','size_Z');
-d2.size_X = length(m.R_grid)
-d2.size_Z = length(m.Z_grid)
+d2.size_X = length(m.R_grid);
+d2.size_Z = length(m.Z_grid);
+log_msg('verbose', '2D map grid: R/Z = %d x %d', d2.size_X, d2.size_Z);
 
 filename=[par.folders.DATA_SHOT,'motions_map_dimensions.mat'];
 d=load(filename,'mid_X','mid_Xzero','mid_Z','DX','scale_X','scale_Z','R0_grid','R_axis','Z_axis');
@@ -93,7 +107,7 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
 				if size(d2.nfast_prof,2)>size(d2.nfast_prof,1)        d2.nfast_prof=d2.nfast_prof'; end
 				d=combine_structs(d,d2);
 			catch
-				warning(['nfast_prof NOT found in ' filename]);
+				log_msg('warn', 'nfast_prof not found in %s; disabling RECORD_VSPACE_NDD.', filename);
 				par.RECORD_VSPACE_NDD    = 0;
 			end
             
@@ -112,7 +126,7 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
             else
                 d2.nimp_prof=par.IMPURITY_FRAC.*d2.ni;
             end
-			d2.nimp_prof(d.psi_norm>1)=0
+			d2.nimp_prof(d.psi_norm>1)=0;
             d=combine_structs(d,d2);
 			if par.REMOVE_SOL_PLASMA
 				% switch to remove SOL plasma to compare with NUBEAM
@@ -136,8 +150,8 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
             end
 				d=combine_structs(d,d3);
 			catch
-				warning('DV_prof could not be loaded and as such, we cannot calculation the NDD thermal yield.');
-				par.CALCULATE_NDD_THERMAL=0
+				log_msg('warn', 'DV_prof could not be loaded; disabling CALCULATE_NDD_THERMAL.');
+				par.CALCULATE_NDD_THERMAL=0;
 			end
         end
     else
@@ -199,21 +213,22 @@ for i=1:length(fnames)
 end
 % Check direction of toroidal field 
 if sign(mean(m.Bphi_XZ(:)))<=0
-    disp('Toroidal field in negative direction');
+    log_msg('info', 'Toroidal field in negative direction');
 else
-	disp('Toroidal field in positive direction');
+	log_msg('info', 'Toroidal field in positive direction');
 end
 
 %% Alter the 2D maps
 
 
 if par.USE_VESSEL_LIMIT
-     filename=[par.VESSEL_FILENAME]
+     filename=[par.VESSEL_FILENAME];
+     log_msg('verbose', 'Loading vessel boundary: %s', filename);
      contour_vessel=load(filename);
      if strcmp(par.tokamak,'d3d')
          R_vessel=contour_vessel.r(1:1:end); % conversion to SI units
          Z_vessel=contour_vessel.z(1:1:end); 
-     elseif strcmp(par.tokamak,'cu')
+     elseif strcmp(par.tokamak,'compassu')
          R_vessel=contour_vessel.wall_CU.R(1:2:end);
          Z_vessel=contour_vessel.wall_CU.Z(1:2:end);
      else
@@ -236,7 +251,7 @@ end
 try
     [m]=split_theta_map(m);
 catch
-    warning('split_theta_map failed (probably no data)')
+    log_msg('debug', 'split_theta_map failed; continuing without split theta maps.');
 end
 
 %% Determine inverse of size DX and DZ, for quicker / easier interpolation
@@ -268,7 +283,7 @@ if par.APPLY_RMP || par.APPLY_TFR
     
     % Load in the 3D field
     [m,d]=load_3D_maps(m,d);
-    disp('3D fields loaded....')
+    log_msg('info', '3D fields loaded.');
 	
     % Superimpose the 2D and 3D fields
     if par.interp_scheme~=0 && strcmp(par.coord_syst,'flux')
@@ -462,7 +477,7 @@ else
             % Combine 2D and 3D field in toroidal case if no sawtooth applies
             m.n3D.(BA{1})=bsxfun(@plus,m.n3D.(BA{1})(1:par.step.R:d.size_X,1:par.step.Z:d.size_Z,1:par.step.phi:end),m.B_2D.(BA{1}));
         elseif strcmp(par.coord_syst,'toroidal')
-            if ~par.superimpose_2D_3D; warning('2D and 3D FIELDS SUPERPOSITION DISABLED'); end
+            if ~par.superimpose_2D_3D; log_msg('warn', '2D and 3D fields superposition disabled.'); end
             m.n3D.(BA{1})=m.n3D.(BA{1})(1:par.step.R:d.size_X,1:par.step.Z:d.size_Z,1:par.step.phi:end);
         end
     end
@@ -489,20 +504,20 @@ end
 %% Function to make RMP_TFR file
 function [m,symm]=make_RMP_TFR_file(m,RMP_TFR_file) %#ok<INUSD>
 global par
-warning('combined RMP / TFR file absent, trying superposition of both files')
+log_msg('warn', 'Combined RMP/TFR file absent; trying superposition of separate files.');
 
 % Check the present fields in both files, only those can be combined
 field_to_combine=extract_similar_fields(par.RMP_file,par.TFR_file);
-disp('RMP and TFR wil combine the following fields: ')
-disp(field_to_combine);
+log_msg('verbose', 'RMP and TFR will combine the following fields: %s', strjoin(field_to_combine, ', '));
+
 
 % Load RMP
 [n3D_RMP,symm_RMP]=load_3D_file(par.RMP_file,field_to_combine);
-disp('RMP file loaded')
+log_msg('info', 'RMP file loaded.');
 
 % Load TFR
 [n3D_TFR,symm_TFR]=load_3D_file(par.TFR_file,field_to_combine);
-disp('TFR file loaded')
+log_msg('info', 'TFR file loaded.');
 
 % Find the symmetry in both files (tor mode of RMP<= 16)
 if symm_TFR~=symm_RMP
@@ -523,12 +538,12 @@ for BA=field_to_combine
     n3D_RMP.(BA{1})=[];
     n3D_TFR.(BA{1})=[];
 end
-disp('RMP and TFR files superpositioned')
+log_msg('info', 'RMP and TFR files superpositioned.');
 
 % Save the resulting combined file
 field_for_save=m.n3D;
 field_for_save.symm=symm;
-disp('Saving combined file')
+log_msg('verbose', 'Saving combined RMP/TFR file.');
 % save(RMP_TFR_file,'-v7.3','-struct','field_for_save') (SAVING is not nessecary and thus commented out)
 clear field_for_save
 % disp('Combined file saved')
@@ -770,7 +785,7 @@ d.st.k_dot (p_relax:end)=-d.st.kc(p_recon)/par.st.t_relaxation;
 d.st.k_m_kr_dot = d.st.k_dot-d.st.kr_dot;
 
 %% Stable time (numerical errors)
-disp(['Linear interpolating field till timestamp ',num2str(par.st.stable_time)])
+log_msg('info', 'Linear interpolating field until timestamp %g', par.st.stable_time);
 
 %% Function to determine time spacing
     function time=get_time(n_1,n_2,trec,trel,option)

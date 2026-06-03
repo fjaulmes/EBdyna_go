@@ -15,7 +15,7 @@ end
 %% 1. Load the distribution (file) with all particles
 if par.TEST_DIST
     %% 1.0. TEST DISTRIBUTION
-    warning('debug particles')
+    log_msg('debug', 'Using debug/test particle distribution.');
     input.m=const.mD;            % Mass
     input.Z=double(1);                   % Charge
     qom=input.Z*const.eV/input.m;       %Kinectic constant
@@ -86,7 +86,7 @@ else
     else
         expr_job_1=get_expr_job([par.SD_MARKERS_END, 1],par.NB_PROCESS,par.PROCESS_NUMBER);  % Get expression which particles this job will simulate
         expr_job_2=get_expr_job([input.N_total-par.SD_MARKERS_END, 1],par.NB_PROCESS,par.PROCESS_NUMBER);  % Get expression which particles this job will simulate
-        disp('splitting in 2 parts the initial data: sd and ionization')
+        log_msg('info', 'Splitting initial data into slowing-down and ionization parts.');
         nb1=length(find(expr_job_1));
         expr_job=[ expr_job_1 ;expr_job_2 ];
         %storing the number of sd markers to adjust the birth matrix!
@@ -154,7 +154,8 @@ if par.PROGRESSIVE_BIRTH  & par.NB_BIRTH_CHUNKS>0
     birth_time_scale=linspace(0,par.time_scale(end),par.NB_BIRTH_CHUNKS);
     birth_matrix=zeros(par.NB_BIRTH_CHUNKS,input.N_job);
     if par.SD_MARKERS_END==0
-        N_CHUNK=floor(input.N_job/par.NB_BIRTH_CHUNKS)
+        N_CHUNK=floor(input.N_job/par.NB_BIRTH_CHUNKS);
+        log_msg('debug', 'Progressive birth chunk size: %d', N_CHUNK);
         NB_FLOOR_P1=input.N_job-N_CHUNK*par.NB_BIRTH_CHUNKS; % number of times when we will add a bit more
         NB_FLOOR=par.NB_BIRTH_CHUNKS-NB_FLOOR_P1;      % number of times when we add the reference
         for ind_bm=1:NB_FLOOR
@@ -167,7 +168,8 @@ if par.PROGRESSIVE_BIRTH  & par.NB_BIRTH_CHUNKS>0
         par.nb_ionizations=input.N_job-par.nb_sd;
         birth_matrix_sd=ones(par.NB_BIRTH_CHUNKS,par.nb_sd);
         birth_matrix_ionization=zeros(par.NB_BIRTH_CHUNKS,par.nb_ionizations);
-        N_CHUNK=floor(par.nb_ionizations/par.NB_BIRTH_CHUNKS)
+        N_CHUNK=floor(par.nb_ionizations/par.NB_BIRTH_CHUNKS);
+        log_msg('debug', 'Progressive ionization chunk size: %d', N_CHUNK);
         NB_FLOOR_P1=par.nb_ionizations-N_CHUNK*par.NB_BIRTH_CHUNKS; % number of times when we will add a bit more
         NB_FLOOR=par.NB_BIRTH_CHUNKS-NB_FLOOR_P1;      % number of times when we add the reference
         for ind_bm=1:NB_FLOOR
@@ -236,7 +238,7 @@ par.APPLY_FC=0;
 % Fc_field=x(:,1)*0;
 if isfield(input,'ang_rot')
     par.APPLY_FC=1;
-    disp('Simulation including centrifugal effects') 
+    log_msg('info', 'Simulation including centrifugal effects.'); 
 end
 if exist('output')~=1
 	[x,v,input,output,ejected]=make_start_arrays(input,ejected,qom);
@@ -244,7 +246,7 @@ end
 
 % finally take care of pphi initial value (normalized by Z*psi_global)
 [~,v_plus_1]=time_step_integration_GT_eq_struct(input.x,input.v,input.Fc_field);
-psi=interp2(dim.scale_Z,dim.scale_X,maps(1).psi_XZ,x(:,2),x(:,1)-dim.R0,'*cubic');% find psi-value
+psi=interp2(dim.scale_Z,dim.scale_X,maps(1).psi_XZ,x(:,2),x(:,1)-dim.R0,'spline');% find psi-value; use non-starred spline to avoid cubic/nonuniform-grid warning
 input.pphi_kin= get_pphi_kin(input,x,v_plus_1,psi)/(input.Z*maps(1).psi_global);
 
 %%
