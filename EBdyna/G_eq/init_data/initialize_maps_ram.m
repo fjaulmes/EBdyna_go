@@ -62,7 +62,7 @@ d2=load(filename,'psi_scale');
 d.psi_scale = d2.psi_scale;
 d.psi_scale_correct = d2.psi_scale; % modified later
 
-if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
+if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX || par.APPLY_ER
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
 %     d2=load(filename,'psi_norm','vtor_prof','n0_prof','ni_prof','Ti_prof','Te_prof','nuNBie','nuNBii_v3','vthi_prof','vthe_prof');
     d2=load(filename,'psi_norm','vtor_prof','ni_prof','Ti_prof','Te_prof','ne_prof','Er_prof');

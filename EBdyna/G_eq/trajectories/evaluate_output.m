@@ -54,10 +54,10 @@ par.dt=0.5*par.dt;
 Fc_field=input.Fc_field;
 output.v_plus_1=output.v;
 if ~par.CALCULATE_CX
-[~,output.v_plus_1,B]=time_step_integration_GT_eq_struct(output.x,output.v,Fc_field);
+    [~,output.v_plus_1,B]=time_step_integration_GT_eq_struct(output.x,output.v,Fc_field);
 else
-[~,output.v_plus_1(~CX_NEUTRALS,:,:),B(~CX_NEUTRALS,:,:)]=time_step_integration_GT_eq_struct(output.x(~CX_NEUTRALS,:,:),output.v(~CX_NEUTRALS,:,:),Fc_field(~CX_NEUTRALS));
-output.v_plus_1(CX_NEUTRALS,:,:)=output.v(CX_NEUTRALS,:,:);
+    [~,output.v_plus_1(~CX_NEUTRALS,:,:),B(~CX_NEUTRALS,:,:)]=time_step_integration_GT_eq_struct(output.x(~CX_NEUTRALS,:,:),output.v(~CX_NEUTRALS,:,:),Fc_field(~CX_NEUTRALS));
+    output.v_plus_1(CX_NEUTRALS,:,:)=output.v(CX_NEUTRALS,:,:);
 end
 par.dt=2*par.dt;
 
@@ -191,8 +191,8 @@ if par.CALCULATE_PPHI_3D && isfield(output,'pphi_an_temp')
 end
 
 % Delta pphi
-output.Delta_pphi=output.pphi_kin(:,:,end)-input.pphi_kin;
-output.Delta_pphi2=squeeze(output.pphi_kin(:,:,end)-output.pphi_kin(:,:,1));
+output.Delta_pphi=output.pphi_kin(:,end)-input.pphi_kin;
+output.Delta_pphi2=squeeze(output.pphi_kin(:,end)-output.pphi_kin(:,1));
 
 %% Larmor frequency
 output.larmor_freq=input.Z*const.eV*Bfield/input.m;

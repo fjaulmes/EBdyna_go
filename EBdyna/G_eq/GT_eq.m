@@ -81,7 +81,7 @@ input.ABulk=const.ABulk; % for the record
 
 %#ok<*NASGU>  % Removes warning in Matlab editor that some values are not used (they are often saved in the output file(s)).
 %% data for ndd / slowing down calculation
-if (par.CALCULATE_NDD==1) || (par.COULOMB_COLL) || (par.CALCULATE_CX)
+if (par.CALCULATE_NDD==1) || (par.COULOMB_COLL) || (par.CALCULATE_CX) || par.APPLY_ER==1
     dim.pn=dim.psi_norm;
     dim.xlength=length(dim.pn);
     dim.pn_max=max(dim.pn);
@@ -233,9 +233,7 @@ if par.COULOMB_COLL
     SLOW_ELEC_GROUP     = ejected*0;
     Ekin_prev           = ejected*0;
     Ekin_new            = ejected*0;
-    if par.APPLY_ER
-        Er_field              = ejected*0;
-    end
+
     % this minimum velocity value is taken in deep SOL region: used only
     % for non slowing down simulation (eg. MB dist)
     MIN_COLL_V          = sqrt(2*mean(dim.Te_prof(end-2:end))*(const.eV/input.m)); % E_to_v(input.m,mean(dim.Te_prof(end-1:end)));
@@ -261,7 +259,9 @@ if par.COULOMB_COLL
     end
     output.loss_wall    = zeros(par.NB_TIME_STEPS,1);    
 end
-
+if par.APPLY_ER
+    Er_field              = ejected*0;
+end
 ejected_sd          = ejected*0;
 
 if par.calculate_length_trajectory
@@ -463,6 +463,18 @@ time_stamp=1;
 					ejected_wall(IMAG_OUTPUTS)=1;
                 end
                 if par.APPLY_ER
+                    X_ind(IONS_GROUP)=((x(IONS_GROUP,1)-dim.R0)*dim.DX_inv)+dim.mid_Xzero;
+                    Z_ind(IONS_GROUP)=( x(IONS_GROUP,2)        *dim.DZ_inv)+dim.mid_Z;
+                    psi_gc_value(IONS_GROUP)=ba_interp2(maps(1).psi_n_XZ,Z_ind(IONS_GROUP),X_ind(IONS_GROUP),'linear'); % find psi-value at particle [better!]
+                    % index vector
+                    [~,psi_xi_pos(IONS_GROUP)] = histc(psi_gc_value(IONS_GROUP),dim.pn);
+                    psi_xi_pos(IONS_GROUP) = max(psi_xi_pos(IONS_GROUP),1);     % To avoid index=0 when xi < x(1)
+                    psi_xi_pos(IONS_GROUP) = min(psi_xi_pos(IONS_GROUP),dim.xlength-1);   % To avoid index=m+1 when xi > x(end).
+                    % 't' slope vector [p x 1]
+                    dxi(IONS_GROUP) = psi_gc_value(IONS_GROUP)-dim.pn(psi_xi_pos(IONS_GROUP));
+                    dx(IONS_GROUP) = dim.pn(psi_xi_pos(IONS_GROUP)+1)-dim.pn(psi_xi_pos(IONS_GROUP));
+                    psi_slope(IONS_GROUP) = dxi(IONS_GROUP)./dx(IONS_GROUP);
+                    Er_field(IONS_GROUP)=interp1qr(dim.pn,dim.Er_prof,psi_gc_value(IONS_GROUP),psi_xi_pos(IONS_GROUP),psi_slope(IONS_GROUP));
                     [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:),Er_field(IONS_GROUP));
                 else
                     [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:));
@@ -632,9 +644,6 @@ time_stamp=1;
 			ni(COLL_GROUP_N)=interp1qr(dim.pn,dim.ni_prof,psi_gc_value(COLL_GROUP_N),psi_xi_pos(COLL_GROUP_N),psi_slope(COLL_GROUP_N));
             Ti(COLL_GROUP_N)=interp1qr(dim.pn,dim.Ti_prof,psi_gc_value(COLL_GROUP_N),psi_xi_pos(COLL_GROUP_N),psi_slope(COLL_GROUP_N));               
 			vth_i(COLL_GROUP)=sqrt(2*Ti(COLL_GROUP)*(const.eV/const.mBulk));
-            if par.APPLY_ER
-                Er_field(COLL_GROUP_N)=interp1qr(dim.pn,dim.Er_prof,psi_gc_value(COLL_GROUP_N),psi_xi_pos(COLL_GROUP_N),psi_slope(COLL_GROUP_N));               
-            end
 	        
             if par.CALCULATE_CX
                 if ~par.full_2D_neutrals
