@@ -554,7 +554,7 @@ time_stamp=1;
         v_n(sn_ejected,:)=0.5*(v(sn_ejected,:)+v_temp_2(sn_ejected,:));
         % Estimate x_gc at n
         if ~par.APPLY_ER
-            [~,B(sn_ejected,:)]=B_interpolation(x);
+            [~,B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:));
         else
             [E(sn_ejected,:),B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:),'radial_Efield',Er_field(sn_ejected));
         end
