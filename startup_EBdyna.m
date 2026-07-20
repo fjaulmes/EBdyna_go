@@ -1,8 +1,9 @@
 %% this script intiailizes the folder architecture for the EBdyna solver
 restoredefaultpath
 
-% addpath('./d3d_184342_2500_15R_00')
-SIM_FOLDER='./CU_5400_1150_RT42_01'
+SIM_FOLDER='./d3d_203301_2555_30L_2DF03'
+% addpath('./d3d_184342_2500_15R_01')
+% SIM_FOLDER='./CU_5400_1150_RT42_01'
 addpath(SIM_FOLDER);
 
 
