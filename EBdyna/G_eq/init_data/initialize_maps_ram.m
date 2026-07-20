@@ -65,7 +65,7 @@ d.psi_scale_correct = d2.psi_scale; % modified later
 if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
 %     d2=load(filename,'psi_norm','vtor_prof','n0_prof','ni_prof','Ti_prof','Te_prof','nuNBie','nuNBii_v3','vthi_prof','vthe_prof');
-    d2=load(filename,'psi_norm','vtor_prof','ni_prof','Ti_prof','Te_prof','ne_prof');
+    d2=load(filename,'psi_norm','vtor_prof','ni_prof','Ti_prof','Te_prof','ne_prof','Er_prof');
     % making sure the data has right dimensions: GT_eq is picky about
     % transposed vectors
     if size(d2.psi_norm,2)>size(d2.psi_norm,1)        d2.psi_norm=d2.psi_norm';  end
@@ -74,6 +74,7 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX
     if size(d2.Ti_prof,2)>size(d2.Ti_prof,1)        d2.Ti_prof=d2.Ti_prof';  end
     if size(d2.Te_prof,2)>size(d2.Te_prof,1)        d2.Te_prof=d2.Te_prof';end
     if size(d2.ne_prof,2)>size(d2.ne_prof,1)        d2.ne_prof=d2.ne_prof'; end
+    if size(d2.Er_prof,2)>size(d2.Er_prof,1)        d2.Er_prof=d2.Er_prof'; end
 
     % security on psi_n map :
     psi_n_max=max(d2.psi_norm);

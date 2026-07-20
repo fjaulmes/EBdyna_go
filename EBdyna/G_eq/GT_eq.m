@@ -233,6 +233,9 @@ if par.COULOMB_COLL
     SLOW_ELEC_GROUP     = ejected*0;
     Ekin_prev           = ejected*0;
     Ekin_new            = ejected*0;
+    if par.APPLY_ER
+        Er_field              = ejected*0;
+    end
     % this minimum velocity value is taken in deep SOL region: used only
     % for non slowing down simulation (eg. MB dist)
     MIN_COLL_V          = sqrt(2*mean(dim.Te_prof(end-2:end))*(const.eV/input.m)); % E_to_v(input.m,mean(dim.Te_prof(end-1:end)));
@@ -336,7 +339,11 @@ else
 end
 
 %% SET START PARAMETERS (Temporarily stored parameters etc.)
-[~,B]=B_interpolation(x);
+if ~par.APPLY_ER
+    [~,B]=B_interpolation(x);
+else
+    [E,B]=B_interpolation(x,'radial_Efield',Er_field);
+end
 Bfield_sq=dot(B,B,2);
 Bfield=sqrt(Bfield_sq);
 vpll_ej=dot(B,v,2)./Bfield;
@@ -454,8 +461,12 @@ time_stamp=1;
 					sn_ejected(IMAG_OUTPUTS)=0;
 					ejected(IMAG_OUTPUTS)=1;
 					ejected_wall(IMAG_OUTPUTS)=1;
-				end
-                [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:));
+                end
+                if par.APPLY_ER
+                    [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:),Er_field(IONS_GROUP));
+                else
+                    [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:));
+                end
                 time=time+par.dt;
 
 				if par.calculate_length_trajectory
@@ -476,7 +487,11 @@ time_stamp=1;
                 field_3D=find_3D_Afield(x(IONS_GROUP,:),{'dAphi_dphi','dAR_dphi','dAZ_dphi'});
                 
                 % The time step
-                [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:));
+                if par.APPLY_ER
+                    [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:),Er_field(IONS_GROUP));
+                else
+                    [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:));
+                end
                 time=time+par.dt;
                 % Estimate velocity at n
                 v_n(IONS_GROUP,:)=0.5*(v(IONS_GROUP,:)+v_temp_2(IONS_GROUP,:));
@@ -538,7 +553,12 @@ time_stamp=1;
 		% Estimate velocity at n
         v_n(sn_ejected,:)=0.5*(v(sn_ejected,:)+v_temp_2(sn_ejected,:));
         % Estimate x_gc at n
-        [~,B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:));
+        if ~par.APPLY_ER
+            [~,B(sn_ejected,:)]=B_interpolation(x);
+        else
+            [E(sn_ejected,:),B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:),'radial_Efield',Er_field(sn_ejected));
+        end
+        % [~,B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:));
         Bfield_sq(sn_ejected)=dot(B(sn_ejected,:),B(sn_ejected,:),2);
         x_gc(IONS_GROUP,:)=x(IONS_GROUP,:)+bsxfun(@times,1./(qom*Bfield_sq(IONS_GROUP)),cross(v_n(IONS_GROUP,:),B(IONS_GROUP,:),2));
 		% overriding gc position for outsiders
@@ -612,7 +632,10 @@ time_stamp=1;
 			ni(COLL_GROUP_N)=interp1qr(dim.pn,dim.ni_prof,psi_gc_value(COLL_GROUP_N),psi_xi_pos(COLL_GROUP_N),psi_slope(COLL_GROUP_N));
             Ti(COLL_GROUP_N)=interp1qr(dim.pn,dim.Ti_prof,psi_gc_value(COLL_GROUP_N),psi_xi_pos(COLL_GROUP_N),psi_slope(COLL_GROUP_N));               
 			vth_i(COLL_GROUP)=sqrt(2*Ti(COLL_GROUP)*(const.eV/const.mBulk));
-            
+            if par.APPLY_ER
+                Er_field(COLL_GROUP_N)=interp1qr(dim.pn,dim.Er_prof,psi_gc_value(COLL_GROUP_N),psi_xi_pos(COLL_GROUP_N),psi_slope(COLL_GROUP_N));               
+            end
+	        
             if par.CALCULATE_CX
                 if ~par.full_2D_neutrals
                     neutral_density(COLL_GROUP)=interp1qr(dim.pn,dim.n0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));

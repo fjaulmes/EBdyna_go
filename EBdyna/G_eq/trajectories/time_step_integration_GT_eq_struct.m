@@ -1,19 +1,28 @@
-function [x,v,B,E]=time_step_integration_GT_eq_struct(x,v,Fc_field)
+function [x,v,B,E]=time_step_integration_GT_eq_struct(x,v,Fc_field,Er_field)
 %%time_step_integration_GT_eq_struct
 % Multifunctional timestep with BORIS or Fabien method.
 global qom par
 
-% for distance(Delta_l) calculation
-x_prev=x;
+if nargin<4
+    Er_field=x(:,1)*0;
+end
 
 %% Get B field
 switch par.scheme
     case {'FabienB'}
-        [E,BR,BZ,Bphi]=B_interpolation(x);
+        if par.APPLY_ER
+            [E,BR,BZ,Bphi]=B_interpolation(x,'radial_Efield',Er_field);
+        else
+            [E,BR,BZ,Bphi]=B_interpolation(x);
+        end
         Bfield_sq=BR.^2+BZ.^2+Bphi.^2;
     case {'BORIS'}
-        [E,B]=B_interpolation(x);
-        Bfield_sq=dot(B,B,2);    
+        if par.APPLY_ER
+            [E,B]=B_interpolation(x,'radial_Efield',Er_field);
+        else
+            [E,B]=B_interpolation(x);
+        end
+        Bfield_sq=dot(B,B,2);
 end
 Bfield=sqrt(Bfield_sq);
 

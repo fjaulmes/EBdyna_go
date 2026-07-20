@@ -126,10 +126,11 @@ if par.GET_PREC_INFO && isfield(dist,'prec')
     input.prec=reduce_struct(dist.prec,input.N_total,expr_job);
 end
 
-par.APPLY_FC=0;
-if isfield(input,'ang_rot')
-    par.APPLY_FC=1;
-    input.Fc_field=input.ang_rot.^2/qom;
+if par.APPLY_FC==1;
+    if isfield(input,'ang_rot')
+        par.APPLY_FC=1;
+        input.Fc_field=input.ang_rot.^2/qom;
+    end
 else
     input.Fc_field=x(:,1)*0;
 end
@@ -234,7 +235,6 @@ end
 %% 3. Find physical quantities / store input
 
 % in case the toroidal rotation is part of the input data
-par.APPLY_FC=0;
 % Fc_field=x(:,1)*0;
 if isfield(input,'ang_rot')
     par.APPLY_FC=1;

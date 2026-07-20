@@ -1,4 +1,4 @@
-function [E,BR,BZ,Bphi] = B_interpolation(x,types)
+function [E,BR,BZ,Bphi] = B_interpolation(x,types,Er_field)
 global par dim maps time
 %find_3D_Bfield Interpolates the 3D grid to find 3D field
 %   Interpolates in 2D for flux coordinates, which are used to interpolate
@@ -16,203 +16,9 @@ global par dim maps time
 % 7     -   griddedInterpolant cubic    (makes use of lookup table)
 % 8     -   interp2 spline              (ML standard)
 % 9     -   griddedInterpolant spline   (makes use of lookup table - RAM intensive!)
-E=0;
 
-%% UNIT TEST
-if nargout == 0 && nargin ==0
-    delete(findall(0,'type','figure','tag',mfilename));
-    set(groot,'defaulttextinterpreter','latex')
-    if par.APPLY_SAWTOOTH
-        % UNIT TEST ST
-        warning('UNIT TEST SAWTOOTH')
-        delete(findall(0,'type','figure','tag',mfilename));
-        
-%         % Contour of LCFS
-%         c=contourc(dim.R0+dim.scale_X,dim.scale_Z,maps.psi_norm_XZ',[dim.NB_PSI dim.NB_PSI]);
-%         
-%         % Make 2 figures
-%         hf=figure('tag',mfilename,'name','Potential / flux','Windowstyle','normal');
-%         hf2=figure('tag',mfilename,'name','Electric / magnetic fields','Windowstyle','normal');
-%         
-%         for i=1:6
-%             ha1(i)=subplot(2,3,i,'parent',hf);
-%             plot(ha1(i),c(1,2:end),(c(2,2:end)),'r','displayname','LCFS')
-%             hold(ha1(i),'on');
-%             axis(ha1(i),'equal')
-%             
-%             ha2(i)=subplot(2,3,i,'parent',hf2);
-%             plot(ha2(i),c(1,2:end),(c(2,2:end)),'r','displayname','LCFS')
-%             hold(ha2(i),'on');
-%             axis(ha2(i),'equal')
-%         end
-%         linkaxes([ha1 ha2],'xy');
-%         
-%         % Set labels and titles
-%         xlabel(ha1(4),'$R$','interpreter','latex'); xlabel(ha1(5),'$R$','interpreter','latex'); xlabel(ha1(6),'$R$','interpreter','latex');
-%         ylabel(ha1(1),'$Z$','interpreter','latex'); ylabel(ha1(4),'$Z$','interpreter','latex');
-%         xlabel(ha2(4),'$R$','interpreter','latex'); xlabel(ha2(5),'$R$','interpreter','latex'); xlabel(ha2(6),'$R$','interpreter','latex');
-%         ylabel(ha2(1),'$Z$','interpreter','latex'); ylabel(ha2(4),'$Z$','interpreter','latex');
-%         title(ha1(1),'$\psi (R,Z)$'); title(ha1(2),'$\psi(R+dR,Z)$'); title(ha1(3),'$\psi(R,Z+dZ)$')
-%         title(ha1(4),'$\Phi (R,Z)$'); title(ha1(5),'$\Phi(R+dR,Z)$'); title(ha1(6),'$\Phi(R,Z+dZ)$')
-%         title(ha2(1),'$B_R$'); title(ha2(2),'$B_Z$'); title(ha2(3),'$B_\varphi$')
-%         title(ha2(4),'$E_R$'); title(ha2(5),'$E_Z$'); title(ha2(6),'$E_\varphi$')
-%         
-%         % Make 2D plane at phi=0;
-%         X=linspace(1.5,1.9,1e2);
-%         Z=linspace(-0.2,0.2,1e2);
-%         [X2,Z2]=meshgrid(X,Z);
-%         x=cat(2,X2(:),Z2(:),zeros(size(Z2(:))));
-%         set(ha1(1),'Xlim',[min(X) max(X)],'Ylim',[min(Z) max(Z)])
-%         
-%         old_time=time;
-%         time_movie=linspace(0,(par.st.t_reconnection+par.st.t_relaxation)*1.1,1e2);
-%         for time=time_movie
-%             if exist('h','var')
-%                 delete(h);
-%             end
-%             %             error('Add Phi and psi_star to output arguments AND set expr_st in B_ST to true(size(x,1));')
-%             [E,B,~,~]=B_interpolation(x,'ST_2D');  %PLEASE SET EXPR_ST TO TRUE FOR EACH PARTICLE TO PRODUCE PROPER IMAGE
-%             if isempty(Phi)
-%                 Phi=zeros(size(psi_star));
-%             end
-%             if numel(E)==1
-%                 E=zeros(size(B));
-%             end
-%             
-%             % Figure 1
-%             for pos=1:3
-%                 Phi_plot=reshape(Phi(:,:,:,pos),size(X2));
-%                 psi_star_plot=reshape(psi_star(:,:,:,pos),size(X2));
-%                 [h(1,pos)]=imagesc(X,Z,psi_star_plot,'parent',ha1(pos));
-%                 [h(1,pos+3)]=imagesc(X,Z,Phi_plot,'parent',ha1(pos+3));
-%             end
-%             % Figure 2
-%             BR  =reshape(B(:,1),size(X2));
-%             BZ  =reshape(B(:,2),size(X2));
-%             Bphi=reshape(B(:,3),size(X2));
-%             ER  =reshape(E(:,1),size(X2));
-%             EZ  =reshape(E(:,2),size(X2));
-%             Ephi=reshape(E(:,3),size(X2));
-%             
-%             [h(2,1)]=imagesc(X,Z,BR  ,'parent',ha2(1));
-%             [h(2,2)]=imagesc(X,Z,BZ  ,'parent',ha2(2));
-%             [h(2,3)]=imagesc(X,Z,Bphi,'parent',ha2(3));
-%             [h(2,4)]=imagesc(X,Z,ER  ,'parent',ha2(4));
-%             [h(2,5)]=imagesc(X,Z,EZ  ,'parent',ha2(5));
-%             [h(2,6)]=imagesc(X,Z,Ephi,'parent',ha2(6));
-%             
-%             for i=1:6
-%                 colorbar('peer',ha1(i));
-%                 colormap(ha1(i),'jet');
-%                 colorbar('peer',ha2(i));
-%                 colormap(ha2(i),'jet');
-%             end
-%             h(2,7) =quiver(X2(10:10:end,10:10:end),Z2(10:10:end,10:10:end),BR(10:10:end,10:10:end),BZ(10:10:end,10:10:end),'parent',ha2(1),'color','k');
-%             h(2,8) =quiver(X2(10:10:end,10:10:end),Z2(10:10:end,10:10:end),BR(10:10:end,10:10:end),BZ(10:10:end,10:10:end),'parent',ha2(2),'color','k');
-%             h(2,9) =quiver(X2(10:10:end,10:10:end),Z2(10:10:end,10:10:end),ER(10:10:end,10:10:end),EZ(10:10:end,10:10:end),'parent',ha1(4),'color','k');
-%             h(2,10)=quiver(X2(10:10:end,10:10:end),Z2(10:10:end,10:10:end),ER(10:10:end,10:10:end),EZ(10:10:end,10:10:end),'parent',ha1(5),'color','k');
-%             h(2,11)=quiver(X2(10:10:end,10:10:end),Z2(10:10:end,10:10:end),ER(10:10:end,10:10:end),EZ(10:10:end,10:10:end),'parent',ha1(6),'color','k');
-%             
-%             drawnow;
-%         end
-%         time=old_time;
-%         warning('UNIT TEST COMPLETED')
-    else
-%         hf=figure('tag',mfilename);
-%         
-%         ha1(1,1)=subplot(3,2,1,'parent',hf); ha1(1,2)=subplot(3,2,2,'parent',hf);
-%         ha1(2,1)=subplot(3,2,3,'parent',hf); ha1(2,2)=subplot(3,2,4,'parent',hf);
-%         ha1(3,1)=subplot(3,2,5,'parent',hf); ha1(3,2)=subplot(3,2,6,'parent',hf);
-%         
-%         % Make 2D plane at phi=0;
-%         X=dim.scale_X(5:end-5)+dim.R0+dim.DX/2;
-%         Z=dim.scale_Z(5:end-5)+dim.DZ/2;
-%         [X,Z]=ndgrid(X,Z);
-%         x=cat(2,X(:),Z(:),zeros(size(Z(:))));
-%         
-%         [~,B_2D_BR,B_2D_BZ,B_2D_Bphi]=B_interpolation(x,'2D');
-%         [~,B]=B_interpolation(x,'2D');
-%         if ~isequaln(B,cat(2,B_2D_BR,B_2D_BZ,B_2D_Bphi))
-%             error('Problem in conversions from size B-field')
-%         end
-%         B_2D_BR     =reshape(B_2D_BR    ,[length(dim.scale_X(5:end-5)),length(dim.scale_Z(5:end-5))]);
-%         B_2D_BZ     =reshape(B_2D_BZ    ,[length(dim.scale_X(5:end-5)),length(dim.scale_Z(5:end-5))]);
-%         B_2D_Bphi   =reshape(B_2D_Bphi  ,[length(dim.scale_X(5:end-5)),length(dim.scale_Z(5:end-5))]);
-%         
-%         imagesc(B_2D_BR'           ,'parent',ha1(1,2));
-%         imagesc(B_2D_BZ'           ,'parent',ha1(2,2));
-%         imagesc(B_2D_Bphi'         ,'parent',ha1(3,2));
-%         
-%         % Control
-%         if any(par.interp_scheme==[3 6])
-%             imagesc(maps(1).B_2D(:,:,1)','parent',ha1(1,1));
-%             imagesc(maps(1).B_2D(:,:,2)','parent',ha1(2,1));
-%             imagesc(maps(1).B_2D(:,:,3)','parent',ha1(3,1));
-%         else
-%             imagesc(maps(1).B_2D.BR'    ,'parent',ha1(1,1));
-%             imagesc(maps(1).B_2D.BZ'    ,'parent',ha1(2,1));
-%             imagesc(maps(1).B_2D.Bphi'  ,'parent',ha1(3,1));
-%         end
-%         
-%         linkprop(ha1(1,:),'Clim');
-%         linkprop(ha1(2,:),'Clim');
-%         linkprop(ha1(3,:),'Clim');
-%         linkprop(ha1(1,:),'Xdir'); linkprop(ha1(1,:),'Ydir');
-%         linkprop(ha1(2,:),'Xdir'); linkprop(ha1(2,:),'Ydir');
-%         linkprop(ha1(3,:),'Xdir'); linkprop(ha1(3,:),'Ydir');
-%         colorbar('peer',ha1(1,1)); colorbar('peer',ha1(1,2));
-%         colorbar('peer',ha1(2,1)); colorbar('peer',ha1(2,2));
-%         colorbar('peer',ha1(3,1)); colorbar('peer',ha1(3,2));
-%         
-%         % Make similar figures for 3D interpolation at Z=0
-%         if par.APPLY_3D
-%             figure('tag',mfilename);
-%             ha1(1,1)=subplot(3,2,1); ha1(1,2)=subplot(3,2,2);
-%             ha1(2,1)=subplot(3,2,3); ha1(2,2)=subplot(3,2,4);
-%             ha1(3,1)=subplot(3,2,5); ha1(3,2)=subplot(3,2,6);
-%             if strcmp(par.coord_syst,'flux')
-%                 m=load([par.paths.DATA_FOLDER,'flux_geometry.mat'],'X_PR_map','Z_PR_map');
-%                 X=m.X_PR_map(1:513,1:513)+dim.R0;
-%                 Z=m.Z_PR_map(1:513,1:513);
-%             else
-%                 X=dim.scale_X;
-%                 Z=dim.scale_Z;
-%                 [X,Z]=ndgrid(X,Z);
-%             end
-%             x=cat(2,X(:),Z(:),zeros(size(Z(:))));
-%             
-%             [~,B_3D_BR,B_3D_BZ,B_3D_Bphi]=B_interpolation(x,'3D');
-%             B_3D_BR     =reshape(B_3D_BR    ,[513 513]);
-%             B_3D_BZ     =reshape(B_3D_BZ    ,[513 513]);
-%             B_3D_Bphi   =reshape(B_3D_Bphi  ,[513 513]);
-%             
-%             imagesc(B_3D_BR'    ,'parent',ha1(1,2));
-%             imagesc(B_3D_BZ'  	,'parent',ha1(2,2));
-%             imagesc(B_3D_Bphi'  ,'parent',ha1(3,2));
-%             
-%             if any(par.interp_scheme==[3 6])
-%                 imagesc(maps(1).B_3D(:,:,1,1)'	,'parent',ha1(1,1));
-%                 imagesc(maps(1).B_3D(:,:,1,2)'    ,'parent',ha1(2,1));
-%                 imagesc(maps(1).B_3D(:,:,1,3)'  ,'parent',ha1(3,1));
-%             else
-%                 imagesc(maps(1).n3D.BR(:,:,1)'	,'parent',ha1(1,1));
-%                 imagesc(maps(1).n3D.BZ(:,:,1)'    ,'parent',ha1(2,1));
-%                 imagesc(maps(1).n3D.Bphi(:,:,1)'  ,'parent',ha1(3,1));
-%             end
-%             
-%             linkprop(ha1(1,:),'Clim');
-%             linkprop(ha1(2,:),'Clim');
-%             linkprop(ha1(3,:),'Clim');
-%             linkprop(ha1(1,:),'Xdir'); linkprop(ha1(1,:),'Ydir');
-%             linkprop(ha1(2,:),'Xdir'); linkprop(ha1(2,:),'Ydir');
-%             linkprop(ha1(3,:),'Xdir'); linkprop(ha1(3,:),'Ydir');
-%             colorbar('peer',ha1(1,1)); colorbar('peer',ha1(1,2));
-%             colorbar('peer',ha1(2,1)); colorbar('peer',ha1(2,2));
-%             colorbar('peer',ha1(3,1)); colorbar('peer',ha1(3,2));
-%         end
-    end
-    return
-end
+E=x*0;
+
 
 %% Switch the 'types', defining the intepolation field
 if nargin<2
@@ -227,14 +33,18 @@ if nargin<2
         types=par.coord_syst;
         % removed E=0 to consider centrifugal effects (Fc_field)
         E=x*0;
+    elseif par.APPLY_ER
+        types='radial_Efield';
     else
         % The initial 2D equilibrium
         types='2D';
-        % removed E=0 to consider centrifugal effects (Fc_field)
         E=x*0;
     end
 end
 
+if par.APPLY_ER % since we have 3 arguments in that case
+    types='radial_Efield';
+end
 %% Execute the 2D and/or 3D interpolation functions
 switch types
     case '2D'
@@ -276,12 +86,30 @@ switch types
         
         BR=BR+B3D;
         BZ=[]; Bphi=[];
+    case 'radial_Efield'
+        % notations are misleading
+        % only BR output is used and has dimensions N x 1 x 3
+        [BR,BZ,Bphi]=B_2D(x);
+        if nargin<2
+            % no Erfield specified in input, so nothing to do
+            E=x*0;
+        elseif nargin==3
+            % types is the 2nd argument so Er_field value should be given
+            % as an input for each particle
+            % enforcing E.B = 0
+            E(:,1)=-x(:,1).*Er_field.*squeeze(BR(:,:,2));
+            E(:,2)=x(:,1).*Er_field.*squeeze(BR(:,:,1));
+            % E(:,3)=x(:,3)*0;
+        end
+
 end
 
 %% Adjust size
 % Make the ordering: || particle | direction | time stamp || (if not already done by ST)
 if any(par.interp_scheme==[3 6]) && ~any(strcmp(types,{'ST_2D','ST_3D'}))
     if size(x,3)==1
+        % notations are misleading
+        % only BR output is used and has dimensions N x 1 x 3
         BR  = permute(BR,[1 3 2]);
     else
         BR  =  permute(BR  ,[1 4 3 2]);
