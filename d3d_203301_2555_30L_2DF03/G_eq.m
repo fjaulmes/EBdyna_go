@@ -20,14 +20,17 @@ par.mach='IPP.CR';
 maps=[];
 par=[];     % Clear any possible parameter
 time=0;
+par.verbose = 1;   % 0 = quiet, 1 = normal, 2 = verbose, 3 = debug
 par.shot_no=203301;
 par.tokamak='d3d';
-par.time_id='2555'
-par.nbi_id='30L'
+par.time_id='2555';
+par.nbi_id='30L';
 par.sim_id='2DF03'
 par.shot_name=[num2str(par.shot_no)];
 par.ID=[par.shot_name,'_',par.time_id,'_',par.nbi_id,'_',par.sim_id];
 par.sim_folder_string=['d3d_',par.ID];
+
+log_msg('info', 'EBdyna run: %s', par.sim_folder_string);
 
 par.mach='IT4I';
 folders=initialize_folder_names();
@@ -52,6 +55,7 @@ par.TEST_DIST=false;                   % Use the test distribution and parameter
 % 5  - POINCARE (need hard setting of the `mode')
 % 6  - SAWTOOTH simulation
 par.mode=3;
+log_msg('verbose', 'Mode: %d', par.mode);
 
 
 define_basic_parameters();

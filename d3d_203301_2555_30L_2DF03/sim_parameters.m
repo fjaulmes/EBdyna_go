@@ -55,9 +55,10 @@ if ~par.TEST_DIST
 end
 %% Determine mode (type of simulation)
 if isfield(par,'mode')
-    warning(['Mode has been enforced to: ',num2str(par.mode)])
+    log_msg('info', 'Mode enforced to: %d', par.mode);
 elseif par.TEST_DIST
     par.mode=1;
+    log_msg('info', 'par.TEST_DIST activated : ', 'Mode enforced to: %d', par.mode);
 elseif par.GET_PREC_INFO && ~prec_data_avail   % A precession file is needed, therefore mode 2
     par.mode=2;    
 else
