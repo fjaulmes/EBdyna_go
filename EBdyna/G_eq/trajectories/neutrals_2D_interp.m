@@ -1,4 +1,4 @@
-function [n0,n0D2] = neutrals_2D_interp(x)
+function [n0,n0D2,T0] = neutrals_2D_interp(x)
     %NEUTRALS_2D_INTERP query the values of neutral density in 2D 
     %   For more accurate CX calculations
     global par maps dim
@@ -10,6 +10,7 @@ function [n0,n0D2] = neutrals_2D_interp(x)
     
     %% BA_INTERP2 LINEAR
     n0=ba_interp2(maps(1).neutrals_XZ,Z_ind,X_ind,'linear');
+    T0=ba_interp2(maps(1).Tneutrals_XZ,Z_ind,X_ind,'linear');
     if par.N0_FAC_D2>0
         n0D2=ba_interp2(maps(1).neutralsD2_XZ,Z_ind,X_ind,'linear');
     else
