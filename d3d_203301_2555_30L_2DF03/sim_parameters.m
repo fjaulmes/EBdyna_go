@@ -93,11 +93,11 @@ switch par.mode
         par.CALCULATE_PPHI_3D       =false;
         par.APPLY_SAWTOOTH          =false;                         % Tur off ST simulation
     case 3 % FULL                         
-        par.dt                          =0.5*1e-9;                        % Fundamental time step
-        t_sim                           =10*1e-6;                        % Length of simulation : 60 mus
-        par.NB_TIME_STAMPS              =1000;                           % # stored values (stamps)
+        par.dt                          =1*1e-9;                        % Fundamental time step
+        t_sim                           =500*1e-6;                        % Length of simulation : 60 mus
+        par.NB_TIME_STAMPS              =500;                           % # stored values (stamps)
         PC_SAVE                         =Inf;                           % percentage after which a intermediate save is done (for debugging)
-        par.NB_STAMPS_saved             =1000;        
+        par.NB_STAMPS_saved             =500;        
         par.DISPLAY_TIMESTAMP_LOSSES    = 0;
    case 4
         error('Mode is obsolete')

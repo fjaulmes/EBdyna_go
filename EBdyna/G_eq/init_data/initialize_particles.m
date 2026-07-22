@@ -247,7 +247,7 @@ end
 % finally take care of pphi initial value (normalized by Z*psi_global)
 [~,v_plus_1]=time_step_integration_GT_eq_struct(input.x,input.v,input.Fc_field);
 psi=interp2(dim.scale_Z,dim.scale_X,maps(1).psi_XZ,x(:,2),x(:,1)-dim.R0,'spline');% find psi-value; use non-starred spline to avoid cubic/nonuniform-grid warning
-input.pphi_kin= get_pphi_kin(input,x,v_plus_1,psi)/(input.Z*maps(1).psi_global);
+input.pphi_kin= get_pphi_kin(input,x,v_plus_1,psi,maps(1).pphi_sign_conv)/(input.Z*maps(1).psi_global);
 
 %%
 % keeping track of the particles initial gc positions and velocities
@@ -397,7 +397,7 @@ par.dt=0.5*dt;
 
 [~,v_plus_1]=time_step_integration_GT_eq_struct(x,v,input.Fc_field);
 par.dt=dt;
-input.pphi_kin= get_pphi_kin(input,x,v_plus_1,psi)/(input.Z*maps(1).psi_global);
+input.pphi_kin= get_pphi_kin(input,x,v_plus_1,psi,maps(1).pphi_sign_conv)/(input.Z*maps(1).psi_global);
 
 
 % extra field to record distance covered by particles(mostly for Poincare plot)

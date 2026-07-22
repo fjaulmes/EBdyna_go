@@ -124,7 +124,7 @@ if par.interp_scheme==1
     [X_ind_gc,Z_ind_gc] = interp_index_list_2D ([dim.size_X,dim.size_Z],X_ind_gc,Z_ind_gc);     % Return the indexes / slopes as reps. X_ind and Z_ind
 end
 if isfield (maps(1),'theta_XZ')
-output.theta_gc = interpolate_theta_XZ(X_ind_gc,Z_ind_gc,expr_calc);
+    output.theta_gc = interpolate_theta_XZ(X_ind_gc,Z_ind_gc,expr_calc);
 end
 
 B=ba_interp2(maps(1).B_2D       ,Z_ind_gc,X_ind_gc,'cubic');
@@ -155,13 +155,21 @@ v_perp_sq  =v_plus_1_sq-dot(output.vpll     ,output.vpll    ,2);
 output.psi=output.vpll*0;
 output.psi_gc=output.vpll*0;
 
-for TS=1:size(output.vpll,3)
-%     output.psi(:,TS)=interp2(dim.scale_X,dim.scale_Z,maps(1).psi_XZ',squeeze(output.x(:,1,TS))-dim.R0,squeeze(output.x(:,2,TS)),'cubic');
-%     output.psi_gc(:,TS)=interp2(dim.scale_X,dim.scale_Z,maps(1).psi_XZ',squeeze(output.x_gc(:,1,TS))-dim.R0,squeeze(output.x_gc(:,2,TS)),'cubic');
-    % unfortunate dimensions because pphi evaluation functin used further down
-    output.psi(:,1,TS)=interp2(dim.scale_X,dim.scale_Z,maps(1).psi_XZ',output.x(:,1,TS)-dim.R0,output.x(:,2,TS),'cubic');
-    output.psi_gc(:,1,TS)=interp2(dim.scale_X,dim.scale_Z,maps(1).psi_XZ',output.x_gc(:,1,TS)-dim.R0,output.x_gc(:,2,TS),'cubic');
-end
+% Use the same map-index coordinates and interpolation family as the orbit
+% field evaluation. This avoids mixing an independently evaluated interp2
+% cubic psi with a linearly interpolated B field (for example scheme 3).
+pphi_interp_method = get_pphi_interp_method(par.interp_scheme);
+output.psi = ba_interp2(maps(1).psi_XZ, Z_ind, X_ind, pphi_interp_method);
+output.psi_gc = ba_interp2(maps(1).psi_XZ, Z_ind_gc, X_ind_gc, pphi_interp_method);
+
+% Keep the historical [particle x 1 x time] shape expected by
+% get_pphi_kin before the final squeeze section.
+output.psi = reshape(output.psi, size(output.x,1), 1, size(output.x,3));
+output.psi_gc = reshape(output.psi_gc, size(output.x_gc,1), 1, size(output.x_gc,3));
+
+log_msg('debug', ...
+    'Psi for Pphi evaluated with %s interpolation (scheme %d).', ...
+    pphi_interp_method, par.interp_scheme);
 
 %% q-values
 % q_prf=load(strcat(par.folders.DATA_SHOT,'q_profile.mat'),'q_initial_profile');
@@ -176,12 +184,70 @@ output.psi_outer=psi_outer;
 output.psi_gc_outer=psi_gc_outer;
 
 %% Pphi-calculation
-norm_fac=input.Z*...
-    (maps(1).psi_global); % normalization factor for pphi = qRA_phi (center - edge)
-if ~isfield(output,'pphi_kin')
-    [ output.pphi_kin ] = get_pphi_kin(input,output.x,output.v_plus_1,output.psi);
-    output.pphi_kin=output.pphi_kin/norm_fac;
+norm_fac=input.Z*maps(1).psi_global; % q*Delta(psi), after division by e
+
+if ~isfield(maps(1),'pphi_sign_conv') || ...
+        ~isscalar(maps(1).pphi_sign_conv) || ...
+        ~ismember(maps(1).pphi_sign_conv,[-1,+1])
+    error('evaluate_output:InvalidPphiConvention', ...
+        'maps(1).pphi_sign_conv must be either -1 or +1.');
 end
+
+if any(norm_fac == 0)
+    error('evaluate_output:InvalidPphiNormalization', ...
+        'Pphi normalization is zero: check input.Z and maps(1).psi_global.');
+end
+
+% Always recalculate Pphi. A value saved during integration may use an old
+% sign convention, a different psi interpolation, or a different velocity
+% time level.
+pphi_from_v = get_pphi_kin( ...
+    input,output.x,output.v,output.psi,maps(1).pphi_sign_conv);
+
+pphi_from_v_plus_1 = get_pphi_kin( ...
+    input,output.x,output.v_plus_1,output.psi,maps(1).pphi_sign_conv);
+
+pphi_from_v = bsxfun(@rdivide,pphi_from_v,norm_fac);
+pphi_from_v_plus_1 = bsxfun(@rdivide,pphi_from_v_plus_1,norm_fac);
+
+% In a static, axisymmetric, collisionless 2D magnetic field, Pphi must be
+% conserved. Use that invariant to determine which stored velocity time
+% level is synchronized with output.x. In non-conservative configurations,
+% retain the intended half-step-centered velocity output.v_plus_1.
+can_select_by_invariant = ~par.COULOMB_COLL && ~par.CALCULATE_CX && ...
+    ~par.APPLY_ER && ~par.APPLY_3D && ~par.APPLY_RMP && ~par.APPLY_TFR && ...
+    ~par.APPLY_SAWTOOTH;
+
+[pphi_error_v,pphi_median_error_v] = pphi_relative_variation(pphi_from_v,ejected);
+[pphi_error_v_plus_1,pphi_median_error_v_plus_1] = ...
+    pphi_relative_variation(pphi_from_v_plus_1,ejected);
+
+if can_select_by_invariant && pphi_median_error_v < pphi_median_error_v_plus_1
+    output.pphi_kin = pphi_from_v;
+    output.pphi_velocity_source = 'output.v';
+    output.pphi_relative_error = pphi_error_v;
+else
+    output.pphi_kin = pphi_from_v_plus_1;
+    output.pphi_velocity_source = 'output.v_plus_1';
+    output.pphi_relative_error = pphi_error_v_plus_1;
+end
+
+output.pphi_relative_error_v = pphi_error_v;
+output.pphi_relative_error_v_plus_1 = pphi_error_v_plus_1;
+output.pphi_median_error_v = pphi_median_error_v;
+output.pphi_median_error_v_plus_1 = pphi_median_error_v_plus_1;
+output.pphi_sign_conv = maps(1).pphi_sign_conv;
+output.pphi_interp_method = pphi_interp_method;
+
+log_msg('info', ...
+    ['Pphi recalculated with sign %+.0f and %s psi interpolation; ' ...
+     'velocity source: %s.'], ...
+    maps(1).pphi_sign_conv,pphi_interp_method,output.pphi_velocity_source);
+
+log_msg('debug', ...
+    ['Median relative Pphi variation: output.v = %.6e, ' ...
+     'output.v_plus_1 = %.6e.'], ...
+    pphi_median_error_v,pphi_median_error_v_plus_1);
 
 % Analytical value (0 in 2D)
 if par.CALCULATE_PPHI_3D && isfield(output,'pphi_an_temp')
@@ -190,9 +256,10 @@ if par.CALCULATE_PPHI_3D && isfield(output,'pphi_an_temp')
     output=rmfield(output,'pphi_an_temp');
 end
 
-% Delta pphi
-output.Delta_pphi=output.pphi_kin(:,end)-input.pphi_kin;
-output.Delta_pphi2=squeeze(output.pphi_kin(:,end)-output.pphi_kin(:,1));
+% Delta Pphi. Use the first consistently recalculated timestamp as the
+% reference; input.pphi_kin may have been created with an older convention.
+output.Delta_pphi=squeeze(output.pphi_kin(:,end)-output.pphi_kin(:,1));
+output.Delta_pphi2=output.Delta_pphi;
 
 %% Larmor frequency
 output.larmor_freq=input.Z*const.eV*Bfield/input.m;
@@ -353,6 +420,55 @@ end
 %% FUNCTIONS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Truncate the output since some are ejected before first time stamp
+function method = get_pphi_interp_method(interp_scheme)
+%GET_PPHI_INTERP_METHOD Match psi interpolation to the B-map scheme.
+%
+% Schemes documented in initialize_maps_ram:
+%   0,1,2,3,4 : linear family
+%   5,6,7     : cubic family
+%   8,9       : spline family; ba_interp2 has no separate spline path here,
+%               so cubic is the closest supported diagnostic interpolation.
+
+switch interp_scheme
+    case {0,1,2,3,4}
+        method='linear';
+    case {5,6,7,8,9}
+        method='cubic';
+    otherwise
+        log_msg('warn', ...
+            'Unknown interpolation scheme %d; using linear psi interpolation.', ...
+            interp_scheme);
+        method='linear';
+end
+end
+
+
+function [relative_error,median_error] = pphi_relative_variation(pphi,ejected)
+%PPHI_RELATIVE_VARIATION Maximum trajectory variation relative to its scale.
+
+P=squeeze(pphi);
+if isvector(P)
+    P=P(:).';
+end
+
+P0=P(:,1);
+scale=max(abs(P),[],2);
+scale=max(scale,eps(class(P)));
+relative_error=max(abs(bsxfun(@minus,P,P0)),[],2)./scale;
+
+valid=all(isfinite(P),2);
+if nargin>=2 && ~isempty(ejected)
+    valid=valid & ~logical(ejected(:));
+end
+
+if any(valid)
+    median_error=median(relative_error(valid),'omitnan');
+else
+    median_error=Inf;
+end
+end
+
+
 function struct=truncate(struct,expr)
 N_job=length(expr);
 names=fieldnames(struct);

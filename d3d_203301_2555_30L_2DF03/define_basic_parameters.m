@@ -13,9 +13,9 @@ global par
     par.TOL_CORE_HFS_THETA   = 0.08;   % sets up some tolerancefor HFS crossing
     par.RELATIVISTIC_CORR    = 0;       % for kinetic energies beyond the speed of light
 
-    par.COULOMB_COLL         = 1;       % for collisional effects using METIS profiles in 'pressure_profile.mat'
+    par.COULOMB_COLL         = 0;       % for collisional effects using METIS profiles in 'pressure_profile.mat'
     par.SLOWING_DOWN         = 1;       % activate decrease of velocity for fast particles simulations
-    par.PROGRESSIVE_BIRTH    = 1;       % used to split the input into smaller chunks inserted at equal time intervalls during the simulation
+    par.PROGRESSIVE_BIRTH    = 0;       % used to split the input into smaller chunks inserted at equal time intervalls during the simulation
     par.NB_BIRTH_CHUNKS      = 150;
     par.CALCULATE_DEVIATION  = 0;
     par.SD_MARKERS_END       = 0;
@@ -26,7 +26,7 @@ global par
     par.CALCULATE_NDD        = 0;       % apply calculation of DD neutron yield for the fast population against thermal D background
     par.CALCULATE_PDEP       = 0 &  (par.SLOWING_DOWN);       % yields Power deposited info (a bit demanding computationnaly)
 
-    par.CALCULATE_CX         = 1;       % yields Power deposited info (a bit demanding computationnaly)
+    par.CALCULATE_CX         = 0;       % yields Power deposited info (a bit demanding computationnaly)
     par.N0_FAC_D             = 1.0;       % multiplicative factor on background D neutral density
     par.N0_FAC_D2            = 0.0;       % multiplicative factor on background D2 neutral density
     par.full_2D_neutrals     = 1;
@@ -111,7 +111,9 @@ global par
     end
 
     % Radial electric field
-    par.APPLY_ER      = true;
+    par.APPLY_ER_HIRES= false; % in order to have the interpolation every time step instead of every time stamp
+    par.APPLY_ER      = false || par.APPLY_ER_HIRES; % the hires means we need the standard one 
+
 
     % Turn off centrifugal effects (should be able to combine with Er field though)
     par.APPLY_FC      = false;

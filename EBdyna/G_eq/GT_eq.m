@@ -463,19 +463,23 @@ time_stamp=1;
 					ejected_wall(IMAG_OUTPUTS)=1;
                 end
                 if par.APPLY_ER
-                    X_ind(IONS_GROUP)=((x(IONS_GROUP,1)-dim.R0)*dim.DX_inv)+dim.mid_Xzero;
-                    Z_ind(IONS_GROUP)=( x(IONS_GROUP,2)        *dim.DZ_inv)+dim.mid_Z;
-                    psi_gc_value(IONS_GROUP)=ba_interp2(maps(1).psi_n_XZ,Z_ind(IONS_GROUP),X_ind(IONS_GROUP),'linear'); % find psi-value at particle [better!]
-                    % index vector
-                    [~,psi_xi_pos(IONS_GROUP)] = histc(psi_gc_value(IONS_GROUP),dim.pn);
-                    psi_xi_pos(IONS_GROUP) = max(psi_xi_pos(IONS_GROUP),1);     % To avoid index=0 when xi < x(1)
-                    psi_xi_pos(IONS_GROUP) = min(psi_xi_pos(IONS_GROUP),dim.xlength-1);   % To avoid index=m+1 when xi > x(end).
-                    % 't' slope vector [p x 1]
-                    dxi(IONS_GROUP) = psi_gc_value(IONS_GROUP)-dim.pn(psi_xi_pos(IONS_GROUP));
-                    dx(IONS_GROUP) = dim.pn(psi_xi_pos(IONS_GROUP)+1)-dim.pn(psi_xi_pos(IONS_GROUP));
-                    psi_slope(IONS_GROUP) = dxi(IONS_GROUP)./dx(IONS_GROUP);
-                    Er_field(IONS_GROUP)=interp1qr(dim.pn,dim.Er_prof,psi_gc_value(IONS_GROUP),psi_xi_pos(IONS_GROUP),psi_slope(IONS_GROUP));
-                    [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:),Er_field(IONS_GROUP));
+                    % only if HIRES is enforced we re-evaluate E at each
+                    % time step / otherwise only once per time stamp
+                    if par.APPLY_ER_HIRES || i==1
+                        X_ind(IONS_GROUP)=((x(IONS_GROUP,1)-dim.R0)*dim.DX_inv)+dim.mid_Xzero;
+                        Z_ind(IONS_GROUP)=( x(IONS_GROUP,2)        *dim.DZ_inv)+dim.mid_Z;
+                        psi_gc_value(IONS_GROUP)=ba_interp2(maps(1).psi_n_XZ,Z_ind(IONS_GROUP),X_ind(IONS_GROUP),'linear'); % find psi-value at particle [better!]
+                        % index vector
+                        [~,psi_xi_pos(IONS_GROUP)] = histc(psi_gc_value(IONS_GROUP),dim.pn);
+                        psi_xi_pos(IONS_GROUP) = max(psi_xi_pos(IONS_GROUP),1);     % To avoid index=0 when xi < x(1)
+                        psi_xi_pos(IONS_GROUP) = min(psi_xi_pos(IONS_GROUP),dim.xlength-1);   % To avoid index=m+1 when xi > x(end).
+                        % 't' slope vector [p x 1]
+                        dxi(IONS_GROUP) = psi_gc_value(IONS_GROUP)-dim.pn(psi_xi_pos(IONS_GROUP));
+                        dx(IONS_GROUP) = dim.pn(psi_xi_pos(IONS_GROUP)+1)-dim.pn(psi_xi_pos(IONS_GROUP));
+                        psi_slope(IONS_GROUP) = dxi(IONS_GROUP)./dx(IONS_GROUP);
+                        Er_field(IONS_GROUP)=interp1qr(dim.pn,dim.Er_prof,psi_gc_value(IONS_GROUP),psi_xi_pos(IONS_GROUP),psi_slope(IONS_GROUP));
+                        [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:),Er_field(IONS_GROUP));
+                    end
                 else
                     [x(IONS_GROUP,:),v(IONS_GROUP,:)]=time_step_integration_GT_eq_struct(x(IONS_GROUP,:),v(IONS_GROUP,:),input.Fc_field(IONS_GROUP,:));
                 end
@@ -565,11 +569,11 @@ time_stamp=1;
 		% Estimate velocity at n
         v_n(sn_ejected,:)=0.5*(v(sn_ejected,:)+v_temp_2(sn_ejected,:));
         % Estimate x_gc at n
-        if ~par.APPLY_ER
+%        if ~par.APPLY_ER
             [~,B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:));
-        else
-            [E(sn_ejected,:),B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:),'radial_Efield',Er_field(sn_ejected));
-        end
+%        else
+%            [E(sn_ejected,:),B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:),'radial_Efield',Er_field(sn_ejected));
+%        end
         % [~,B(sn_ejected,:)]=B_interpolation(x(sn_ejected,:));
         Bfield_sq(sn_ejected)=dot(B(sn_ejected,:),B(sn_ejected,:),2);
         x_gc(IONS_GROUP,:)=x(IONS_GROUP,:)+bsxfun(@times,1./(qom*Bfield_sq(IONS_GROUP)),cross(v_n(IONS_GROUP,:),B(IONS_GROUP,:),2));
@@ -612,15 +616,15 @@ time_stamp=1;
                 ejected_wall(IMAG_OUTPUTS)=1;
 				v_norm(IMAG_OUTPUTS)=real(v_norm(IMAG_OUTPUTS));
             end
-			if par.COULOMB_COLL 
+            if par.COULOMB_COLL
                 if ~par.CALCULATE_CX
-				COLL_GROUP=(v_norm>MIN_COLL_V)&sn_ejected;
-                COLL_GROUP_N=COLL_GROUP;
+    				COLL_GROUP=(v_norm>MIN_COLL_V)&sn_ejected;
+                    COLL_GROUP_N=COLL_GROUP;
                 else
- 				COLL_GROUP=(v_norm>MIN_COLL_V)&IONS_GROUP;
-                % added to update ion density for neutrals reionizations
- 				COLL_GROUP_N=COLL_GROUP|NEUTRALS_GROUP;
-               end
+     				COLL_GROUP=(v_norm>MIN_COLL_V)&IONS_GROUP;
+                    % added to update ion density for neutrals reionizations
+     				COLL_GROUP_N=COLL_GROUP|NEUTRALS_GROUP;
+                end
 			else
 				COLL_GROUP=sn_ejected;
                 COLL_GROUP_N=COLL_GROUP;

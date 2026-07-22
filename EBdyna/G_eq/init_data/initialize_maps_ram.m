@@ -320,6 +320,9 @@ size_2D=size(m.psi_XZ);
 d.size_X=size_2D(1);
 d.size_Z=size_2D(2);
 
+% look for the pphi sign convention
+m = infer_pphi_sign_convention(m);
+
 %% Re-order B-field for the proper interpolation
 % Interpolation scheme's
 % 0     -   self-written linear, with vector potential
