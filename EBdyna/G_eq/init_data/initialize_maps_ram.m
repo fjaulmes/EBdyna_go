@@ -33,9 +33,11 @@ if par.full_2D_neutrals
     if par.N0_FAC_D2>0
         m3=load(filename,'neutralsD2_XZ');
         m=combine_structs(m,m3);
+        m.neutralsD2_XZ = par.N0_FAC_D2 * m.neutralsD2_XZ;
     end
     m2=load(filename,'Tneutrals_XZ');
-    m=combine_structs(m,m2);    
+    m=combine_structs(m,m2); 
+    m.neutrals_XZ = par.N0_FAC_D * m.neutrals_XZ;
 end
 
 %d2=load(filename,'size_X','size_Z');
