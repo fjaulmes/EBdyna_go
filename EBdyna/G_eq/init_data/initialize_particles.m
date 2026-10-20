@@ -126,6 +126,10 @@ if par.GET_PREC_INFO && isfield(dist,'prec')
     input.prec=reduce_struct(dist.prec,input.N_total,expr_job);
 end
 
+if ~isfield(par,'APPLY_FC')
+    par.APPLY_FC = 0;
+end
+
 if par.APPLY_FC==1;
     if isfield(input,'ang_rot')
         par.APPLY_FC=1;

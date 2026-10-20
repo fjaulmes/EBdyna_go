@@ -60,9 +60,13 @@ d.size_X=length(d.scale_X);
 % d2=load(strcat(par.paths.DATA_FOLDER,'psi_profiles.mat'),'psi_pol_initial_profile'); 
 % d.psi_scale_correct=d2.psi_pol_initial_profile;
 filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
-d2=load(filename,'psi_scale');
-d.psi_scale = d2.psi_scale;
-d.psi_scale_correct = d2.psi_scale; % modified later
+d2=load(filename,'scale_psi_mp','psi_scale');
+if isfield(d2,'scale_psi_mp')
+    d.psi_scale = d2.scale_psi_mp;
+else
+    d.psi_scale = d2.psi_scale;
+end
+d.psi_scale_correct = d.psi_scale; % modified later
 
 if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX || par.APPLY_ER
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
@@ -76,7 +80,12 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX || par.APPLY_ER
     if size(d2.Ti_prof,2)>size(d2.Ti_prof,1)        d2.Ti_prof=d2.Ti_prof';  end
     if size(d2.Te_prof,2)>size(d2.Te_prof,1)        d2.Te_prof=d2.Te_prof';end
     if size(d2.ne_prof,2)>size(d2.ne_prof,1)        d2.ne_prof=d2.ne_prof'; end
-    if size(d2.Er_prof,2)>size(d2.Er_prof,1)        d2.Er_prof=d2.Er_prof'; end
+    if ~isfield(par,'APPLY_ER')
+        par.APPLY_ER=0;
+    end
+    if par.APPLY_ER
+        if size(d2.Er_prof,2)>size(d2.Er_prof,1)        d2.Er_prof=d2.Er_prof'; end
+    end
 
     % security on psi_n map :
     psi_n_max=max(d2.psi_norm);
@@ -164,23 +173,33 @@ if par.COULOMB_COLL || par.CALCULATE_NDD || par.CALCULATE_CX || par.APPLY_ER
 
 end
 if par.CALCULATE_CX
+    if ~isfield(par,'full_2D_neutrals')
+        par.full_2D_neutrals=0;
+    end
     % kinetic profiles for neutrals
     filename=[par.folders.DATA_SHOT,'pressure_profile.mat'];
 %   also need the neutral profiles for CX calculations
     if ~par.full_2D_neutrals
-        d2=load(filename,'n0_prof','n0_prof_D2','T0_prof');
+        d2=load(filename,'n0_prof','n0_D2_prof','T0_prof');
 %   rescaling the profiles to make a scan in density
         d2.n0_prof=par.N0_FAC_D.*d2.n0_prof;
-    d2.n0_prof_D2=par.N0_FAC_D2.*d2.n0_prof_D2;
+        d2.n0_prof_D2=par.N0_FAC_D2.*d2.n0_D2_prof;
         if size(d2.n0_prof,2)>size(d2.n0_prof,1)        d2.n0_prof=d2.n0_prof';end
         if size(d2.n0_prof_D2,2)>size(d2.n0_prof_D2,1)        d2.n0_prof_D2=d2.n0_prof_D2'; end
+        d2.n0_prof(isnan(d2.n0_prof))=0;
+        d2.n0_D2_prof(isnan(d2.n0_D2_prof))=0;
+        % fallback on ion temperature for missing data
+        d2.T0_prof(isnan(d2.T0_prof))=d.Ti_prof(isnan(d2.T0_prof));
     else
         % still provding neutrals temperature on a profile ? (makes things easier to implement...)
         d2=load(filename,'T0_prof');
+        % fallback on ion temperature for missing data
+        d2.T0_prof(isnan(d2.T0_prof))=d.Ti_prof(isnan(d2.T0_prof));
     end
+    if size(d2.T0_prof,2)>size(d2.T0_prof,1)    d2.T0_prof=d2.T0_prof';end
 %   rescaling the profiles to make a scan in density
 %    if size(d2.T0_prof,2)>size(d2.T0_prof,1)        d2.T0_prof=d2.T0_prof'; end
-%    d=combine_structs(d,d2);
+    d=combine_structs(d,d2);
     
     % CX cross sections tabulated with temperature
     filename=[par.folders.DATA_COMMON_PHYSICS,'sigma_cxD_T0_log.mat'];
@@ -222,7 +241,22 @@ else
 end
 
 %% Alter the 2D maps
+if ~isfield(par,'BPHI_FROM_NEG_CW')
+    par.BPHI_FROM_NEG_CW = 0;
+end
 
+if par.BPHI_FROM_NEG_CW 
+    % go through all fields and flux and make sure that we flip the
+    % sign convention 
+    % {'Bphi_XZ','Br_XZ','Bz_XZ','psi_global','psi_XZ','psi_n_XZ',
+    m.Bphi_XZ=-1*m.Bphi_XZ;
+    m.Br_XZ=-1*m.Br_XZ;
+    m.Bz_XZ=-1*m.Bz_XZ;
+    m.psi_global=-1*m.psi_global;
+    m.psi_XZ=-1*m.psi_XZ;
+    d.psi_scale=-1*d.psi_scale;
+    d.psi_scale_correct=-1*d.psi_scale_correct;
+end
 
 if par.USE_VESSEL_LIMIT
      filename=[par.VESSEL_FILENAME];

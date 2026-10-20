@@ -652,16 +652,14 @@ time_stamp=1;
             if par.CALCULATE_CX
                 if ~par.full_2D_neutrals
                     neutral_density(COLL_GROUP)=interp1qr(dim.pn,dim.n0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
+                    if par.USE_T0_TABLE
+                        neutral_temp(COLL_GROUP)=interp1qr(dim.pn,dim.T0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
+                    end
                 else
                     if par.N0_FAC_D2>0
                         [neutral_density(COLL_GROUP),neutral_density_D2(COLL_GROUP),neutral_temp(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
                     else
                         [neutral_density(COLL_GROUP),~,neutral_temp(COLL_GROUP)]=neutrals_2D_interp(x(COLL_GROUP,:));
-                    end
-                end
-                if par.USE_T0_TABLE
-                    if ~par.full_2D_neutrals
-                        neutral_temp(COLL_GROUP)=interp1qr(dim.pn,dim.T0_prof,psi_gc_value(COLL_GROUP),psi_xi_pos(COLL_GROUP),psi_slope(COLL_GROUP));
                     end
                 end
             end
@@ -735,14 +733,17 @@ time_stamp=1;
             % cross section correted to D mass
             vnbiD(COLL_GROUP)=v_norm(COLL_GROUP); % can be adjusted later on according to toroidal rotation
             if par.CALCULATE_CX
-                % isotope (D2 instead of H2) effect in the cross section formula
-                E_sigv(COLL_GROUP)=0.5*Ekin_val(COLL_GROUP)*1e-3;
+                % isotope (D2 instead of H2) effect in the cross section
+                % formula: factor 1/2
+                E_sigv(COLL_GROUP)=0.5*Ekin_val(COLL_GROUP);   % in eV for D2 , divided by 2 to account for isotope mass
+                % E_sigv(COLL_GROUP)=0.5*Ekin_val(COLL_GROUP)*1e-3;
                 % cross section wrt. D2 background : no D2 inside separatrix
                 COLL_GROUP_D2=(psi_gc_value>1)&COLL_GROUP;
                 sigma_cx_D2(COLL_GROUP_D2)=(1e-20).*b1_CX.*exp(-b2_CX./E_sigv(COLL_GROUP_D2).^b3_CX)./(b4_CX.*E_sigv(COLL_GROUP_D2).^b5_CX+b6_CX.*E_sigv(COLL_GROUP_D2).^b7_CX+b8_CX.*E_sigv(COLL_GROUP_D2).^b9_CX+b10_CX.*E_sigv(COLL_GROUP_D2).^b11_CX);
                 % the D CX cross section was thought to be in center of mass referential but actually is NOT
                 % E_sigv(COLL_GROUP)=0.5*E_sigv(COLL_GROUP);
                 if ~par.USE_T0_TABLE
+                    E_sigv(COLL_GROUP)=E_sigv(COLL_GROUP) * 1e-3; % this specific cross section was using keV
                     sigma_cx(COLL_GROUP)=10^-20 .* (A1_CX .*log (A2_CX./E_sigv(COLL_GROUP) + A6_CX))./(1+A3_CX.*E_sigv(COLL_GROUP)+A4_CX.*E_sigv(COLL_GROUP).^3.5 + A5_CX.*E_sigv(COLL_GROUP).^(5.4));
                     if TESTING_CX
                         sigma_cx(COLL_GROUP)=100*sigma_cx(COLL_GROUP); % (for testing)
