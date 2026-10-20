@@ -16,7 +16,7 @@ mkdir ./$EBdyna_rundir/output_singlefile
 
 echo "*********** cleaning old log files *********"
 rm ~/java.log.*
-rm ./*.out
+# rm ./*.out
 rm ./*.e*
 rm ./G_eq
 
