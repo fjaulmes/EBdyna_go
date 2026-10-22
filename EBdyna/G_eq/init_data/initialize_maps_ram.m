@@ -9,6 +9,13 @@ end
 
 
 %% Load in map files
+% defaulting to full data reading
+if ~isfield(par,'step')
+    par.step.R=1;
+    par.step.Z=1;
+    par.step.phi=1;
+end   
+
 log_msg('info', 'Loading map files...');
 filename=[par.folders.DATA_SHOT,'XZsmall_fields_tokamak_pre_collapse.mat'];
 % m=load(filename,'Bphi_XZsmall_map','BpolX_initial_XZsmall_map','BpolZ_initial_XZsmall_map','psi_global','psi_XZsmall_map','psi_norm_XZsmall_map','psi_norm1_XZsmall_map','theta_XZsmall_map');
@@ -352,6 +359,7 @@ end
 
 %% Correct for the size in 2D map size, for interpolation purposes
 % Note that if not all steps (in par.step) are 1, then d.size_X needs to be reducted as:
+ 
 size_2D=size(m.psi_XZ);
 d.size_X=size_2D(1);
 d.size_Z=size_2D(2);
@@ -401,6 +409,18 @@ load_data=load(file_name,fields{:});
 if ~all(isfield(load_data,fields))
     error('Fields missing in requested data')
 end
+
+grid_fields={'R_grid','Z_grid'};
+load_data_grid=load(file_name,grid_fields{:});
+
+if ~all(isfield(load_data_grid,grid_fields))
+    error('R_grid and/or Z_grid Fields missing in requested data')
+end
+
+load_data_grid.R_grid=load_data_grid.R_grid(:);
+load_data_grid.Z_grid=load_data_grid.Z_grid(:);
+
+load_data=combine_structs(load_data,load_data_grid);
 
 symm=load(file_name,'symm');
 if ~isfield(symm,'symm')
@@ -511,8 +531,22 @@ else
         [m.n3D,d.n3D.symm]=load_3D_file(load_name,load_fields);
     end
     if ~all(isfield(m.n3D,load_fields)); error('Required fields not present in RMP_TFR_file'); end;
-       
+    if ~isequal(m.n3D.R_grid,m.R_grid)|| ~isequal(m.n3D.Z_grid,m.Z_grid)
+        nphi_tot=size(m.n3D.(BA_fields{1}),3);
+        m.n3D_new=struct();
+    end
     for BA=BA_fields
+        if ~isequal(m.n3D.R_grid,m.R_grid)|| ~isequal(m.n3D.Z_grid,m.Z_grid)
+            for nphi=1:nphi_tot
+                % Extract 2D slice
+                V_slice = squeeze(m.n3D.(BA_fields{1})(:,:,nphi));               
+                % Interpolate directly using meshgrid inputs
+                m.n3D_new.(BA_fields{1})(:,:,nphi) = interp2(m.n3D.Z_grid, m.n3D.R_grid, V_slice, m.Z_grid, m.R_grid, 'spline');
+               %  F = griddedInterpolant(m.n3D.Z_grid', m.n3D.R_grid', squeeze(m.n3D.(BA_fields{1})(:,:,nphi))', 'spline');       
+               % m.n3D.(BA{1})(:,:,nphi) = F(m.Z_grid', m.R_grid')';
+            end
+            m.n3D.(BA_fields{1})=m.n3D_new.(BA_fields{1});
+        end
         if par.superimpose_2D_3D && strcmp(par.coord_syst,'toroidal') && any(strcmp(BA{1},{'BR','BZ','Bphi'})) && ~par.APPLY_SAWTOOTH
             % Combine 2D and 3D field in toroidal case if no sawtooth applies
             m.n3D.(BA{1})=bsxfun(@plus,m.n3D.(BA{1})(1:par.step.R:d.size_X,1:par.step.Z:d.size_Z,1:par.step.phi:end),m.B_2D.(BA{1}));
