@@ -539,13 +539,13 @@ else
         if ~isequal(m.n3D.R_grid,m.R_grid)|| ~isequal(m.n3D.Z_grid,m.Z_grid)
             for nphi=1:nphi_tot
                 % Extract 2D slice
-                V_slice = squeeze(m.n3D.(BA_fields{1})(:,:,nphi));               
+                V_slice = squeeze(m.n3D.(BA{1})(:,:,nphi));               
                 % Interpolate directly using meshgrid inputs
-                m.n3D_new.(BA_fields{1})(:,:,nphi) = interp2(m.n3D.Z_grid, m.n3D.R_grid, V_slice, m.Z_grid, m.R_grid, 'spline');
+                m.n3D_new.(BA{1})(:,:,nphi) = interp2(m.n3D.Z_grid, m.n3D.R_grid, V_slice, m.Z_grid, m.R_grid, 'spline');
                %  F = griddedInterpolant(m.n3D.Z_grid', m.n3D.R_grid', squeeze(m.n3D.(BA_fields{1})(:,:,nphi))', 'spline');       
                % m.n3D.(BA{1})(:,:,nphi) = F(m.Z_grid', m.R_grid')';
             end
-            m.n3D.(BA_fields{1})=m.n3D_new.(BA_fields{1});
+            m.n3D.(BA{1})=m.n3D_new.(BA{1});
         end
         if par.superimpose_2D_3D && strcmp(par.coord_syst,'toroidal') && any(strcmp(BA{1},{'BR','BZ','Bphi'})) && ~par.APPLY_SAWTOOTH
             % Combine 2D and 3D field in toroidal case if no sawtooth applies
